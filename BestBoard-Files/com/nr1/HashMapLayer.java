@@ -1,3 +1,5 @@
+package com.nr1;
+
 import java.util.HashMap;
 
 public class HashMapLayer<T> extends Layer<T> {

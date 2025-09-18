@@ -1,3 +1,5 @@
+package com.nr1;
+
 public class MatrixLayer<T> extends Layer<T> {
     T[][] matrix;
 
