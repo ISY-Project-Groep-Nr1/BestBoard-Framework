@@ -1,7 +1,5 @@
 package com.nr1;
 
-import java.util.ArrayList;
-
 public class MatrixLayer<T> extends Layer<T> {
     T[][] matrix;
 
