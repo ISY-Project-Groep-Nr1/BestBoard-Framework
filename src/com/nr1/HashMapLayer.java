@@ -9,5 +9,6 @@ public class HashMapLayer<T> extends Layer<T> {
 
     public HashMapLayer(boolean is_active, String name) {
         super(is_active, name);
+        hashmap = new HashMap<>();
     }
 }
