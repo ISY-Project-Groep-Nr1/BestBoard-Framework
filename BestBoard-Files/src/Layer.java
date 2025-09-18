@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-abstract class Layer {
+abstract class Layer<T> {
     HashMap<String, Object> layer_persistent_variables = new HashMap<>(); // Create the hashmap
 
     // Create a class constructor for the Layer class
