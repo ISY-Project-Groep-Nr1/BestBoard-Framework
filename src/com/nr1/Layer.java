@@ -3,12 +3,12 @@ package com.nr1;
 import java.util.HashMap;
 
 abstract class Layer<T> {
-    HashMap<String, Object> layer_persistent_variables = new HashMap<>(); // Create the hashmap
+    HashMap<String, Object> persistentVariables = new HashMap<>(); // Create the hashmap
 
 
 
-    public Layer(boolean is_active, String name) {
-        layer_persistent_variables.put("is_active", is_active);
-        layer_persistent_variables.put("name", name);
+    public Layer(boolean isActive, String name) {
+        persistentVariables.put("is_active", isActive);
+        persistentVariables.put("name", name);
     }
 }

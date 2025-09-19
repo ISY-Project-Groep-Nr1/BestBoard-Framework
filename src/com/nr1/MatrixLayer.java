@@ -6,8 +6,8 @@ public class MatrixLayer<T> extends Layer<T> {
 
 
     @SuppressWarnings("unchecked")
-    public MatrixLayer(boolean is_active, String name, int width, int height) {
-        super(is_active, name);
+    public MatrixLayer(boolean isActive, String name, int width, int height) {
+        super(isActive, name);
         matrix = (T[][]) new Object[width][height];
     }
 }

@@ -7,8 +7,8 @@ public class ListLayer<T> extends Layer<T> {
 
 
 
-    public ListLayer(boolean is_active, String name) {
-        super(is_active, name);
+    public ListLayer(boolean isActive, String name) {
+        super(isActive, name);
         list = new ArrayList<>();
     }
 }
