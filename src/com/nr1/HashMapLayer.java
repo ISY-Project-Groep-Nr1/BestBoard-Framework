@@ -5,26 +5,26 @@ import java.util.HashMap;
 import java.util.List;
 
 public class HashMapLayer<T> extends Layer<T> {
-    HashMap<String, T> hashMap;
+    private final HashMap<String, T> mainHashMap;
 
 
 
-    public HashMapLayer(boolean isActive, String name) {
-        super(isActive, name);
-        hashMap = new HashMap<>();
+    public HashMapLayer(boolean active, String name) {
+        super(active, name);
+        mainHashMap = new HashMap<>();
     }
 
 
     @Override
     public T get(int x, int y) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 
     @Override
     public List<T> getOfType(Class<?> type) {
-        List<T> result = new ArrayList<>();
-        for (T value : hashMap.values()) {
+        final List<T> result = new ArrayList<>();
+        for (T value : mainHashMap.values()) {
             if(type.isInstance(value)) {
                 result.add(value);
             }
@@ -35,20 +35,19 @@ public class HashMapLayer<T> extends Layer<T> {
 
     @Override
     public List<T> getAll() {
-        List<T> result = new ArrayList<>();
-        result.addAll(hashMap.values());
-        return result;
+        return new ArrayList<>(mainHashMap.values());
     }
 
 
     @Override
     public T get(int index) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
+
 
     @Override
     public T get(String index) {
-        return hashMap.get(index);
+        return mainHashMap.get(index);
     }
 
 
@@ -60,13 +59,19 @@ public class HashMapLayer<T> extends Layer<T> {
 
     @Override
     public void delete(int x, int y) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 
     @Override
-    public <T1> void delete(T1 index) {
-        hashMap.remove(index);
+    public void delete(Object obj) {
+        mainHashMap.remove(obj);
+    }
+
+
+    @Override
+    public void delete(int index) {
+        mainHashMap.remove(index);
     }
 
 
@@ -78,13 +83,13 @@ public class HashMapLayer<T> extends Layer<T> {
 
     @Override
     public void deleteAll() {
-        hashMap.clear();
+        mainHashMap.clear();
     }
 
 
     @Override
-    public void add(int x, int y, T object) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+    public void add(int x, int y, T element) {
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 
@@ -95,8 +100,8 @@ public class HashMapLayer<T> extends Layer<T> {
 
 
     @Override
-    public void add(String index, T object) {
-        hashMap.put(index, object);
+    public void add(String index, T element) {
+        mainHashMap.put(index, element);
     }
 
 

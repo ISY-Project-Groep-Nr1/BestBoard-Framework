@@ -4,26 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListLayer<T> extends Layer<T> {
-    ArrayList<T> list;
+    private final ArrayList<T> mainList;
 
 
 
-    public ListLayer(boolean isActive, String name) {
-        super(isActive, name);
-        list = new ArrayList<>();
+    public ListLayer(boolean active, String name) {
+        super(active, name);
+        mainList = new ArrayList<>();
     }
 
 
     @Override
     public T get(int x, int y) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 
     @Override
     public List<T> getOfType(Class<?> type) {
-        List<T> result = new ArrayList<>();
-        for (T value : list) {
+        final List<T> result = new ArrayList<>();
+        for (T value : mainList) {
             if(type.isInstance(value)) {
                 result.add(value);
             }
@@ -34,18 +34,19 @@ public class ListLayer<T> extends Layer<T> {
 
     @Override
     public List<T> getAll() {
-        return list;
+        return mainList;
     }
 
 
     @Override
     public T get(int index) {
-        return list.get(index);
+        return mainList.get(index);
     }
+
 
     @Override
     public T get(String index) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 
@@ -57,43 +58,49 @@ public class ListLayer<T> extends Layer<T> {
 
     @Override
     public void delete(int x, int y) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 
     @Override
-    public <T1> void delete(T1 index) {
-        list.remove(index);
+    public void delete(T element) {
+        mainList.remove(element);
+    }
+
+
+    @Override
+    public void delete(int index) {
+        mainList.remove(index);
     }
 
 
     @Override
     public void deleteOfType(T type) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 
     @Override
     public void deleteAll() {
-        list.clear();
+        mainList.clear();
     }
 
 
     @Override
-    public void add(int x, int y, T object) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+    public void add(int x, int y, T element) {
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 
     @Override
     public void add(T object) {
-        list.add(object);
+        mainList.add(object);
     }
 
 
     @Override
-    public void add(String index, T object) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+    public void add(String index, T element) {
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 
