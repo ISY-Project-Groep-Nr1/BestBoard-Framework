@@ -112,22 +112,4 @@ public class MatrixLayer<T> extends Layer<T> {
     public void add(String index, T element) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
-
-
-    @Override
-    public void addPersistent(String name, Object value) {
-        persistentVariables.put(name, value);
-    }
-
-
-    @Override
-    public void deletePersistent(String name) {
-        persistentVariables.remove(name);
-    }
-
-
-    @Override
-    public void updatePersistent(String name, Object value) {
-        persistentVariables.replace(name, value);
-    }
 }

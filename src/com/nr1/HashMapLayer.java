@@ -103,22 +103,4 @@ public class HashMapLayer<T> extends Layer<T> {
     public void add(String index, T element) {
         mainHashMap.put(index, element);
     }
-
-
-    @Override
-    public void addPersistent(String name, Object value) {
-        persistentVariables.put(name, value);
-    }
-
-
-    @Override
-    public void deletePersistent(String name) {
-        persistentVariables.remove(name);
-    }
-
-
-    @Override
-    public void updatePersistent(String name, Object value) {
-        persistentVariables.replace(name, value);
-    }
 }

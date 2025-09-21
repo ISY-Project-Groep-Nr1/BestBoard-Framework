@@ -43,9 +43,20 @@ public abstract class Layer<T> {
 
     public abstract void add(String index, T element);
 
-    public abstract void addPersistent(String name, Object value);
+    @SuppressWarnings("unchecked")
+    public <T> T getPersistent(String name) {
+        return (T) persistentVariables.get(name);
+    }
 
-    public abstract void deletePersistent(String name);
+    public void addPersistent(String name, Object value) {
+        persistentVariables.put(name, value);
+    }
 
-    public abstract void updatePersistent(String name, T type);
+    public void deletePersistent(String name) {
+        persistentVariables.remove(name);
+    }
+
+    public void updatePersistent(String name, Object value) {
+        persistentVariables.replace(name, value);
+    }
 }
