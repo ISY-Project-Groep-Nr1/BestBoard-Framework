@@ -9,6 +9,17 @@ public abstract class Layer<T> {
     public static final String ACTIVE_KEY = "active";
     public static final String NAME_KEY = "name";
 
+
+    public boolean isActive() {
+        Object active = persistentVariables.get(ACTIVE_KEY);
+        return active instanceof Boolean && (Boolean) active;
+    }
+
+    public void setActive(boolean active) {
+        persistentVariables.put(ACTIVE_KEY, active);
+    }
+
+
     public Layer(boolean isActive, String name) {
         persistentVariables.put(ACTIVE_KEY, isActive);
         persistentVariables.put(NAME_KEY, name);

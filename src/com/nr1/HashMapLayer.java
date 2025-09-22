@@ -64,15 +64,17 @@ public class HashMapLayer<T> extends Layer<T> {
 
 
     @Override
-    public void delete(Object obj) {
-        mainHashMap.remove(obj);
+    public void delete(T element) {
+        mainHashMap.values().remove(element);
     }
+
 
 
     @Override
     public void delete(int index) {
-        mainHashMap.remove(index);
-    }
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+}
+
 
 
     @Override

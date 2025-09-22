@@ -48,36 +48,32 @@ public class LayerManager {
     public void enableLayer(String name) {
         Layer<?> layer = layers.get(name);
         if (layer != null) {
-            layer.addPersistent(Layer.ACTIVE_KEY, true);
+            layer.setActive(true);
         }
     }
-
 
     public void disableLayer(String name) {
         Layer<?> layer = layers.get(name);
         if (layer != null) {
-            layer.addPersistent(Layer.ACTIVE_KEY, false);
+            layer.setActive(false);
         }
     }
-
 
     public void toggleLayer(String name) {
         Layer<?> layer = layers.get(name);
         if (layer != null) {
-            boolean isActive = (boolean) layer.persistentVariables.get(Layer.ACTIVE_KEY);
-            layer.addPersistent(Layer.ACTIVE_KEY, !isActive);
+            layer.setActive(!layer.isActive());
         }
     }
-
 
     public List<Layer<?>> getAllActive() {
         final List<Layer<?>> activeLayers = new ArrayList<>();
         for (Layer<?> layer : layers.values()) {
-            final Object active = layer.persistentVariables.get(Layer.ACTIVE_KEY);
-            if (active instanceof Boolean && (boolean) active) {
+            if (layer.isActive()) {
                 activeLayers.add(layer);
             }
         }
         return activeLayers;
     }
+
 }

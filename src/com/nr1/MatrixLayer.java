@@ -28,7 +28,7 @@ public class MatrixLayer<T> extends Layer<T> {
         final List<T> result = new ArrayList<>();
         for (T[] column : mainMatrix) {
             for (T value : column) {
-                if(type.isInstance(column)) {
+                if(type.isInstance(value)) {
                     result.add(value);
                 }
             }
