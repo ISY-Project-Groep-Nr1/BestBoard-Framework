@@ -7,13 +7,25 @@ import java.util.List;
 
 public class MatrixLayer<T> extends Layer<T> {
     private final T[][] mainMatrix;
+    private final int rows;
+    private final int cols;
 
 
 
     @SuppressWarnings("unchecked")
-    public MatrixLayer(boolean active, String name, int width, int height) {
+    public MatrixLayer(boolean active, String name, int rows, int cols) {
         super(active, name);
-        mainMatrix = (T[][]) new Object[width][height];
+        this.rows = rows;
+        this.cols = cols;
+        mainMatrix = (T[][]) new Object[rows][cols];
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
     }
 
 

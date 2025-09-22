@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class LayerManager {
-    private final HashMap<String, Layer<?>> layers = new HashMap<>();
+    public final HashMap<String, Layer<?>> layers = new HashMap<>();
 
 
 

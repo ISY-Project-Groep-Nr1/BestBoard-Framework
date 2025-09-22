@@ -1,55 +1,48 @@
 package com.nr1.tictactoe;
 
-import com.nr1.interfaces.Drawable;
 import com.nr1.interfaces.Clickable;
+import com.nr1.interfaces.Drawable;
 
 import java.awt.*;
 
-public class TicTacToeCell implements Drawable, Clickable {
+public final class TicTacToeCell implements Drawable, Clickable {
     private final Rectangle hitbox;
     private char mark = ' ';
 
-    public TicTacToeCell(int x, int y, int width, int height) {
-        this.hitbox = new Rectangle(x, y, width, height);
+    public TicTacToeCell(final int x, final int y, final int size) {
+        this.hitbox = new Rectangle(x, y, size, size);
     }
 
-    public boolean isEmpty() {
-        return mark == ' ';
-    }
-
-    public void setMark(char mark) {
-        if (isEmpty()) {
-            this.mark = mark;
+    @Override
+    public final void draw(final Graphics g) {
+        g.setColor(Color.BLACK);
+        g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+        if (mark != ' ') {
+            g.setFont(new Font("Arial", Font.BOLD, 48));
+            g.drawString(String.valueOf(mark), hitbox.x + hitbox.width / 3, hitbox.y + 2 * hitbox.height / 3);
         }
     }
 
     @Override
-    public void click() {
-        // niet direct gebruikt, we roepen setMark via board aan
+    public final void click() {
     }
 
     @Override
-    public Rectangle getHitbox() {
+    public final Rectangle getHitbox() {
         return hitbox;
     }
 
-    @Override
-    public void draw(Graphics g) {
-        // teken grid
-        g.setColor(Color.BLACK);
-        g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
+    public final char getMark() {
+        return mark;
+    }
 
-        // teken X of O
-        if (mark == 'X') {
-            g.setColor(Color.RED);
-            g.drawLine(hitbox.x + 10, hitbox.y + 10,
-                       hitbox.x + hitbox.width - 10, hitbox.y + hitbox.height - 10);
-            g.drawLine(hitbox.x + 10, hitbox.y + hitbox.height - 10,
-                       hitbox.x + hitbox.width - 10, hitbox.y + 10);
-        } else if (mark == 'O') {
-            g.setColor(Color.BLUE);
-            g.drawOval(hitbox.x + 10, hitbox.y + 10,
-                       hitbox.width - 20, hitbox.height - 20);
+    public final boolean isEmpty() {
+        return mark == ' ';
+    }
+
+    public final void setMark(final char player) {
+        if (isEmpty()) {
+            this.mark = player;
         }
     }
 }
