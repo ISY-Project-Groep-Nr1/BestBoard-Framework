@@ -55,8 +55,8 @@ public abstract class Layer<T> {
     public abstract void add(String index, T element);
 
     @SuppressWarnings("unchecked")
-    public <T> T getPersistent(String name) {
-        return (T) persistentVariables.get(name);
+    public <U> U getPersistent(String name) {
+        return (U) persistentVariables.get(name);
     }
 
     public void addPersistent(String name, Object value) {
