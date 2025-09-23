@@ -97,7 +97,7 @@ public class HashMapLayer<T> extends Layer<T> {
 
     @Override
     public void add(T object) {
-        throw new UnsupportedOperationException("Invalid operation for this layer.");
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
 

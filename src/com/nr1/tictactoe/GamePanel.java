@@ -1,5 +1,6 @@
 package com.nr1.tictactoe;
 
+import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.MatrixLayer;
 import com.nr1.interfaces.Drawable;
@@ -45,7 +46,7 @@ public final class GamePanel extends JPanel {
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
-        for (final var layer : layerManager.getAllActive()) {
+        for (final Layer<?> layer : layerManager.getAllActive()) {
             for (final Object obj : layer.getAll()) {
                 if (obj instanceof Drawable drawable) {
                     drawable.draw(g);
