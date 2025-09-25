@@ -2,13 +2,10 @@ package com.nr1;
 
 import com.nr1.Layer;
 import com.nr1.LayerManager;
-import com.nr1.interfaces.Clickable;
 import com.nr1.interfaces.Drawable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class GameRenderer extends JPanel {
