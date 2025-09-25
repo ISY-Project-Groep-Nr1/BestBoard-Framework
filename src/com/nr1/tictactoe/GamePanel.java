@@ -1,5 +1,6 @@
 package com.nr1.tictactoe;
 
+import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.GameRenderer;
 import com.nr1.Layer;

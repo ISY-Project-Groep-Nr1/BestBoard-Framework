@@ -17,14 +17,12 @@ public class LayerManager {
     }
 
 
-
     public void addMatrixLayer (boolean active, String name, int width, int height) {
         if (layers.containsKey(name)) {
             throw new IllegalArgumentException("This name already exists: " + name);
         }
         layers.put(name, new MatrixLayer<>(active, name, width, height));
     }
-
 
 
     public void addHashMapLayer (boolean active, String name) {
@@ -52,6 +50,7 @@ public class LayerManager {
         }
     }
 
+
     public void disableLayer(String name) {
         Layer<?> layer = layers.get(name);
         if (layer != null) {
@@ -59,12 +58,14 @@ public class LayerManager {
         }
     }
 
+
     public void toggleLayer(String name) {
         Layer<?> layer = layers.get(name);
         if (layer != null) {
             layer.setActive(!layer.isActive());
         }
     }
+
 
     public List<Layer<?>> getAllActive() {
         final List<Layer<?>> activeLayers = new ArrayList<>();
