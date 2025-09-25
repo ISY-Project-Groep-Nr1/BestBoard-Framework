@@ -2,15 +2,19 @@ package com.nr1.tictactoe;
 
 import com.nr1.interfaces.Clickable;
 import com.nr1.interfaces.Drawable;
-
 import java.awt.*;
 
 public final class TicTacToeCell implements Drawable, Clickable {
     private final Rectangle hitbox;
     private char mark = ' ';
+    private final TicTacToeBoard board;
+    private final int x, y;
 
-    public TicTacToeCell(final int x, final int y, final int size) {
-        this.hitbox = new Rectangle(x, y, size, size);
+    public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board) {
+        this.hitbox = new Rectangle(x * size, y * size, size, size);
+        this.x = x;
+        this.y = y;
+        this.board = board;
     }
 
     @Override
@@ -25,6 +29,10 @@ public final class TicTacToeCell implements Drawable, Clickable {
 
     @Override
     public final void click() {
+        if (isEmpty()) {
+            mark = board.getCurrentPlayer();
+            board.switchPlayer();
+        }
     }
 
     @Override
@@ -38,11 +46,5 @@ public final class TicTacToeCell implements Drawable, Clickable {
 
     public final boolean isEmpty() {
         return mark == ' ';
-    }
-
-    public final void setMark(final char player) {
-        if (isEmpty()) {
-            this.mark = player;
-        }
     }
 }

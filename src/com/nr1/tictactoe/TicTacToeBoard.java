@@ -10,7 +10,7 @@ public final class TicTacToeBoard {
         board = new MatrixLayer<>(true, "board", 3, 3);
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
-                board.add(x, y, new TicTacToeCell(x * cellSize, y * cellSize, cellSize));
+                board.add(x, y, new TicTacToeCell(x, y, cellSize, this));
             }
         }
     }
@@ -22,7 +22,7 @@ public final class TicTacToeBoard {
     public final boolean makeMove(final int x, final int y) {
         final TicTacToeCell cell = board.get(x, y);
         if (cell.isEmpty()) {
-            cell.setMark(currentPlayer);
+            cell.getMark();
             switchPlayer();
             return true;
         }
