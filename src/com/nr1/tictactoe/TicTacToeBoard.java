@@ -38,31 +38,6 @@ public final class TicTacToeBoard {
     }
 
     public final char checkWinner() {
-        for (int i = 0; i < 3; i++) {
-            // Check rows
-            if (!board.get(i, 0).isEmpty() &&
-                board.get(i, 0).getMark() == board.get(i, 1).getMark() &&
-                board.get(i, 1).getMark() == board.get(i, 2).getMark()) {
-                return board.get(i, 0).getMark();
-            }
-            // Check columns
-            if (!board.get(0, i).isEmpty() &&
-                board.get(0, i).getMark() == board.get(1, i).getMark() &&
-                board.get(1, i).getMark() == board.get(2, i).getMark()) {
-                return board.get(0, i).getMark();
-            }
-        }
-        // Check diagonals
-        if (!board.get(0, 0).isEmpty() &&
-            board.get(0, 0).getMark() == board.get(1, 1).getMark() &&
-            board.get(1, 1).getMark() == board.get(2, 2).getMark()) {
-            return board.get(0, 0).getMark();
-        }
-        if (!board.get(2, 0).isEmpty() &&
-            board.get(2, 0).getMark() == board.get(1, 1).getMark() &&
-            board.get(1, 1).getMark() == board.get(0, 2).getMark()) {
-            return board.get(2, 0).getMark();
-        }
-        return ' ';
+        return CheckWinner.checkWinner(board);
     }
 }
