@@ -30,7 +30,7 @@ public final class TicTacToeCell implements Drawable, Clickable {
     @Override
     public final void click() {
         if (isEmpty()) {
-            mark = board.getCurrentPlayer();
+            mark = board.getCurrentPlayerMark();
             board.switchPlayer();
         }
     }
