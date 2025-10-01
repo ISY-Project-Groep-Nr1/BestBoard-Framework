@@ -12,6 +12,7 @@ public final class TicTacToe {
     private static Player playerX;
     private static Player playerO;
 
+
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(() -> {
             manager = new LayerManager();
@@ -26,6 +27,7 @@ public final class TicTacToe {
         });
     }
 
+
     static void showMainMenu() {
         MainMenuPanel menu = new MainMenuPanel(
                 e -> { playerX = new UserPlayer("Speler 1", 'X'); playerO = new UserPlayer("Speler 2", 'O'); startNewGame(); },
@@ -39,12 +41,14 @@ public final class TicTacToe {
         frame.repaint();
     }
 
+
     static void startNewGame() {
         currentPanel = new GamePanel(manager, playerX, playerO);
         frame.setContentPane(currentPanel);
         frame.revalidate();
         frame.repaint();
     }
+
 
     static boolean hasPlayers() {
         return playerX != null && playerO != null;

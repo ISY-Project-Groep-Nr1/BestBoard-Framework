@@ -20,9 +20,11 @@ public final class TicTacToeBoard {
         this.currentPlayer = playerX;
     }
 
+
     public final MatrixLayer<TicTacToeCell> getLayer() {
         return board;
     }
+
 
     public final boolean makeMove(final int x, final int y) {
         final TicTacToeCell cell = board.get(x, y);
@@ -34,21 +36,26 @@ public final class TicTacToeBoard {
         return false;
     }
 
+
     public final void switchPlayer() {
         currentPlayer = (currentPlayer == playerX) ? playerO : playerX;
     }
+
 
     public final Player getCurrentPlayer() {
         return currentPlayer;
     }
 
+
     public char getCurrentPlayerMark() {
         return currentPlayer.getMark();
     }
 
+
     public final char checkWinner() {
         return CheckWinner.checkWinner(board);
     }
+
 
     public final Player checkWinnerPlayer() {
         char winnerMark = CheckWinner.checkWinner(board);
@@ -56,6 +63,7 @@ public final class TicTacToeBoard {
         if (winnerMark == 'O') return playerO;
         return null;
     }
+
 
     public boolean isDraw() {
         if (checkWinner() != ' ') {

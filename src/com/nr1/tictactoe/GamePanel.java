@@ -59,9 +59,6 @@ public final class GamePanel extends GameRenderer {
     }
 
 
-
-
-
     private void showEndDialog(String message) {
         Object[] options = {"OK", "Nieuw spel"};
         int choice = JOptionPane.showOptionDialog(

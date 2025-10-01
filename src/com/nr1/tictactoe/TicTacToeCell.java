@@ -10,12 +10,14 @@ public final class TicTacToeCell implements Drawable, Clickable {
     private final TicTacToeBoard board;
     private final int x, y;
 
+
     public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board) {
         this.hitbox = new Rectangle(x * size, y * size, size, size);
         this.x = x;
         this.y = y;
         this.board = board;
     }
+
 
     @Override
     public final void draw(final Graphics g) {
@@ -27,6 +29,7 @@ public final class TicTacToeCell implements Drawable, Clickable {
         }
     }
 
+
     @Override
     public final void click() {
         if (isEmpty()) {
@@ -35,14 +38,17 @@ public final class TicTacToeCell implements Drawable, Clickable {
         }
     }
 
+
     @Override
     public final Rectangle getHitbox() {
         return hitbox;
     }
 
+
     public final char getMark() {
         return mark;
     }
+
 
     public final boolean isEmpty() {
         return mark == ' ';

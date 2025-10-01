@@ -7,6 +7,7 @@ public class UserPlayer extends Player {
         super(name, mark);
     }
 
+
     @Override
     public void makeMove(LayerManager manager) {
 

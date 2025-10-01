@@ -9,9 +9,11 @@ import java.util.Random;
 public class AiPlayer extends Player {
     private final Random random = new Random();
 
+
     public AiPlayer(String name, char mark) {
         super(name, mark);
     }
+
 
     @Override
     public void makeMove(LayerManager manager) {
