@@ -41,12 +41,12 @@ public final class GamePanel extends GameRenderer {
     private void checkWinnerAndContinue(LayerManager manager) {
         final Player winner = ticTacToeBoard.checkWinnerPlayer();
         if (winner != null) {
-            showEndDialog("Winnaar: " + winner.getName());
+            showEndDialog("Winner: " + winner.getName());
             return;
         }
 
-        if (ticTacToeBoard.isDraw()) {
-            showEndDialog("Gelijkspel!");
+        if (ticTacToeBoard.checkDraw()) {
+            showEndDialog("Draw!");
             return;
             }
 
@@ -60,19 +60,22 @@ public final class GamePanel extends GameRenderer {
 
 
     private void showEndDialog(String message) {
-        Object[] options = {"OK", "Nieuw spel"};
+        Object[] options = {"New game", "Main menu"};
         int choice = JOptionPane.showOptionDialog(
                 GamePanel.this,
                 message,
-                "Spel afgelopen",
+                "Game ended",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.INFORMATION_MESSAGE,
                 null,
                 options,
                 options[0]);
 
-        if (choice == 1) { // Nieuw spel gekozen
+        if (choice == 0) { // Nieuw spel gekozen
             TicTacToe.startNewGame(); // herstart via jouw bestaande static helper
+        }
+        if (choice == 1) {
+            TicTacToe.showMainMenu();
         }
     }
 }

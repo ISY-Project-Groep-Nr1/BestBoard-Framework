@@ -5,22 +5,22 @@ import javax.swing.*;
 public class MenuBar {
     public static JMenuBar createMenuBar(JFrame frame) {
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("Spel");
+        JMenu menu = new JMenu("Game");
 
-        JMenuItem mainMenu = new JMenuItem("Terug naar hoofdmenu");
+        JMenuItem mainMenu = new JMenuItem("Back to main menu");
         mainMenu.addActionListener(e -> TicTacToe.showMainMenu());
 
-        JMenuItem newGame = new JMenuItem("Nieuw spel");
+        JMenuItem newGame = new JMenuItem("New game");
         newGame.addActionListener(e -> {
             if (TicTacToe.hasPlayers()) {
                 TicTacToe.startNewGame();
             } else {
                 JOptionPane.showMessageDialog(frame,
-                        "Kies eerst een spelmodus in het hoofdmenu.");
+                        "Select a gamemode first");
             }
         });
 
-        JMenuItem exit = new JMenuItem("Afsluiten");
+        JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(e -> System.exit(0));
 
         menu.add(mainMenu);

@@ -36,4 +36,20 @@ public final class CheckWinner {
         }
         return ' ';
     }
+
+    public static boolean checkDraw(final  MatrixLayer<TicTacToeCell> board) {
+        if (checkWinner(board) != ' ') {
+            return false;
+        }
+
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                if (board.get(x, y).isEmpty()) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
