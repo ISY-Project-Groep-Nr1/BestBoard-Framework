@@ -73,8 +73,7 @@ public class HashMapLayer<T> extends Layer<T> {
     @Override
     public void delete(int index) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
-}
-
+    }
 
 
     @Override

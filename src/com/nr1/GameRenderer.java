@@ -11,26 +11,30 @@ import java.util.List;
 public class GameRenderer extends JPanel {
     private final LayerManager layerManager;
     private Color backgroundColor = Color.WHITE;
-    
+
+
     public GameRenderer(LayerManager layerManager) {
         this.layerManager = layerManager;
         
         setupPanel();
     }
-    
+
+
     private void setupPanel() {
         setDoubleBuffered(true);
         setFocusable(true);
         setBackground(backgroundColor);
     }
-    
+
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         
         renderLayers(g);
     }
-    
+
+
     private void renderLayers(Graphics g) {
         List<Layer<?>> activeLayers = layerManager.getAllActive();
         
@@ -38,7 +42,8 @@ public class GameRenderer extends JPanel {
             renderLayer(g, layer);
         }
     }
-    
+
+
     private void renderLayer(Graphics g, Layer<?> layer) {
         List<?> drawableObjects = layer.getOfType(Drawable.class);
         
@@ -58,7 +63,8 @@ public class GameRenderer extends JPanel {
     public Color getBackgroundColor() {
         return backgroundColor;
     }
-    
+
+
     public LayerManager getLayerManager() {
         return layerManager;
     }
