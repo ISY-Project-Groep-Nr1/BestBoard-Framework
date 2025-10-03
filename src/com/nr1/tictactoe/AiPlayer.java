@@ -2,10 +2,8 @@ package com.nr1.tictactoe;
 
 import com.nr1.LayerManager;
 import com.nr1.MatrixLayer;
-import java.util.Random;
 
 public class AiPlayer extends Player {
-    private final Random random = new Random();
     private final char opponentMark;
 
 
