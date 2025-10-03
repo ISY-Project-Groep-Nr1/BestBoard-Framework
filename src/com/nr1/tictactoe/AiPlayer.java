@@ -2,8 +2,6 @@ package com.nr1.tictactoe;
 
 import com.nr1.LayerManager;
 import com.nr1.MatrixLayer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class AiPlayer extends Player {
