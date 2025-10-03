@@ -53,4 +53,9 @@ public final class TicTacToeCell implements Drawable, Clickable {
     public final boolean isEmpty() {
         return mark == ' ';
     }
+
+
+    public final void setMark(char playerMark) {
+        mark = playerMark;
+    }
 }
