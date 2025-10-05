@@ -6,16 +6,24 @@ import com.nr1.GameRenderer;
 import com.nr1.interfaces.Clickable;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public final class GamePanel extends GameRenderer {
     private final TicTacToeBoard ticTacToeBoard;
+    private final JLabel turnLabel;
 
     public GamePanel(final LayerManager layerManager, Player playerX, Player playerO) {
         super(layerManager);
         this.ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO);
         layerManager.layers.put("board", ticTacToeBoard.getLayer());
+
+        setLayout(new BorderLayout());
+        turnLabel = new JLabel("Beurt: " + ticTacToeBoard.getCurrentPlayer().getName(), SwingConstants.CENTER);
+        turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        turnLabel.setForeground(Color.BLACK);
+        add(turnLabel, BorderLayout.NORTH);
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -51,6 +59,9 @@ public final class GamePanel extends GameRenderer {
             }
 
         Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
+
+        turnLabel.setText("Beurt: " + currentPlayer.getName());
+
         if (currentPlayer instanceof AiPlayer) {
             currentPlayer.makeMove(manager);
             repaint();
@@ -71,8 +82,8 @@ public final class GamePanel extends GameRenderer {
                 options,
                 options[0]);
 
-        if (choice == 0) { // Nieuw spel gekozen
-            TicTacToe.startNewGame(); // herstart via jouw bestaande static helper
+        if (choice == 0) {
+            TicTacToe.startNewGame();
         }
         if (choice == 1) {
             TicTacToe.showMainMenu();
