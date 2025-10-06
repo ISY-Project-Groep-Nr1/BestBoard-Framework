@@ -12,13 +12,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public final class GamePanel extends GameRenderer{
+public final class GamePanel extends GameRenderer {
     private final TicTacToeBoard ticTacToeBoard;
     private final JLabel turnLabel;
 
     public GamePanel(final LayerManager layerManager, Player playerX, Player playerO) {
         super(layerManager);
         this.ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO);
+        layerManager.layers.put("background", ticTacToeBoard.getBackgroundLayer());
         layerManager.layers.put("board", ticTacToeBoard.getLayer());
 
         setLayout(new BorderLayout());

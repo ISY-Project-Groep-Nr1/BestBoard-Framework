@@ -21,9 +21,8 @@ public final class TicTacToeCell implements Drawable, Clickable {
 
     @Override
     public final void draw(final Graphics g) {
-        g.setColor(Color.BLACK);
-        g.drawRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
         if (mark != ' ') {
+            g.setColor(Color.BLACK);
             g.setFont(new Font("Arial", Font.BOLD, 48));
             g.drawString(String.valueOf(mark), hitbox.x + hitbox.width / 3, hitbox.y + 2 * hitbox.height / 3);
         }

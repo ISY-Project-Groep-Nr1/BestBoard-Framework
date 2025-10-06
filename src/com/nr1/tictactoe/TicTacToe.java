@@ -5,8 +5,7 @@ import com.nr1.MainLoop;
 
 import javax.swing.*;
 
-public final class
-TicTacToe {
+public final class TicTacToe {
     private TicTacToe() {}
 
     private static GamePanel currentPanel;

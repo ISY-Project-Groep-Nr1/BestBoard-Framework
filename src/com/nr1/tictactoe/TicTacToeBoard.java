@@ -1,15 +1,19 @@
 package com.nr1.tictactoe;
 
+import com.nr1.ListLayer;
 import com.nr1.MatrixLayer;
 
 public final class TicTacToeBoard {
     private final MatrixLayer<TicTacToeCell> board;
+    private final ListLayer<BackgroundGrid> background;
     private final Player playerX;
     private final Player playerO;
     private Player currentPlayer;
 
     public TicTacToeBoard(final int cellSize, Player playerX, Player playerO) {
+        background = new ListLayer<>(true, "background");
         board = new MatrixLayer<>(true, "board", 3, 3);
+        background.add(new BackgroundGrid(cellSize, 3));
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
                 board.add(x, y, new TicTacToeCell(x, y, cellSize, this));
@@ -18,6 +22,11 @@ public final class TicTacToeBoard {
         this.playerX = playerX;
         this.playerO = playerO;
         this.currentPlayer = playerX;
+    }
+
+
+    public final ListLayer<BackgroundGrid> getBackgroundLayer() {
+        return background;
     }
 
 
