@@ -1,9 +1,12 @@
 package com.nr1.tictactoe;
 
 import com.nr1.LayerManager;
+import com.nr1.MainLoop;
+
 import javax.swing.*;
 
-public final class TicTacToe {
+public final class
+TicTacToe {
     private TicTacToe() {}
 
     private static GamePanel currentPanel;

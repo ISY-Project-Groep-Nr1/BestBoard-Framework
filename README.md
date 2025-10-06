@@ -1,5 +1,5 @@
 # BestBoard framework
-the best framework (hell yea) (tevreden RUBEN?)
+the best framework (hell yeah) (tevreden RUBEN?) (Ja hoor, ziet er geweldig uit!)
 
 
 # Documentation

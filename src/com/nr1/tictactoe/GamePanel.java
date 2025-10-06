@@ -3,14 +3,16 @@ package com.nr1.tictactoe;
 import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.GameRenderer;
+import com.nr1.MainLoop;
 import com.nr1.interfaces.Clickable;
+import com.nr1.interfaces.Tickable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public final class GamePanel extends GameRenderer {
+public final class GamePanel extends GameRenderer{
     private final TicTacToeBoard ticTacToeBoard;
     private final JLabel turnLabel;
 
