@@ -54,7 +54,11 @@ public class MainLoop {
             int finalTimeNs = LocalTime.now().getNano();
             int timeNs = finalTimeNs - startTimeNs;
             try {
-                Thread.sleep((1000/TARGET_FPS)-(timeNs/1000000));
+                if (timeNs > 0) {
+                    Thread.sleep((1000 / TARGET_FPS) - (timeNs / 1000000));
+                } else {
+                    Thread.sleep(1000 / TARGET_FPS);
+                }
             }
             catch (Exception e) {
                 throw new RuntimeException(e);
