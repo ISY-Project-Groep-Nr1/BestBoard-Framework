@@ -11,14 +11,15 @@ public class MatchListener implements ServerListener {
             "\\{PLAYERTOMOVE: \"(.*?)\", GAMETYPE: \"(.*?)\", OPPONENT: \"(.*?)\"\\}"
     );
 
+
     @Override
     public boolean onEvent(String command) {
         if (command.startsWith("SVR GAME MATCH")) {
-            Matcher matcher = PATTERN.matcher(command);
+            final Matcher matcher = PATTERN.matcher(command);
             if (matcher.find()) {
-                String playerTurn = matcher.group(1);
-                String gameType = matcher.group(2);
-                String opponent = matcher.group(3);
+                final String playerTurn = matcher.group(1);
+                final String gameType = matcher.group(2);
+                final String opponent = matcher.group(3);
                 System.out.println("[SVR] Match found, opponent: " + opponent + ", turn: " + playerTurn);
 
                 return true;

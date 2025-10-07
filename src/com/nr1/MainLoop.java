@@ -19,7 +19,8 @@ import java.util.List;
 public class MainLoop {
     private boolean stopping = false;
     public final int TARGET_FPS = 128;
-    private ArrayList<MouseEvent> mouseEvents = new ArrayList<>();
+    private final ArrayList<MouseEvent> mouseEvents = new ArrayList<>();
+
 
 
     public void loop(LayerManager layerManager, ServerManager serverManager, JPanel jPanel) {
@@ -35,7 +36,7 @@ public class MainLoop {
 
 
         while (true) {
-            int startTimeNanoSeconds = LocalTime.now().getNano();
+            final int startTimeNanoSeconds = LocalTime.now().getNano();
 
             for (final Layer<?> layer : layerManager.getAllActive()) {
                 for (final Object object : layer.getOfType(Tickable.class)) {
@@ -44,7 +45,7 @@ public class MainLoop {
             }
 
 
-            List<String> serverReturnBuffer = serverManager.getServerReturnBuffer();
+            final List<String> serverReturnBuffer = serverManager.getServerReturnBuffer();
             for (String message : serverReturnBuffer) {
                 final Layer<?> layer = layerManager.getLayer("listeners");
                 for (final Object object : layer.getOfType(ServerListener.class)) {

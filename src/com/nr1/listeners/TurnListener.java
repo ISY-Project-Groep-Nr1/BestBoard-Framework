@@ -13,10 +13,10 @@ public class TurnListener implements ServerListener {
     @Override
     public boolean onEvent(String command) {
         if (command.startsWith("SVR GAME YOURTURN")) {
-            Matcher matcher = PATTERN.matcher(command);
+            final Matcher matcher = PATTERN.matcher(command);
             if (matcher.find()) {
                 System.out.println("[SVR] Your turn");
-                String turnMessage = matcher.group(1);
+                final String turnMessage = matcher.group(1);
 
                 return true;
             }

@@ -3,7 +3,7 @@ package com.nr1.tictactoe;
 import com.nr1.LayerManager;
 
 public class ServerPlayer extends Player {
-    public ServerPlayer(String name, char mark) {
+    public ServerPlayer(final String name, final char mark) {
         super(name, mark);
     }
 

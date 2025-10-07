@@ -6,18 +6,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MoveListener implements ServerListener {
-    private static final Pattern PATTERN = Pattern.compile(
+    public static final Pattern PATTERN = Pattern.compile(
             "\\{PLAYER: \"(.*?)\", MOVE: \"(.*?)\", DETAILS: \"(.*?)\"\\}"
     );
+
 
     @Override
     public boolean onEvent(String command) {
         if (command.startsWith("SVR GAME MOVE")) {
-            Matcher matcher = PATTERN.matcher(command);
+            final Matcher matcher = PATTERN.matcher(command);
             if (matcher.find()) {
-                String opponent = matcher.group(1);
-                String move = matcher.group(2);
-                String details = matcher.group(3);
+                final String opponent = matcher.group(1);
+                final String move = matcher.group(2);
+                final String details = matcher.group(3);
                 System.out.println("[SVR] Opponent moved, cell: " + move);
 
                 return true;

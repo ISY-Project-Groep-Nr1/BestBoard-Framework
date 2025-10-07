@@ -13,18 +13,24 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public final class GamePanel extends GameRenderer {
+    public static final int CELL_SIZE = 100;
+    public static final int FONT_SIZE = 20;
+
+
     private final TicTacToeBoard ticTacToeBoard;
     private final JLabel turnLabel;
 
-    public GamePanel(final LayerManager layerManager, Player playerX, Player playerO) {
+
+
+    public GamePanel(final LayerManager layerManager, final Player playerX, final Player playerO) {
         super(layerManager);
-        this.ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO);
+        this.ticTacToeBoard = new TicTacToeBoard(CELL_SIZE, playerX, playerO);
         layerManager.layers.put("background", ticTacToeBoard.getBackgroundLayer());
         layerManager.layers.put("board", ticTacToeBoard.getLayer());
 
         setLayout(new BorderLayout());
         turnLabel = new JLabel("Beurt: " + ticTacToeBoard.getCurrentPlayer().getName(), SwingConstants.CENTER);
-        turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        turnLabel.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
         turnLabel.setForeground(Color.BLACK);
         add(turnLabel, BorderLayout.NORTH);
     }
@@ -40,9 +46,9 @@ public final class GamePanel extends GameRenderer {
         if (ticTacToeBoard.checkDraw()) {
             showEndDialog("Draw!");
             return;
-            }
+        }
 
-        Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
+        final Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
 
         turnLabel.setText("Beurt: " + currentPlayer.getName());
 
@@ -54,9 +60,9 @@ public final class GamePanel extends GameRenderer {
     }
 
 
-    private void showEndDialog(String message) {
-        Object[] options = {"New game", "Main menu"};
-        int choice = JOptionPane.showOptionDialog(
+    private void showEndDialog(final String message) {
+        final Object[] options = {"New game", "Main menu"};
+        final int choice = JOptionPane.showOptionDialog(
                 GamePanel.this,
                 message,
                 "Game ended",
@@ -64,7 +70,8 @@ public final class GamePanel extends GameRenderer {
                 JOptionPane.INFORMATION_MESSAGE,
                 null,
                 options,
-                options[0]);
+                options[0]
+        );
 
         if (choice == 0) {
             TicTacToe.startNewGame();

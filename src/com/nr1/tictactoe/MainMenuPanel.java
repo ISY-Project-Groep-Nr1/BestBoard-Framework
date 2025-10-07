@@ -5,17 +5,17 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 
 public class MainMenuPanel extends JPanel {
-
-    public MainMenuPanel(ActionListener onUserVsUser,
-                         ActionListener onUserVsAi,
-                         ActionListener onAiVsAi,
-                         ActionListener onUserVsServer,
-                         ActionListener onAiVsServer) {
-
+    public static final int FONT_SIZE = 24;
+    public MainMenuPanel(final ActionListener onUserVsUser,
+                         final ActionListener onUserVsAi,
+                         final ActionListener onAiVsAi,
+                         final ActionListener onUserVsServer,
+                         final ActionListener onAiVsServer
+    ) {
         setLayout(new GridLayout(0, 1, 10, 10));
 
-        JLabel title = new JLabel("Tic Tac Toe", SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
+        final JLabel title = new JLabel("Tic Tac Toe", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
         add(title);
 
         JButton btnUserVsUser = new JButton("User vs User");

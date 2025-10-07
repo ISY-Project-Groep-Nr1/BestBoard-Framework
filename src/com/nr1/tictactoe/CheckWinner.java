@@ -3,10 +3,8 @@ package com.nr1.tictactoe;
 import com.nr1.MatrixLayer;
 
 public final class CheckWinner {
+    private CheckWinner() {}
 
-    private CheckWinner() {
-
-    }
 
     public static char checkWinner(final MatrixLayer<TicTacToeCell> board) {
         for (int i = 0; i < 3; i++) {

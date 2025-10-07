@@ -3,6 +3,8 @@ package com.nr1.tictactoe;
 import com.nr1.ListLayer;
 import com.nr1.MatrixLayer;
 
+import java.util.Stack;
+
 public final class TicTacToeBoard {
     private final MatrixLayer<TicTacToeCell> board;
     private final ListLayer<BackgroundGrid> background;
@@ -40,6 +42,7 @@ public final class TicTacToeBoard {
         if (cell.isEmpty()) {
             cell.getMark();
             switchPlayer();
+
             return true;
         }
         return false;
@@ -53,6 +56,7 @@ public final class TicTacToeBoard {
 
     public final Player getCurrentPlayer() {
         return currentPlayer;
+        
     }
 
 

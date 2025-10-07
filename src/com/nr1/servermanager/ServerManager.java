@@ -10,9 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class ServerManager implements Runnable{
-
-    private static final String HOSTNAME = "127.0.0.1";
-    private static final int PORT = 7789;
+    public static final String HOSTNAME = "127.0.0.1";
+    public static final int PORT = 7789;
 
     private Socket socket;
     private BufferedReader in;
@@ -20,14 +19,13 @@ public class ServerManager implements Runnable{
 
     private final List<String> serverReturnBuffer = Collections.synchronizedList(new ArrayList<>());
 
+
     @Override
     public void run() {
         try {
             socket = new Socket(HOSTNAME, PORT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -43,7 +41,7 @@ public class ServerManager implements Runnable{
                 socket.close();
             }
         } catch (IOException e) {
-
+            System.out.println(e.getMessage());
         }
     }
 
