@@ -8,9 +8,12 @@ public class MainMenuPanel extends JPanel {
 
     public MainMenuPanel(ActionListener onUserVsUser,
                          ActionListener onUserVsAi,
+                         ActionListener onAiVsUser,
                          ActionListener onAiVsAi,
                          ActionListener onUserVsServer,
-                         ActionListener onAiVsServer) {
+                         ActionListener onServerVsUser,
+                         ActionListener onAiVsServer,
+                         ActionListener onServerVsAi) {
 
         setLayout(new GridLayout(0, 1, 10, 10));
 
@@ -26,6 +29,10 @@ public class MainMenuPanel extends JPanel {
         btnUserVsAi.addActionListener(onUserVsAi);
         add(btnUserVsAi);
 
+        JButton btnAiVsUser = new JButton("Ai Vs User");
+        btnAiVsUser.addActionListener(onAiVsUser);
+        add(btnAiVsUser);
+
         JButton btnAiVsAi = new JButton("AI vs AI");
         btnAiVsAi.addActionListener(onAiVsAi);
         add(btnAiVsAi);
@@ -34,8 +41,16 @@ public class MainMenuPanel extends JPanel {
         btnUserVsServer.addActionListener(onUserVsServer);
         add(btnUserVsServer);
 
+        JButton btnServerVsUser = new JButton("Server vs User");
+        btnServerVsUser.addActionListener(onServerVsUser);
+        add(btnServerVsUser);
+
         JButton btnAiVsServer = new JButton("AI vs Server");
         btnAiVsServer.addActionListener(onAiVsServer);
         add(btnAiVsServer);
+
+        JButton btnServerVsAi = new JButton("Server vs Ai");
+        btnServerVsAi.addActionListener(onServerVsAi);
+        add(btnServerVsAi);
     }
 }

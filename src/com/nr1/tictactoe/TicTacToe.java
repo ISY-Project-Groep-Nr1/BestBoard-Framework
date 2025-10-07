@@ -33,11 +33,46 @@ public final class TicTacToe {
 
     static void showMainMenu() {
         MainMenuPanel menu = new MainMenuPanel(
-                e -> { playerX = new UserPlayer("Player 1", 'X'); playerO = new UserPlayer("Player 2", 'O'); startNewGame(); },
-                e -> { playerX = new UserPlayer("Player 1", 'X'); playerO = new AiPlayer("Computer", 'O'); startNewGame(); },
-                e -> { playerX = new AiPlayer("AI 1", 'X'); playerO = new AiPlayer("AI 2", 'O'); startNewGame(); },
-                e -> { playerX = new UserPlayer("Player 1", 'X'); playerO = new ServerPlayer("Server", 'O'); startNewGame(); },
-                e -> { playerX = new AiPlayer("AI 1", 'X'); playerO = new ServerPlayer("Server", 'O'); startNewGame(); }
+                e -> {
+                    playerX = new UserPlayer("Player 1", 'X');
+                    playerO = new UserPlayer("Player 2", 'O');
+                    startNewGame();
+                    },
+                e -> {
+                    playerX = new UserPlayer("Player 1", 'X');
+                    playerO = new AiPlayer("Computer", 'O');
+                    startNewGame();
+                    },
+                e -> {
+                    playerX = new AiPlayer("Computer", 'X');
+                    playerO = new UserPlayer("Player 1", 'O');
+                    startNewGame();
+                    },
+                e -> {
+                    playerX = new AiPlayer("AI 1", 'X');
+                    playerO = new AiPlayer("AI 2", 'O');
+                    startNewGame();
+                    },
+                e -> {
+                    playerX = new UserPlayer("Player 1", 'X');
+                    playerO = new ServerPlayer("Server", 'O');
+                    startNewGame();
+                    },
+                e -> {
+                    playerX = new ServerPlayer("Server", 'X');
+                    playerO = new UserPlayer("Player 1", 'O');
+                    startNewGame();
+                    },
+                e -> {
+                    playerX = new AiPlayer("AI 1", 'X');
+                    playerO = new ServerPlayer("Server", 'O');
+                    startNewGame();
+                    },
+                e -> {
+                    playerX = new ServerPlayer("Server", 'X');
+                    playerO = new AiPlayer("AI 1", 'O');
+                    startNewGame();
+                }
         );
         frame.setContentPane(menu);
         frame.revalidate();
