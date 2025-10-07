@@ -108,5 +108,10 @@ public class ServerManager implements Runnable{
     public void message(String message) {
         out.println("message " + message);
     }
+
+
+    public List<String> getServerReturnBuffer() {
+        return serverReturnBuffer;
+    }
 }
 
