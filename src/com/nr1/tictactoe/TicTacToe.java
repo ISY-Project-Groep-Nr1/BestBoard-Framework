@@ -2,6 +2,7 @@ package com.nr1.tictactoe;
 
 import com.nr1.LayerManager;
 import com.nr1.MainLoop;
+import com.nr1.servermanager.ServerManager;
 
 import javax.swing.*;
 
@@ -49,6 +50,8 @@ public final class TicTacToe {
         frame.setContentPane(currentPanel);
         frame.revalidate();
         frame.repaint();
+        MainLoop ml = new MainLoop();
+        ml.loop(manager, new ServerManager(),currentPanel);
     }
 
 

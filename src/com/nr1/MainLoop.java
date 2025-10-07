@@ -7,69 +7,76 @@ import com.nr1.servermanager.ServerManager;
 import com.sun.jdi.InterfaceType;
 
 import javax.swing.*;
+import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.JTextComponent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
-
-import static com.sun.java.accessibility.util.AWTEventMonitor.addMouseListener;
 
 public class MainLoop {
     private boolean stopping = false;
-    private final int TARGET_FPS = 128;
+    public final int TARGET_FPS = 128;
+    private ArrayList<MouseEvent> mouseEvents = new ArrayList<>();
 
 
-    public int getTARGET_FPS() {
-        return TARGET_FPS;
-    }
+    public void loop(LayerManager layerManager, ServerManager serverManager, JPanel jPanel) {
 
-    public void loop(LayerManager layerManager, ServerManager serverManager) {
+        jPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                System.out.println(1);
+                super.mousePressed(e);
+                mouseEvents.add(e);
+            }
+        });
+
 
         while (true) {
-            int startTimeNs = LocalTime.now().getNano();
+            int startTimeNanoSeconds = LocalTime.now().getNano();
 
             for (final Layer<?> layer : layerManager.getAllActive()) {
-                for (final Object obj : layer.getOfType(Tickable.class)) {
-                    ((Tickable) obj).tick();
+                for (final Object object : layer.getOfType(Tickable.class)) {
+                    ((Tickable) object).tick();
                 }
             }
-
-            addMouseListener(new MouseAdapter() {
-                @Override
-                public void mousePressed(final MouseEvent e) {
-                    final int mouseX = e.getX();
-                    final int mouseY = e.getY();
-                    for (final Layer<?> layer : layerManager.getAllActive()) {
-                        for (final Object obj : layer.getOfType(Clickable.class)) {
-                            final Clickable clickable = (Clickable) obj;
-                            if (clickable.getHitbox() != null && clickable.getHitbox().contains(mouseX, mouseY)) {
-                                clickable.click();
-                                return;
-                            }
-                        }
-                    }
-                }
-            });
 
 
             List<String> serverReturnBuffer = serverManager.getServerReturnBuffer();
             for (String message : serverReturnBuffer) {
                 final Layer<?> layer = layerManager.getLayer("listeners");
-                for (final Object obj : layer.getOfType(ServerListener.class)) {
-                    if (((ServerListener) obj).onEvent(message)) {
+                for (final Object object : layer.getOfType(ServerListener.class)) {
+                    if (((ServerListener) object).onEvent(message)) {
                         break;
                     }
                 }
             }
             serverReturnBuffer.clear();
+            stopping = true;
 
 
-            int finalTimeNs = LocalTime.now().getNano();
-            int timeNs = finalTimeNs - startTimeNs;
+            for (MouseEvent event : mouseEvents) {
+                final int mouseX = event.getX();
+                final int mouseY = event.getY();
+                System.out.println(mouseX + ", " + mouseY);
+                for (final Layer<?> layer : layerManager.getAllActive()) {
+                    for (final Object object : layer.getOfType(Clickable.class)) {
+                        final Clickable clickable = (Clickable) object;
+                        if (clickable.getHitbox() != null && clickable.getHitbox().contains(mouseX, mouseY)) {
+                            clickable.click();
+                        }
+                    }
+                }
+            }
+
+
+            int finalTimeNanoSeconds = LocalTime.now().getNano();
+            int timeNanoSeconds = finalTimeNanoSeconds - startTimeNanoSeconds;
             try {
-                if ((1000 / TARGET_FPS) - (timeNs / 1000000) > 0) {
-                    Thread.sleep((1000 / TARGET_FPS) - (timeNs / 1000000));
+                if ((1000 / TARGET_FPS) - (timeNanoSeconds / 1000000) > 0) {
+                    Thread.sleep((1000 / TARGET_FPS) - (timeNanoSeconds / 1000000));
                 } else {
                     Thread.sleep(1000 / TARGET_FPS);
                 }

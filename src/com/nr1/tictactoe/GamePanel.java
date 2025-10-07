@@ -27,25 +27,6 @@ public final class GamePanel extends GameRenderer {
         turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
         turnLabel.setForeground(Color.BLACK);
         add(turnLabel, BorderLayout.NORTH);
-
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(final MouseEvent e) {
-                final int mouseX = e.getX();
-                final int mouseY = e.getY();
-                for (final Layer<?> layer : layerManager.getAllActive()) {
-                    for (final Object obj : layer.getOfType(Clickable.class)) {
-                        final Clickable clickable = (Clickable) obj;
-                        if (clickable.getHitbox() != null && clickable.getHitbox().contains(mouseX, mouseY)) {
-                            clickable.click();
-                            repaint();
-                            checkWinnerAndContinue(layerManager);
-                            return;
-                        }
-                    }
-                }
-            }
-        });
     }
 
 
