@@ -13,7 +13,8 @@ public class MainMenuPanel extends JPanel {
                          ActionListener onUserVsServer,
                          ActionListener onServerVsUser,
                          ActionListener onAiVsServer,
-                         ActionListener onServerVsAi) {
+                         ActionListener onServerVsAi,
+                         ActionListener onSettings) {
 
         setLayout(new GridLayout(0, 1, 10, 10));
 
@@ -52,5 +53,9 @@ public class MainMenuPanel extends JPanel {
         JButton btnServerVsAi = new JButton("Server vs Ai");
         btnServerVsAi.addActionListener(onServerVsAi);
         add(btnServerVsAi);
+
+        JButton btnSettings = new JButton("Settings");
+        btnSettings.addActionListener(onSettings);
+        add(btnSettings);
     }
 }

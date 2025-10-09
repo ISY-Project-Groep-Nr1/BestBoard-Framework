@@ -72,6 +72,9 @@ public final class TicTacToe {
                     playerX = new ServerPlayer("Server", 'X');
                     playerO = new AiPlayer("AI 1", 'O');
                     startNewGame();
+                    },
+                e-> {
+                    openSettings();
                 }
         );
         frame.setContentPane(menu);
@@ -87,6 +90,17 @@ public final class TicTacToe {
         frame.repaint();
         MainLoop ml = new MainLoop();
         ml.loop(manager, new ServerManager(),currentPanel);
+    }
+
+
+    static void openSettings() {
+        SettingsPanel settingsPanel = new SettingsPanel(
+                e-> {}
+        );
+
+        frame.setContentPane(settingsPanel);
+        frame.revalidate();
+        frame.repaint();
     }
 
 
