@@ -49,7 +49,7 @@ public class GameRenderer extends JPanel {
         
         for (Object obj : drawableObjects) {
             if (obj instanceof Drawable) {
-                ((Drawable) obj).draw(g);
+                ((Drawable) obj).draw((Graphics2D) g);
             }
         }
     }

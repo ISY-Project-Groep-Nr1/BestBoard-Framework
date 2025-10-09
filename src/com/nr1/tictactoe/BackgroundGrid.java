@@ -15,7 +15,7 @@ public final class BackgroundGrid implements Drawable {
 
 
     @Override
-    public void draw(Graphics graphics) {
+    public void draw(Graphics2D graphics) {
         graphics.setColor(Color.BLACK);
         int totalSize = cellSize * gridSize;
 

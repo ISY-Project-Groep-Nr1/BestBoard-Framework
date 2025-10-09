@@ -20,7 +20,7 @@ public final class TicTacToeCell implements Drawable, Clickable {
 
 
     @Override
-    public final void draw(final Graphics g) {
+    public final void draw(final Graphics2D g) {
         if (mark != ' ') {
             g.setColor(Color.BLACK);
             g.setFont(new Font("Arial", Font.BOLD, 48));
