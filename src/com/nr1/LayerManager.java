@@ -1,6 +1,7 @@
 package com.nr1;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,6 +83,16 @@ public class LayerManager {
             }
         }
         return activeLayers;
+    }
+
+
+    public List<Layer<?>> getSortedOn(String persistentName) {
+        return layers.values().stream().filter(Layer::isActive)
+                .sorted(Comparator.comparingInt(
+                        (layer)-> (layer.getPersistent(persistentName) != null)?
+                                layer.getPersistent(persistentName) : 0
+                ))
+                .toList();
     }
 
 }

@@ -1,14 +1,12 @@
 package com.nr1.gui.elements;
 
-import com.nr1.interfaces.GuiElement;
 import com.nr1.interfaces.Style;
 import com.nr1.interfaces.Style.Size;
 
 import javax.swing.*;
-import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 
-public class BestButton extends JButton implements GuiElement<BestButton>{
+public class BestButton extends JButton{
     private final Style style;
     private final Size fontSize;
     private final int fontType;
@@ -25,21 +23,16 @@ public class BestButton extends JButton implements GuiElement<BestButton>{
         super.addActionListener(_ -> onClick.run());
     }
 
-    @Override
-    public BestButton getComponent() {
-        return this;
+    public BestButton(String text, Style style, Runnable onClick) {
+        this.style = style;
+        this.fontSize = Size.MEDIUM;
+        this.fontType = 0;
+
+        this.setText(text);
+        this.setFont(style.getFont(fontType, fontSize));
+        super.addActionListener(_ -> onClick.run());
     }
 
-    @Override
-    public int getPriority() {
-        return priority;
-    }
-
-    @Override
-    public BestButton setPriority(int priority) {
-        this.priority = priority;
-        return this;
-    }
 
     @Override
     protected void paintComponent(Graphics g) {

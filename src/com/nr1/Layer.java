@@ -8,8 +8,8 @@ public abstract class Layer<T> {
     public static final String UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE = "Invalid operation for this layer.";
     public static final String ACTIVE_KEY = "active";
     public static final String NAME_KEY = "name";
-    public static final String RENDER_PRIORITY_KEY = "renderPriority";
-
+    public static final String RENDER_PRIORITY_KEY = "render_priority";
+    public static final String FRAME_PREPARER = "frame_preparer";
 
     public boolean isActive() {
         Object active = persistentVariables.get(ACTIVE_KEY);
@@ -60,8 +60,9 @@ public abstract class Layer<T> {
         return (U) persistentVariables.get(name);
     }
 
-    public void addPersistent(String name, Object value) {
+    public<V> Layer<T> addPersistent(String name, V value) {
         persistentVariables.put(name, value);
+        return this;
     }
 
     public void deletePersistent(String name) {
