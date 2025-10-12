@@ -8,6 +8,7 @@ public abstract class Layer<T> {
     public static final String UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE = "Invalid operation for this layer.";
     public static final String ACTIVE_KEY = "active";
     public static final String NAME_KEY = "name";
+    public static final String RENDER_PRIORITY_KEY = "renderPriority";
 
 
     public boolean isActive() {
