@@ -27,50 +27,79 @@ public final class GamePanel extends GameRenderer {
         turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
         turnLabel.setForeground(Color.BLACK);
         add(turnLabel, BorderLayout.NORTH);
-    }
 
 
-    private void checkWinnerAndContinue(LayerManager manager) {
-        final Player winner = ticTacToeBoard.checkWinnerPlayer();
-        if (winner != null) {
-            showEndDialog("Winner: " + winner.getName());
-            return;
-        }
-
-        if (ticTacToeBoard.checkDraw()) {
-            showEndDialog("Draw!");
-            return;
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(final MouseEvent e) {
+                final int mouseX = e.getX();
+                final int mouseY = e.getY();
+                for (final Layer<?> layer : layerManager.getAllActive()) {
+                    for (final Object obj : layer.getOfType(Clickable.class)) {
+                        final Clickable clickable = (Clickable) obj;
+                        if (clickable.getHitbox() != null && clickable.getHitbox().contains(mouseX, mouseY)) {
+                            clickable.click();
+                            repaint();
+                            checkWinnerAndContinue(layerManager);
+                            return;
+                        }
+                    }
+                }
             }
 
-        Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
 
-        turnLabel.setText("Beurt: " + currentPlayer.getName());
+            private void checkWinnerAndContinue(LayerManager manager) {
+                final Player winner = ticTacToeBoard.checkWinnerPlayer();
+                if (winner != null) {
+                    showEndDialog("Winner: " + winner.getName());
+                    return;
+                }
 
-        if (currentPlayer instanceof AiPlayer) {
-            currentPlayer.makeMove(manager);
-            repaint();
-            checkWinnerAndContinue(manager);
-        }
-    }
+                if (ticTacToeBoard.checkDraw()) {
+                    showEndDialog("Draw!");
+                    return;
+                }
+
+                Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
+
+                turnLabel.setText("Beurt: " + currentPlayer.getName());
+
+                if (currentPlayer instanceof AiPlayer) {
+                    currentPlayer.makeMove(manager);
+                    repaint();
+                    checkWinnerAndContinue(manager);
+                }
+            }
 
 
-    private void showEndDialog(String message) {
-        Object[] options = {"New game", "Main menu"};
-        int choice = JOptionPane.showOptionDialog(
-                GamePanel.this,
-                message,
-                "Game ended",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.INFORMATION_MESSAGE,
-                null,
-                options,
-                options[0]);
+            private void showEndDialog(String message) {
+                Object[] options = {"New game", "Main menu"};
+                int choice = JOptionPane.showOptionDialog(
+                        GamePanel.this,
+                        message,
+                        "Game ended",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE,
+                        null,
+                        options,
+                        options[0]);
 
-        if (choice == 0) {
-            TicTacToe.startNewGame();
-        }
-        if (choice == 1) {
-            TicTacToe.showMainMenu();
-        }
+                if (choice == 0) {
+                    TicTacToe.startNewGame();
+                }
+                if (choice == 1) {
+                    TicTacToe.showMainMenu();
+                }
+            }
+        });
+
+        SwingUtilities.invokeLater(() -> {
+            Player currentPlayer  = ticTacToeBoard.getCurrentPlayer();
+            if (currentPlayer instanceof AiPlayer) {
+                currentPlayer.makeMove(layerManager);
+                repaint();
+                turnLabel.setText("Beurt: " + ticTacToeBoard.getCurrentPlayer().getName());
+            }
+        });
     }
 }
