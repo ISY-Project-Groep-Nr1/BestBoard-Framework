@@ -1,17 +1,14 @@
 package com.nr1;
 
+import com.nr1.gui.elements.BestCanvas;
 import com.nr1.interfaces.Clickable;
 import com.nr1.interfaces.ServerListener;
 import com.nr1.interfaces.Tickable;
 import com.nr1.servermanager.ServerManager;
-import com.sun.jdi.InterfaceType;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
-import javax.swing.text.JTextComponent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +17,7 @@ public class MainLoop {
     private boolean stopping = false;
     public final int TARGET_FPS = 128;
     private ArrayList<MouseEvent> mouseEvents = new ArrayList<>();
+    private BestCanvas canvas;
 
 
     public void loop(LayerManager layerManager, ServerManager serverManager, JPanel jPanel) {
@@ -69,6 +67,10 @@ public class MainLoop {
                         }
                     }
                 }
+            }
+
+            if(canvas != null){
+                canvas.refresh();
             }
 
 
