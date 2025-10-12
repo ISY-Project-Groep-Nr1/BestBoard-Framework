@@ -2,6 +2,7 @@ package com.nr1.tictactoe;
 
 import com.nr1.LayerManager;
 import com.nr1.MainLoop;
+import com.nr1.gui.BestWindow;
 import com.nr1.servermanager.ServerManager;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ public final class TicTacToe {
 
     private static GamePanel currentPanel;
     private static LayerManager manager;
-    private static JFrame frame;
+    private static BestWindow window;
     private static Player playerX;
     private static Player playerO;
     private static String player1Name = "Player 1";
@@ -21,14 +22,12 @@ public final class TicTacToe {
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(() -> {
             manager = new LayerManager();
-            frame = new JFrame("Tic Tac Toe");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(400, 400);
+            window = BestWindow.create(manager, "Tic tac toe");
 
-            frame.setJMenuBar(MenuBar.createMenuBar(frame));
+            //frame.setJMenuBar(MenuBar.createMenuBar(frame));
             showMainMenu();
 
-            frame.setVisible(true);
+            window.setVisible();
         });
     }
 
@@ -55,62 +54,57 @@ public final class TicTacToe {
 
     static void showMainMenu() {
         MainMenuPanel menu = new MainMenuPanel(
-                e -> {
+                BestWindow.get().getDefaultStyle(),
+                () -> {
                     playerX = new UserPlayer(TicTacToe.getPlayer1Name(), 'X');
                     playerO = new UserPlayer(TicTacToe.getPlayer2Name(), 'O');
                     startNewGame();
                     },
-                e -> {
+                () -> {
                     playerX = new UserPlayer(TicTacToe.getPlayer1Name(), 'X');
                     playerO = new AiPlayer("Computer", 'O');
                     startNewGame();
                     },
-                e -> {
+                () -> {
                     playerX = new AiPlayer("Computer", 'X');
                     playerO = new UserPlayer(TicTacToe.getPlayer1Name(), 'O');
                     startNewGame();
                     },
-                e -> {
+                () -> {
                     playerX = new AiPlayer("AI 1", 'X');
                     playerO = new AiPlayer("AI 2", 'O');
                     startNewGame();
                     },
-                e -> {
+                () -> {
                     playerX = new UserPlayer(TicTacToe.getPlayer1Name(), 'X');
                     playerO = new ServerPlayer("Server", 'O');
                     startNewGame();
                     },
-                e -> {
+                () -> {
                     playerX = new ServerPlayer("Server", 'X');
                     playerO = new UserPlayer(TicTacToe.getPlayer1Name(), 'O');
                     startNewGame();
                     },
-                e -> {
+                () -> {
                     playerX = new AiPlayer("AI 1", 'X');
                     playerO = new ServerPlayer("Server", 'O');
                     startNewGame();
                     },
-                e -> {
+                () -> {
                     playerX = new ServerPlayer("Server", 'X');
                     playerO = new AiPlayer("AI 1", 'O');
                     startNewGame();
                     },
-                e-> {
-                    openSettings();
-                }
+                TicTacToe::openSettings
         );
-        frame.setContentPane(menu);
-        frame.revalidate();
-        frame.repaint();
+        manager.putLayer("mainMenu", menu);
+        window.update();
     }
 
 
     static void startNewGame() {
         manager = new LayerManager();
         currentPanel = new GamePanel(manager, playerX, playerO);
-        frame.setContentPane(currentPanel);
-        frame.revalidate();
-        frame.repaint();
         MainLoop ml = new MainLoop();
         ml.loop(manager, new ServerManager(),currentPanel);
     }
@@ -120,10 +114,6 @@ public final class TicTacToe {
         SettingsPanel settingsPanel = new SettingsPanel(
                 e-> {}
         );
-
-        frame.setContentPane(settingsPanel);
-        frame.revalidate();
-        frame.repaint();
     }
 
 

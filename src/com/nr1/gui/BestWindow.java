@@ -4,22 +4,39 @@ import com.nr1.gui.styles.FlatStyle;
 import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.interfaces.Style;
-import com.nr1.interfaces.GuiElement;
+import com.nr1.interfaces.GuiRepresentable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class BestWindow{
+    private static BestWindow instance;
+
+    public static BestWindow get() {
+        return instance;
+    }
+
+    public static BestWindow create(LayerManager layerManager, String title){
+        if (instance == null) {
+            instance = new BestWindow(layerManager, title);
+        }
+        return instance;
+    }
+
+
+
+
+
     private final JFrame frame;
     private final LayerManager layerManager;
-    private LayoutManager layoutManager;
 
 
 
-    public BestWindow(LayerManager layerManager, String title) {
+    private BestWindow(LayerManager layerManager, String title) {
         this.layerManager = layerManager;
 
 
@@ -35,30 +52,42 @@ public class BestWindow{
     }
 
 
-    public BestWindow setLayout(LayoutManager manager) {
-        this.layoutManager = manager;
-        return this;
+    public void update() {
+        List<Layer<?>> sortedLayers = layerManager.getSortedOn(Layer.RENDER_PRIORITY_KEY);
+
+
+        SwingUtilities.invokeLater( () -> {
+            boolean hasBeenPrepared = false;
+            frame.removeAll();
+            frame.setLayout(new BorderLayout());
+            Container parent = frame;
+
+            for (Layer<?> layer : sortedLayers) {
+                if (!hasBeenPrepared && layer.getPersistent(Layer.FRAME_PREPARER) != null) {
+                    parent = layer.<Function<JFrame, JComponent>>getPersistent(Layer.FRAME_PREPARER).apply(frame);
+                    hasBeenPrepared = true;
+                }
+
+                if (layer instanceof GuiRepresentable<?> guiLayer) {
+                    parent.add(guiLayer.getComponent());
+
+                } else {
+                    for (Object component : layer.getOfType(JComponent.class)) {
+                        parent.add((JComponent)component);
+                    }
+                    for (Object component : layer.getOfType(GuiRepresentable.class)) {
+                        parent.add(((GuiRepresentable<?>)component).getComponent());
+                    }
+                }
+            }
+            frame.pack();
+            frame.revalidate();
+            frame.repaint();
+        });
     }
 
-
-    @SuppressWarnings("unchecked")
-    public void update() {
-        ArrayList<GuiElement<JComponent>> allElements = new ArrayList<>();
-        for (Layer<?> layer : layerManager.getAllActive()) {
-            if (layer instanceof GuiElement<?>) {
-                allElements.add((GuiElement<JComponent>) layer);
-            } else {
-                layer.getOfType(GuiElement.class).forEach(element -> allElements.add((GuiElement<JComponent>) element));
-            }
-        }
-        allElements.sort(Comparator.comparingInt(GuiElement::getPriority));
-        SwingUtilities.invokeLater( () -> {
-            frame.removeAll();
-            frame.setLayout(layoutManager);
-            allElements.forEach((GuiElement<JComponent> element) -> frame.add(element.getComponent()));
-            frame.repaint();
-            frame.revalidate();
-        });
+    public void setVisible() {
+        frame.setVisible(true);
     }
 
 

@@ -2,11 +2,11 @@ package com.nr1.gui;
 
 import com.nr1.gui.elements.BestPanel;
 import com.nr1.HashMapLayer;
-import com.nr1.interfaces.GuiElement;
+import com.nr1.interfaces.GuiRepresentable;
 
 import javax.swing.*;
 
-public class PanelLayer extends HashMapLayer<JComponent> implements GuiElement<BestPanel>{
+public class PanelLayer extends HashMapLayer<JComponent> implements GuiRepresentable<BestPanel>{
     private final BestPanel panel;
 
 
