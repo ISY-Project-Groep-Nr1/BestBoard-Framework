@@ -42,7 +42,6 @@ public class AiPlayer extends Player {
         }
 
         TicTacToeCell cell = board.get(bestMove[0], bestMove[1]);
-        cell.click();
     }
 
 

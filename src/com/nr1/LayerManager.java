@@ -4,32 +4,35 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class LayerManager {
+public class LayerManager{
     public final HashMap<String, Layer<?>> layers = new HashMap<>();
-
-
-
-    public void addListLayer (boolean active, String name) {
+    public <T> ListLayer<T> addListLayer (boolean active, String name) {
         if (layers.containsKey(name)) {
             throw new IllegalArgumentException("This name already exists: " + name);
         }
-        layers.put(name, new ListLayer<>(active, name));
+        ListLayer<T> layer = new ListLayer<>(active, name);
+        layers.put(name, layer);
+        return layer;
     }
 
 
-    public void addMatrixLayer (boolean active, String name, int width, int height) {
+    public  <T> MatrixLayer<T> addMatrixLayer (boolean active, String name, int width, int height) {
         if (layers.containsKey(name)) {
             throw new IllegalArgumentException("This name already exists: " + name);
         }
-        layers.put(name, new MatrixLayer<>(active, name, width, height));
+        MatrixLayer<T> layer = new MatrixLayer<>(active, name, width, height);
+        layers.put(name, layer);
+        return layer;
     }
 
 
-    public void addHashMapLayer (boolean active, String name) {
+    public  <T> HashMapLayer<T> addHashMapLayer (boolean active, String name) {
         if (layers.containsKey(name)) {
             throw new IllegalArgumentException("This name already exists: " + name);
         }
-        layers.put(name, new HashMapLayer<>(active, name));
+        HashMapLayer<T> layer = new HashMapLayer<>(active, name);
+        layers.put(name, layer);
+        return layer;
     }
 
 
@@ -76,5 +79,4 @@ public class LayerManager {
         }
         return activeLayers;
     }
-
 }

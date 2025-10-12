@@ -1,18 +1,21 @@
 package com.nr1.tictactoe;
 
+import com.nr1.gui.NPoint;
+import com.nr1.gui.NRectangle;
+import com.nr1.gui.NormalisedGraphics;
 import com.nr1.interfaces.Clickable;
 import com.nr1.interfaces.Drawable;
-import java.awt.*;
 
 public final class TicTacToeCell implements Drawable, Clickable {
-    private final Rectangle hitbox;
+    private final NRectangle hitbox;
     private char mark = ' ';
     private final TicTacToeBoard board;
-    private final int x, y;
+    private final float x, y;
+    public static final float SIZE = 1/3f;
 
 
-    public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board) {
-        this.hitbox = new Rectangle(x * size, y * size, size, size);
+    public TicTacToeCell(final float x, final float y, final TicTacToeBoard board) {
+        this.hitbox = new NRectangle(x * SIZE, y * SIZE, SIZE, SIZE);
         this.x = x;
         this.y = y;
         this.board = board;
@@ -20,17 +23,32 @@ public final class TicTacToeCell implements Drawable, Clickable {
 
 
     @Override
-    public final void draw(final Graphics2D g) {
-        if (mark != ' ') {
-            g.setColor(Color.BLACK);
-            g.setFont(new Font("Arial", Font.BOLD, 48));
-            g.drawString(String.valueOf(mark), hitbox.x + hitbox.width / 3, hitbox.y + 2 * hitbox.height / 3);
+    public void draw(final NormalisedGraphics g) {
+        if (mark == 'X') {
+            g.setColor(1);
+            g.drawLine(
+                    new NPoint(x * SIZE, y * SIZE),
+                    new NPoint(x * SIZE + SIZE, y * SIZE + SIZE),
+                    2f
+            );
+            g.drawLine(
+                    new NPoint(x * SIZE + SIZE, y * SIZE),
+                    new NPoint(x * SIZE, y * SIZE + SIZE),
+                    2f
+            );
+        } else if  (mark == 'O') {
+            g.setColor(1);
+            g.drawOval(
+                    new NPoint(x*SIZE + SIZE/2f, y*SIZE + SIZE/2f),
+                    new NPoint(SIZE/2f, SIZE/2f),
+                    2f
+            );
         }
     }
 
 
     @Override
-    public final void click() {
+    public final void click(int x, int y) {
         if (isEmpty()) {
             mark = board.getCurrentPlayerMark();
             board.switchPlayer();
@@ -39,7 +57,7 @@ public final class TicTacToeCell implements Drawable, Clickable {
 
 
     @Override
-    public final Rectangle getHitbox() {
+    public final NRectangle getHitbox() {
         return hitbox;
     }
 

@@ -1,7 +1,13 @@
 package com.nr1.tictactoe;
 
+import com.nr1.HashMapLayer;
 import com.nr1.LayerManager;
 import com.nr1.MainLoop;
+import com.nr1.gui.GraphicsWindow;
+import com.nr1.gui.NRectangle;
+import com.nr1.gui.elements.BestPanel;
+import com.nr1.gui.styles.FlatStyle;
+import com.nr1.interfaces.Drawable;
 import com.nr1.servermanager.ServerManager;
 
 import javax.swing.*;
@@ -9,49 +15,43 @@ import javax.swing.*;
 public final class TicTacToe {
     private TicTacToe() {}
 
-    private static GamePanel currentPanel;
+    private static BestPanel<?, ?> currentPanel;
     private static LayerManager manager;
-    private static JFrame frame;
     private static Player playerX;
     private static Player playerO;
-
+    private static BestPanel<Drawable, HashMapLayer<Drawable>> panel;
+    private static GraphicsWindow graphicsWindow;
+    private static MainLoop ml = new MainLoop();
 
     public static void main(final String[] args) {
         SwingUtilities.invokeLater(() -> {
             manager = new LayerManager();
-            frame = new JFrame("Tic Tac Toe");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(400, 400);
-
-            frame.setJMenuBar(MenuBar.createMenuBar(frame));
+            graphicsWindow = new GraphicsWindow(null, new FlatStyle(), "Tic tac toe");
             showMainMenu();
-
-            frame.setVisible(true);
+            graphicsWindow.refresh();
+            ml.loop(manager, new ServerManager(), graphicsWindow);
         });
     }
 
 
     static void showMainMenu() {
-        MainMenuPanel menu = new MainMenuPanel(
-                e -> { playerX = new UserPlayer("Player 1", 'X'); playerO = new UserPlayer("Player 2", 'O'); startNewGame(); },
-                e -> { playerX = new UserPlayer("Player 1", 'X'); playerO = new AiPlayer("Computer", 'O'); startNewGame(); },
-                e -> { playerX = new AiPlayer("AI 1", 'X'); playerO = new AiPlayer("AI 2", 'O'); startNewGame(); },
-                e -> { playerX = new UserPlayer("Player 1", 'X'); playerO = new ServerPlayer("Server", 'O'); startNewGame(); },
-                e -> { playerX = new AiPlayer("AI 1", 'X'); playerO = new ServerPlayer("Server", 'O'); startNewGame(); }
+        currentPanel = new MainMenuPanel(
+                new NRectangle(0f, 0f, 1f, 1f),
+                () -> { playerX = new UserPlayer("Player 1", 'X');  playerO = new UserPlayer("Player 2", 'O');  startNewGame(); },
+                () -> { playerX = new UserPlayer("Player 1", 'X');  playerO = new AiPlayer("Computer", 'O');    startNewGame(); },
+                () -> { playerX = new AiPlayer("AI 1", 'X');        playerO = new AiPlayer("AI 2", 'O');        startNewGame(); },
+                () -> { playerX = new UserPlayer("Player 1", 'X');  playerO = new ServerPlayer("Server", 'O');  startNewGame(); },
+                () -> { playerX = new AiPlayer("AI 1", 'X');        playerO = new ServerPlayer("Server", 'O');  startNewGame(); }
         );
-        frame.setContentPane(menu);
-        frame.revalidate();
-        frame.repaint();
+        graphicsWindow.setPanel(currentPanel);
+
     }
 
 
     static void startNewGame() {
-        currentPanel = new GamePanel(manager, playerX, playerO);
-        frame.setContentPane(currentPanel);
-        frame.revalidate();
-        frame.repaint();
-        MainLoop ml = new MainLoop();
-        ml.loop(manager, new ServerManager(),currentPanel);
+        //currentPanel = new GamePanel(manager, playerX, playerO, new NRectangle(0f, 0f, 1f, 1f));
+        graphicsWindow.setPanel(currentPanel);
+        //showMainMenu();
     }
 
 

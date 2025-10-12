@@ -1,9 +1,7 @@
 package com.nr1.interfaces;
 
-import com.nr1.gui.GraphicsElement;
-
-import java.awt.*;
+import com.nr1.gui.NormalisedGraphics;
 
 public interface Drawable {
-    void draw(GraphicsElement graphics);
+    void draw(NormalisedGraphics graphics);
 }

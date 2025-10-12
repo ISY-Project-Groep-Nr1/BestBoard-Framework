@@ -1,9 +1,18 @@
 package com.nr1;
 
+import com.nr1.gui.NRectangle;
+import com.nr1.gui.NormalisedGraphics;
+import com.nr1.interfaces.Clickable;
+import com.nr1.interfaces.Drawable;
+import com.nr1.interfaces.ServerListener;
+import com.nr1.interfaces.Tickable;
+
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class Layer<T> {
+public abstract class Layer<T> implements Drawable, Clickable, Tickable, ServerListener{
     protected final HashMap<String, Object> persistentVariables = new HashMap<>();
     public static final String UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE = "Invalid operation for this layer.";
     public static final String ACTIVE_KEY = "active";
@@ -44,7 +53,7 @@ public abstract class Layer<T> {
 
     public abstract void delete(int index);
 
-    public abstract void deleteOfType(T type);
+    public abstract void deleteOfType(Class<?> type);
 
     public abstract void deleteAll();
 
@@ -69,5 +78,45 @@ public abstract class Layer<T> {
 
     public void updatePersistent(String name, Object value) {
         persistentVariables.replace(name, value);
+    }
+
+    @Override
+    public boolean onEvent(String command) {
+        for (T element : getOfType(ServerListener.class)) {
+            ServerListener serverListener = (ServerListener)element;
+            if (serverListener.onEvent(command)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void draw(NormalisedGraphics graphics) {
+        for (T element : getOfType(Drawable.class)) {
+            Drawable drawable = (Drawable)element;
+            drawable.draw(graphics);
+        }
+    }
+
+    @Override
+    public NRectangle getHitbox() {
+        return new NRectangle(0f, 0f, 1f, 1f);
+    }
+
+    @Override
+    public void click(int x, int y) {
+        for (T element : getOfType(Clickable.class)) {
+            Clickable clickable = (Clickable)element;
+            clickable.click(x, y);
+        }
+    }
+
+    @Override
+    public void tick() {
+        for (T element : getOfType(Tickable.class)) {
+            Tickable tickable = (Tickable)element;
+            tickable.tick();
+        }
     }
 }

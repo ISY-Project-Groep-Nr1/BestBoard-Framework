@@ -12,13 +12,13 @@ public final class TicTacToeBoard {
     private final Player playerO;
     private Player currentPlayer;
 
-    public TicTacToeBoard(final int cellSize, Player playerX, Player playerO) {
+    public TicTacToeBoard(Player playerX, Player playerO) {
         background = new ListLayer<>(true, "background");
         board = new MatrixLayer<>(true, "board", 3, 3);
-        background.add(new BackgroundGrid(cellSize, 3));
+        background.add(new BackgroundGrid(1/3f, 3));
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
-                board.add(x, y, new TicTacToeCell(x, y, cellSize, this));
+                board.add(x, y, new TicTacToeCell(x, y, this));
             }
         }
         this.playerX = playerX;

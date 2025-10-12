@@ -1,17 +1,13 @@
 package com.nr1;
 
+import com.nr1.gui.GraphicsWindow;
 import com.nr1.interfaces.Clickable;
 import com.nr1.interfaces.ServerListener;
 import com.nr1.interfaces.Tickable;
 import com.nr1.servermanager.ServerManager;
-import com.sun.jdi.InterfaceType;
 
-import javax.swing.*;
-import javax.swing.plaf.basic.BasicTabbedPaneUI;
-import javax.swing.text.JTextComponent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +19,8 @@ public class MainLoop {
 
 
 
-    public void loop(LayerManager layerManager, ServerManager serverManager, JPanel jPanel) {
-
-        jPanel.addMouseListener(new MouseAdapter() {
+    public void loop(LayerManager layerManager, ServerManager serverManager, GraphicsWindow window) {
+        window.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 System.out.println(1);
@@ -44,7 +39,6 @@ public class MainLoop {
                 }
             }
 
-
             final List<String> serverReturnBuffer = serverManager.getServerReturnBuffer();
             for (String message : serverReturnBuffer) {
                 final Layer<?> layer = layerManager.getLayer("listeners");
@@ -55,18 +49,18 @@ public class MainLoop {
                 }
             }
             serverReturnBuffer.clear();
-            stopping = true;
-
+            //stopping = true;
 
             for (MouseEvent event : mouseEvents) {
                 final int mouseX = event.getX();
                 final int mouseY = event.getY();
                 System.out.println(mouseX + ", " + mouseY);
                 for (final Layer<?> layer : layerManager.getAllActive()) {
+                    System.out.println(layer.<String>getPersistent(Layer.NAME_KEY));
                     for (final Object object : layer.getOfType(Clickable.class)) {
                         final Clickable clickable = (Clickable) object;
-                        if (clickable.getHitbox() != null && clickable.getHitbox().contains(mouseX, mouseY)) {
-                            clickable.click();
+                        if (clickable.getHitbox() != null && clickable.getHitbox().normalize(GraphicsWindow.get().getPanel()).contains(mouseX, mouseY)) {
+                            clickable.click(mouseX, mouseY);
                         }
                     }
                 }
@@ -85,7 +79,7 @@ public class MainLoop {
             catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
+            window.refresh();
 
             if (stopping) {
                 break;

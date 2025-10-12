@@ -1,41 +1,64 @@
 package com.nr1.tictactoe;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
+import com.nr1.ListLayer;
+import com.nr1.gui.NRectangle;
+import com.nr1.gui.elements.*;
 
-public class MainMenuPanel extends JPanel {
+public class MainMenuPanel extends BestPanel<GuiElement, ListLayer<GuiElement>>{
     public static final int FONT_SIZE = 24;
-    public MainMenuPanel(final ActionListener onUserVsUser,
-                         final ActionListener onUserVsAi,
-                         final ActionListener onAiVsAi,
-                         final ActionListener onUserVsServer,
-                         final ActionListener onAiVsServer
+    public static final float LEFT_MARGIN = .1f;
+    public static final float WIDTH = .1f;
+    public static final float VERTICAL_PADDING = .1f;
+    public static final float HEIGHT = .1f;
+    public static final float VERTICAL_MARGIN = .1f;
+
+    public  MainMenuPanel(NRectangle bounds,
+                          final Runnable onUserVsUser,
+                          final Runnable onUserVsAi,
+                          final Runnable onAiVsAi,
+                          final Runnable onUserVsServer,
+                          final Runnable onAiVsServer
     ) {
-        setLayout(new GridLayout(0, 1, 10, 10));
+        ListLayer<GuiElement> elements = new ListLayer<>(true, "main");
+        super(bounds, elements, true);
 
-        final JLabel title = new JLabel("Tic Tac Toe", SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, FONT_SIZE));
-        add(title);
+        super.addChild(new BestText("Tic Tac Toe", new NRectangle(0, 0, 1, 0.05f)));
 
-        JButton btnUserVsUser = new JButton("User vs User");
-        btnUserVsUser.addActionListener(onUserVsUser);
-        add(btnUserVsUser);
+        super.addChild(new BestTextButton(
+                new NRectangle(LEFT_MARGIN, VERTICAL_MARGIN + (VERTICAL_PADDING + HEIGHT) * 0, WIDTH, HEIGHT),
+                "User vs User",
+                onUserVsUser
+        ));
 
-        JButton btnUserVsAi = new JButton("User vs AI");
-        btnUserVsAi.addActionListener(onUserVsAi);
-        add(btnUserVsAi);
+        super.addChild(new BestTextButton(
+                new NRectangle(LEFT_MARGIN, VERTICAL_MARGIN + (VERTICAL_PADDING + HEIGHT) * 1, WIDTH, HEIGHT),
+                "User vs Ai",
+                onUserVsAi
+        ));
 
-        JButton btnAiVsAi = new JButton("AI vs AI");
-        btnAiVsAi.addActionListener(onAiVsAi);
-        add(btnAiVsAi);
+        super.addChild(new BestTextButton(
+                new NRectangle(LEFT_MARGIN, VERTICAL_MARGIN + (VERTICAL_PADDING + HEIGHT) * 2, WIDTH, HEIGHT),
+                "User vs User",
+                onUserVsUser
+        ));
 
-        JButton btnUserVsServer = new JButton("User vs Server");
-        btnUserVsServer.addActionListener(onUserVsServer);
-        add(btnUserVsServer);
+        super.addChild(new BestTextButton(
+                new NRectangle(LEFT_MARGIN, VERTICAL_MARGIN + (VERTICAL_PADDING + HEIGHT) * 3, WIDTH, HEIGHT),
+                "Ai vs Ai",
+                onAiVsAi
+        ));
 
-        JButton btnAiVsServer = new JButton("AI vs Server");
-        btnAiVsServer.addActionListener(onAiVsServer);
-        add(btnAiVsServer);
+        super.addChild(new BestTextButton(
+                new NRectangle(LEFT_MARGIN, VERTICAL_MARGIN + (VERTICAL_PADDING + HEIGHT) * 4, WIDTH, HEIGHT),
+                "User vs Server",
+                onUserVsServer
+        ));
+
+        super.addChild(new BestTextButton(
+                new NRectangle(LEFT_MARGIN, VERTICAL_MARGIN + (VERTICAL_PADDING + HEIGHT) * 5, WIDTH, HEIGHT),
+                "Ai vs Server",
+                onAiVsServer
+        ));
+
     }
 }

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class HashMapLayer<T> extends Layer<T> {
-    private final HashMap<String, T> mainHashMap;
+    protected final HashMap<String, T> mainHashMap;
 
 
 
@@ -77,7 +77,7 @@ public class HashMapLayer<T> extends Layer<T> {
 
 
     @Override
-    public void deleteOfType(T type) {
+    public void deleteOfType(Class<?> type) {
 
     }
 
