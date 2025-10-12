@@ -62,7 +62,7 @@ public final class GamePanel extends GameRenderer {
 
                 Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
 
-                turnLabel.setText("Beurt: " + currentPlayer.getName());
+                turnLabel.setText("Turn: " + currentPlayer.getName());
 
                 if (currentPlayer instanceof AiPlayer) {
                     currentPlayer.makeMove(manager);

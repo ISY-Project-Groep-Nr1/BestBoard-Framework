@@ -14,6 +14,8 @@ public final class TicTacToe {
     private static JFrame frame;
     private static Player playerX;
     private static Player playerO;
+    private static String player1Name = "Player 1";
+    private static String player2Name = "Player 2";
 
 
     public static void main(final String[] args) {
@@ -31,21 +33,41 @@ public final class TicTacToe {
     }
 
 
+    public static String getPlayer1Name() {
+        return player1Name;
+    }
+
+
+    public static String getPlayer2Name() {
+        return player2Name;
+    }
+
+
+    public static void setPlayer1Name(String player1Name) {
+        TicTacToe.player1Name = player1Name;
+    }
+
+
+    public static void setPlayer2Name(String player2Name) {
+        TicTacToe.player2Name = player2Name;
+    }
+
+
     static void showMainMenu() {
         MainMenuPanel menu = new MainMenuPanel(
                 e -> {
-                    playerX = new UserPlayer("Player 1", 'X');
-                    playerO = new UserPlayer("Player 2", 'O');
+                    playerX = new UserPlayer(TicTacToe.getPlayer1Name(), 'X');
+                    playerO = new UserPlayer(TicTacToe.getPlayer2Name(), 'O');
                     startNewGame();
                     },
                 e -> {
-                    playerX = new UserPlayer("Player 1", 'X');
+                    playerX = new UserPlayer(TicTacToe.getPlayer1Name(), 'X');
                     playerO = new AiPlayer("Computer", 'O');
                     startNewGame();
                     },
                 e -> {
                     playerX = new AiPlayer("Computer", 'X');
-                    playerO = new UserPlayer("Player 1", 'O');
+                    playerO = new UserPlayer(TicTacToe.getPlayer1Name(), 'O');
                     startNewGame();
                     },
                 e -> {
@@ -54,13 +76,13 @@ public final class TicTacToe {
                     startNewGame();
                     },
                 e -> {
-                    playerX = new UserPlayer("Player 1", 'X');
+                    playerX = new UserPlayer(TicTacToe.getPlayer1Name(), 'X');
                     playerO = new ServerPlayer("Server", 'O');
                     startNewGame();
                     },
                 e -> {
                     playerX = new ServerPlayer("Server", 'X');
-                    playerO = new UserPlayer("Player 1", 'O');
+                    playerO = new UserPlayer(TicTacToe.getPlayer1Name(), 'O');
                     startNewGame();
                     },
                 e -> {
@@ -84,6 +106,7 @@ public final class TicTacToe {
 
 
     static void startNewGame() {
+        manager = new LayerManager();
         currentPanel = new GamePanel(manager, playerX, playerO);
         frame.setContentPane(currentPanel);
         frame.revalidate();
