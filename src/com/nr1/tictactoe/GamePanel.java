@@ -3,9 +3,7 @@ package com.nr1.tictactoe;
 import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.GameRenderer;
-import com.nr1.MainLoop;
 import com.nr1.interfaces.Clickable;
-import com.nr1.interfaces.Tickable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,7 +26,6 @@ public final class GamePanel extends GameRenderer {
         turnLabel.setForeground(Color.BLACK);
         add(turnLabel, BorderLayout.NORTH);
 
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(final MouseEvent e) {
@@ -46,60 +43,87 @@ public final class GamePanel extends GameRenderer {
                     }
                 }
             }
-
-
-            private void checkWinnerAndContinue(LayerManager manager) {
-                final Player winner = ticTacToeBoard.checkWinnerPlayer();
-                if (winner != null) {
-                    showEndDialog("Winner: " + winner.getName());
-                    return;
-                }
-
-                if (ticTacToeBoard.checkDraw()) {
-                    showEndDialog("Draw!");
-                    return;
-                }
-
-                Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
-
-                turnLabel.setText("Turn: " + currentPlayer.getName());
-
-                if (currentPlayer instanceof AiPlayer) {
-                    currentPlayer.makeMove(manager);
-                    repaint();
-                    checkWinnerAndContinue(manager);
-                }
-            }
-
-
-            private void showEndDialog(String message) {
-                Object[] options = {"New game", "Main menu"};
-                int choice = JOptionPane.showOptionDialog(
-                        GamePanel.this,
-                        message,
-                        "Game ended",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.INFORMATION_MESSAGE,
-                        null,
-                        options,
-                        options[0]);
-
-                if (choice == 0) {
-                    TicTacToe.startNewGame();
-                }
-                if (choice == 1) {
-                    TicTacToe.showMainMenu();
-                }
-            }
         });
 
         SwingUtilities.invokeLater(() -> {
-            Player currentPlayer  = ticTacToeBoard.getCurrentPlayer();
-            if (currentPlayer instanceof AiPlayer) {
+            Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
+            if (playerX instanceof AiPlayer && playerO instanceof AiPlayer) {
+                runAiGameLoop(layerManager); // 🔁 Volledige AI vs AI simulatie
+            } else if (currentPlayer instanceof AiPlayer) {
                 currentPlayer.makeMove(layerManager);
                 repaint();
                 turnLabel.setText("Beurt: " + ticTacToeBoard.getCurrentPlayer().getName());
             }
         });
+    }
+
+
+    private void checkWinnerAndContinue(LayerManager manager) {
+        final Player winner = ticTacToeBoard.checkWinnerPlayer();
+        if (winner != null) {
+            showEndDialog("Winner: " + winner.getName());
+            return;
+        }
+
+        if (ticTacToeBoard.checkDraw()) {
+            showEndDialog("Draw!");
+            return;
+        }
+
+        Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
+        turnLabel.setText("Beurt: " + currentPlayer.getName());
+
+        if (currentPlayer instanceof AiPlayer) {
+            currentPlayer.makeMove(manager);
+            repaint();
+            checkWinnerAndContinue(manager);
+        }
+    }
+
+
+    private void showEndDialog(String message) {
+        Object[] options = {"New game", "Main menu"};
+        int choice = JOptionPane.showOptionDialog(
+                GamePanel.this,
+                message,
+                "Game ended",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                options,
+                options[0]);
+
+        if (choice == 0) {
+            TicTacToe.startNewGame();
+        }
+        if (choice == 1) {
+            TicTacToe.showMainMenu();
+        }
+    }
+
+
+    private void runAiGameLoop(LayerManager manager) {
+        Player current = ticTacToeBoard.getCurrentPlayer();
+
+        Player winner = ticTacToeBoard.checkWinnerPlayer();
+        if (winner != null) {
+            showEndDialog("Winner: " + winner.getName());
+            return;
+        }
+
+        if (ticTacToeBoard.checkDraw()) {
+            showEndDialog("Draw!");
+            return;
+        }
+
+        if (current instanceof AiPlayer) {
+            current.makeMove(manager);
+            repaint();
+            turnLabel.setText("Beurt: " + ticTacToeBoard.getCurrentPlayer().getName());
+        }
+
+        Timer timer = new Timer(1, e -> runAiGameLoop(manager));
+        timer.setRepeats(false);
+        timer.start();
     }
 }
