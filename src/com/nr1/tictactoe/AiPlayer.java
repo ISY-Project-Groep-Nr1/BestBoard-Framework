@@ -16,7 +16,7 @@ public class AiPlayer extends Player {
     @Override
     public void makeMove(LayerManager manager) {
         @SuppressWarnings("unchecked")
-        MatrixLayer<TicTacToeCell> board = (MatrixLayer<TicTacToeCell>) manager.layers.get("board");
+        MatrixLayer<TicTacToeCell> board = (MatrixLayer<TicTacToeCell>) manager.getLayer("board");
 
         bestMove(board);
     }

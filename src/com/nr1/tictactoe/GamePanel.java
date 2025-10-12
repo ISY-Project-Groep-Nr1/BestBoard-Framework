@@ -19,8 +19,8 @@ public final class GamePanel extends GameRenderer {
     public GamePanel(final LayerManager layerManager, Player playerX, Player playerO) {
         super(layerManager);
         this.ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO);
-        layerManager.layers.put("background", ticTacToeBoard.getBackgroundLayer());
-        layerManager.layers.put("board", ticTacToeBoard.getLayer());
+        layerManager.putLayer("background", ticTacToeBoard.getBackgroundLayer());
+        layerManager.putLayer("board", ticTacToeBoard.getLayer());
 
         setLayout(new BorderLayout());
         turnLabel = new JLabel("Beurt: " + ticTacToeBoard.getCurrentPlayer().getName(), SwingConstants.CENTER);

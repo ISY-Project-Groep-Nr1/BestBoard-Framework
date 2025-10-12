@@ -5,31 +5,38 @@ import java.util.HashMap;
 import java.util.List;
 
 public class LayerManager {
-    public final HashMap<String, Layer<?>> layers = new HashMap<>();
+    private final HashMap<String, Layer<?>> layers = new HashMap<>();
 
 
 
     public void addListLayer (boolean active, String name) {
-        if (layers.containsKey(name)) {
-            throw new IllegalArgumentException("This name already exists: " + name);
-        }
+        ensureUnique(name);
         layers.put(name, new ListLayer<>(active, name));
     }
 
 
     public void addMatrixLayer (boolean active, String name, int width, int height) {
-        if (layers.containsKey(name)) {
-            throw new IllegalArgumentException("This name already exists: " + name);
-        }
+        ensureUnique(name);
         layers.put(name, new MatrixLayer<>(active, name, width, height));
     }
 
 
     public void addHashMapLayer (boolean active, String name) {
+        ensureUnique(name);
+        layers.put(name, new HashMapLayer<>(active, name));
+    }
+
+
+    public void putLayer(String name, Layer<?> layer) {
+        ensureUnique(name);
+        layers.put(name, layer);
+    }
+
+
+    private void ensureUnique(String name) {
         if (layers.containsKey(name)) {
             throw new IllegalArgumentException("This name already exists: " + name);
         }
-        layers.put(name, new HashMapLayer<>(active, name));
     }
 
 
