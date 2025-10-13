@@ -33,7 +33,7 @@ public class BestWindow{
 
     private final JFrame frame;
     private final LayerManager layerManager;
-
+    private final JPanel panel;
 
 
     private BestWindow(LayerManager layerManager, String title) {
@@ -41,8 +41,10 @@ public class BestWindow{
 
 
         this.frame = new JFrame();
+        this.panel = new JPanel();
+        frame.add(panel);
         frame.setTitle(title);
-        frame.setSize(400,400);
+        //frame.setSize(400,400);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
@@ -58,29 +60,32 @@ public class BestWindow{
 
         SwingUtilities.invokeLater( () -> {
             boolean hasBeenPrepared = false;
-            frame.removeAll();
-            frame.setLayout(new BorderLayout());
-            Container parent = frame;
-
+            //frame.removeAll();
+            //panel.removeAll();
+            panel.setLayout(new FlowLayout());
             for (Layer<?> layer : sortedLayers) {
                 if (!hasBeenPrepared && layer.getPersistent(Layer.FRAME_PREPARER) != null) {
-                    parent = layer.<Function<JFrame, JComponent>>getPersistent(Layer.FRAME_PREPARER).apply(frame);
+                    layer.<Function<JComponent, JComponent>>getPersistent(Layer.FRAME_PREPARER).apply(panel);
                     hasBeenPrepared = true;
                 }
 
                 if (layer instanceof GuiRepresentable<?> guiLayer) {
-                    parent.add(guiLayer.getComponent());
+                    panel.add(guiLayer.getComponent());
 
                 } else {
                     for (Object component : layer.getOfType(JComponent.class)) {
-                        parent.add((JComponent)component);
+                        panel.add((JComponent)component);
                     }
                     for (Object component : layer.getOfType(GuiRepresentable.class)) {
-                        parent.add(((GuiRepresentable<?>)component).getComponent());
+                        panel.add(((GuiRepresentable<?>)component).getComponent());
                     }
                 }
             }
-            frame.pack();
+
+            //frame.setVisible(true);
+            frame.setSize(500, 500);
+            panel.revalidate();
+            panel.repaint();
             frame.revalidate();
             frame.repaint();
         });
