@@ -32,4 +32,19 @@ public class BestCanvas extends JPanel{
     public void refresh(){
         repaint();
     }
+
+    public BestCanvas setMinSize(int x, int y) {
+        setMinimumSize(new Dimension(x,y));
+        return this;
+    }
+
+    public BestCanvas setMaxSize(int x, int y) {
+        setMaximumSize(new Dimension(x,y));
+        return this;
+    }
+
+    public BestCanvas setPreferredSize(int x, int y) {
+        setPreferredSize(new Dimension(x,y));
+        return this;
+    }
 }

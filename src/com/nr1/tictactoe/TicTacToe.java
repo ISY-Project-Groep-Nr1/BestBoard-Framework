@@ -26,8 +26,9 @@ public final class TicTacToe {
 
             //frame.setJMenuBar(MenuBar.createMenuBar(frame));
             showMainMenu();
-
+            window.update();
             window.setVisible();
+
         });
     }
 

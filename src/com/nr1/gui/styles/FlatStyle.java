@@ -19,10 +19,10 @@ public class FlatStyle implements Style{
 
     @Override
     public void drawButton(Graphics2D g, Dimension bounds, String text, int fontType, Size fontSize) {
-        g.setColor(Color.WHITE);
+        g.setColor(Color.GRAY);
         g.fillRect(0, 0, bounds.width, bounds.height);
         g.setColor(Color.BLACK);
-        g.setStroke(new BasicStroke(1));
+        g.setStroke(new BasicStroke(2));
         g.drawRect(0, 0, bounds.width, bounds.height);
     }
 

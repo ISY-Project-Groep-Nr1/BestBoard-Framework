@@ -33,4 +33,19 @@ public class BestLabel extends JLabel{
             );
         }
     }
+
+    public BestLabel setMinSize(int x, int y) {
+        setMinimumSize(new Dimension(x,y));
+        return this;
+    }
+
+    public BestLabel setMaxSize(int x, int y) {
+        setMaximumSize(new Dimension(x,y));
+        return this;
+    }
+
+    public BestLabel setPreferredSize(int x, int y) {
+        setPreferredSize(new Dimension(x,y));
+        return this;
+    }
 }

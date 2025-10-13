@@ -1,6 +1,7 @@
 package com.nr1.tictactoe;
 
 import com.nr1.HashMapLayer;
+import com.nr1.ListLayer;
 import com.nr1.gui.elements.BestButton;
 import com.nr1.gui.elements.BestLabel;
 import com.nr1.interfaces.Style;
@@ -12,7 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowListener;
 import java.util.function.Function;
 
-public class MainMenuPanel extends HashMapLayer<JComponent>{
+public class MainMenuPanel extends ListLayer<JComponent> {
 
     public MainMenuPanel(
             Style style,
@@ -29,21 +30,21 @@ public class MainMenuPanel extends HashMapLayer<JComponent>{
         super(true, "main_menu_panel");
 
 
-        super.<Function<Frame, Container>>addPersistent(FRAME_PREPARER, frame -> {
-            frame.setLayout(new GridLayout(0, 1, 10, 10));
-            return frame;
+        super.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER, panel -> {
+            panel.setLayout(new GridLayout(0, 1, 10, 10));
+            return panel;
         });
 
-        super.add("Title", new BestLabel("Tic Tac Toe", style, Size.LARGE, Font.BOLD, true));
+        super.add(new BestLabel("Tic Tac Toe", style, Size.LARGE, Font.BOLD, true));
 
-        super.add("user_vs_user_button", new BestButton("User vs User", style, onUserVsUser));
-        super.add("user_vs_ai_button", new BestButton("User vs AI", style, onUserVsAi));
-        super.add("ai_vs_user_button", new BestButton("Ai Vs User", style, onAiVsUser));
-        super.add("ai_vs_ai_button", new BestButton("Ai Vs Ai", style, onAiVsAi));
-        super.add("user_vs_server_button", new BestButton("User vs Server", style, onUserVsServer));
-        super.add("server_vs_user_button", new BestButton("Server vs User", style, onServerVsUser));
-        super.add("ai_vs_serve_button", new BestButton("Ai vs Server", style, onAiVsServer));
-        super.add("server_vs_ai_button", new BestButton("Server vs Ai", style, onServerVsAi));
-        super.add("settings_button", new BestButton("Settings", style, onSettings));
+        super.add(new BestButton("User vs User", style, onUserVsUser).setMaxSize(50, 50));
+        super.add( new BestButton("User vs AI", style, onUserVsAi));
+        super.add( new BestButton("Ai Vs User", style, onAiVsUser));
+        super.add( new BestButton("Ai Vs Ai", style, onAiVsAi));
+        super.add( new BestButton("User vs Server", style, onUserVsServer));
+        super.add( new BestButton("Server vs User", style, onServerVsUser));
+        super.add( new BestButton("Ai vs Server", style, onAiVsServer));
+        super.add( new BestButton("Server vs Ai", style, onServerVsAi));
+        super.add( new BestButton("Settings", style, onSettings));
     }
 }

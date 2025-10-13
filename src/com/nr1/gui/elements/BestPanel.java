@@ -34,4 +34,19 @@ public class BestPanel extends JPanel {
     public boolean isHasBackground() {
         return hasBackground;
     }
+
+    public BestPanel setMinSize(int x, int y) {
+        setMinimumSize(new Dimension(x,y));
+        return this;
+    }
+
+    public BestPanel setMaxSize(int x, int y) {
+        setMaximumSize(new Dimension(x,y));
+        return this;
+    }
+
+    public BestPanel setPreferredSize(int x, int y) {
+        setPreferredSize(new Dimension(x,y));
+        return this;
+    }
 }
