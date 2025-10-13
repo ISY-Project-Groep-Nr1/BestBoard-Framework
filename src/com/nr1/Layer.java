@@ -9,7 +9,8 @@ public abstract class Layer<T> {
     public static final String ACTIVE_KEY = "active";
     public static final String NAME_KEY = "name";
     public static final String RENDER_PRIORITY_KEY = "render_priority";
-    public static final String FRAME_PREPARER = "frame_preparer";
+    public static final String FRAME_PREPARER_KEY = "frame_preparer";
+    public static final String DEFAULT_CONFIGURER_KEY = "default_configurer";
 
     public boolean isActive() {
         Object active = persistentVariables.get(ACTIVE_KEY);

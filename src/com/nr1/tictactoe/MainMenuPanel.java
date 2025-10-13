@@ -1,6 +1,5 @@
 package com.nr1.tictactoe;
 
-import com.nr1.HashMapLayer;
 import com.nr1.ListLayer;
 import com.nr1.gui.elements.BestButton;
 import com.nr1.gui.elements.BestLabel;
@@ -9,8 +8,6 @@ import com.nr1.interfaces.Style.Size;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowListener;
 import java.util.function.Function;
 
 public class MainMenuPanel extends ListLayer<JComponent> {
@@ -30,7 +27,8 @@ public class MainMenuPanel extends ListLayer<JComponent> {
         super(true, "main_menu_panel");
 
 
-        super.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER, panel -> {
+        super.<Function<JComponent, JComponent>>addPersistent(
+                FRAME_PREPARER_KEY, panel -> {
             panel.setLayout(new GridLayout(0, 1, 10, 10));
             return panel;
         });

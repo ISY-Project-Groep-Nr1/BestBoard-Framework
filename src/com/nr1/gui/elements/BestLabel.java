@@ -1,16 +1,21 @@
 package com.nr1.gui.elements;
 
+import com.nr1.Layer;
+import com.nr1.gui.BestWindow;
+import com.nr1.interfaces.BestGuiElement;
+import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
 import com.nr1.interfaces.Style.Size;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class BestLabel extends JLabel{
+public class BestLabel extends JLabel implements BestGuiElement<BestLabel>{
     private final Style style;
     private final boolean centered;
     private final Size fontSize;
     private final int fontType;
+    private ComponentConfigurer configurer;
 
     public BestLabel(String text, Style style, Size fontSize, int fontType, boolean centered){
         this.style = style;
@@ -47,5 +52,27 @@ public class BestLabel extends JLabel{
     public BestLabel setPreferredSize(int x, int y) {
         setPreferredSize(new Dimension(x,y));
         return this;
+    }
+
+    @Override
+    public BestLabel setConfigurer(ComponentConfigurer configurer) {
+        if (this.configurer != null) {
+            throw new IllegalStateException("Cannot set configurer twice");
+        }
+        return this;
+    }
+
+    @Override
+    public ComponentConfigurer getComponentConfigurer(Layer<?> parent) {
+        if (this.configurer != null) {
+            return this.configurer;
+        }
+
+        ComponentConfigurer layerConfigurer = parent.getPersistent(Layer.DEFAULT_CONFIGURER_KEY);
+        if (layerConfigurer != null) {
+            return layerConfigurer;
+        }
+
+        return BestWindow.get().getDefaultConfigurer();
     }
 }

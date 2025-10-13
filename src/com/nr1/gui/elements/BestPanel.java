@@ -16,6 +16,7 @@ public class BestPanel extends JPanel {
             setBackground(style.getBackgroundColor());
         } else {
             setBackground(new  Color(0, 0, 0, 0));
+            setOpaque(false);
         }
 
         this.style = style;
