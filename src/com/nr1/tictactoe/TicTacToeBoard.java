@@ -2,8 +2,12 @@ package com.nr1.tictactoe;
 
 import com.nr1.ListLayer;
 import com.nr1.MatrixLayer;
+import com.nr1.gui.elements.BestCanvas;
 
-public final class TicTacToeBoard {
+import static com.nr1.tictactoe.TicTacToe.checkWinnerAndContinue;
+import static com.nr1.tictactoe.TicTacToe.getManager;
+
+public final class TicTacToeBoard{
     private final MatrixLayer<TicTacToeCell> board;
     private final ListLayer<BackgroundGrid> background;
     private final Player playerX;
@@ -48,6 +52,7 @@ public final class TicTacToeBoard {
 
     public final void switchPlayer() {
         currentPlayer = (currentPlayer == playerX) ? playerO : playerX;
+        TicTacToe.checkWinnerAndContinue(TicTacToe.getManager(), this);
     }
 
 

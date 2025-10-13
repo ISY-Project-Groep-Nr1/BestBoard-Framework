@@ -1,5 +1,6 @@
 package com.nr1;
 
+import com.nr1.gui.BestWindow;
 import com.nr1.gui.elements.BestCanvas;
 import com.nr1.interfaces.Clickable;
 import com.nr1.interfaces.ServerListener;
@@ -15,23 +16,11 @@ import java.util.List;
 
 public class MainLoop {
     private boolean stopping = false;
-    public final int TARGET_FPS = 128;
+    public final int TARGET_FPS = 64;
     private ArrayList<MouseEvent> mouseEvents = new ArrayList<>();
-    private BestCanvas canvas;
 
 
-    public void loop(LayerManager layerManager, ServerManager serverManager, JPanel jPanel) {
-
-        jPanel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                System.out.println(1);
-                super.mousePressed(e);
-                mouseEvents.add(e);
-            }
-        });
-
-
+    public void loop(LayerManager layerManager, ServerManager serverManager) {
         while (true) {
             int startTimeNanoSeconds = LocalTime.now().getNano();
 
@@ -52,10 +41,10 @@ public class MainLoop {
                 }
             }
             serverReturnBuffer.clear();
-            stopping = true;
+            //stopping = true;
 
 
-            for (MouseEvent event : mouseEvents) {
+            for (MouseEvent event : MouseManager.getMouseEvents()) {
                 final int mouseX = event.getX();
                 final int mouseY = event.getY();
                 System.out.println(mouseX + ", " + mouseY);
@@ -69,8 +58,9 @@ public class MainLoop {
                 }
             }
 
-            if(canvas != null){
-                canvas.refresh();
+            if(BestWindow.get().getCanvas() != null){
+
+                BestWindow.get().getCanvas().refresh();
             }
 
 

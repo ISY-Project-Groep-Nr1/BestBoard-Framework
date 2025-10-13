@@ -3,6 +3,8 @@ package com.nr1.tictactoe;
 import com.nr1.LayerManager;
 import com.nr1.MatrixLayer;
 
+import static com.nr1.tictactoe.TicTacToe.checkWinnerAndContinue;
+
 public class AiPlayer extends Player {
     private final char opponentMark;
 

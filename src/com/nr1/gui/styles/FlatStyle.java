@@ -1,7 +1,9 @@
 package com.nr1.gui.styles;
 
 import com.nr1.gui.BestWindow;
+import com.nr1.gui.elements.BestButton;
 import com.nr1.interfaces.Style;
+import com.nr1.interfaces.StyledButtonRenderer;
 
 import java.awt.*;
 
@@ -17,14 +19,7 @@ public class FlatStyle implements Style{
 
     }
 
-    @Override
-    public void drawButton(Graphics2D g, Dimension bounds, String text, int fontType, Size fontSize) {
-        g.setColor(Color.GRAY);
-        g.fillRect(0, 0, bounds.width, bounds.height);
-        g.setColor(Color.BLACK);
-        g.setStroke(new BasicStroke(2));
-        g.drawRect(0, 0, bounds.width, bounds.height);
-    }
+
 
 
     @Override
@@ -52,15 +47,10 @@ public class FlatStyle implements Style{
         return new Font(FONT_NAME, fontType, actualSize(size));
     }
 
-    //@Override
-    //public Dimension getButtonSize(String text, int fontType, Size fontSize, SizeType sizeType) {
-    //    Dimension textBounds = BestWindow.calculateStringSize(text, new  Font(FONT_NAME, fontType, actualSize(fontSize)));
-    //    return switch (sizeType) {
-    //        case MIN -> textBounds;
-    //        case MAX -> null;
-    //        case PREFERRED -> new Dimension(textBounds.width + 20, textBounds.height + 5);
-    //    };
-    //}
+    @Override
+    public StyledButtonRenderer getButtonRenderer() {
+        return new ButtonRenderer();
+    }
 
     private int actualSize(Size size) {
         return switch (size){
@@ -68,5 +58,71 @@ public class FlatStyle implements Style{
             case MEDIUM -> 20;
             case LARGE -> 40;
         };
+    }
+
+    private class ButtonRenderer implements StyledButtonRenderer{
+        @Override
+        public void paint(Graphics2D g, BestButton button) {
+            draw(g,
+                 button.getText(),
+                 button.getFontSize(),
+                 button.getFontType(),
+                 Color.WHITE,
+                 Color.DARK_GRAY,
+                 new BasicStroke(1),
+                 button.getWidth(),
+                 button.getHeight(), 0 ,0
+            );
+        }
+
+        @Override
+        public void paintHighlighted(Graphics2D g, BestButton button) {
+            draw(g,
+                 button.getText(),
+                 button.getFontSize(),
+                 button.getFontType(),
+                 Color.WHITE,
+                 Color.BLACK,
+                 new BasicStroke(1),
+                 button.getWidth(),
+                 button.getHeight(), 0, 0
+            );
+        }
+
+        @Override
+        public void paintClicked(Graphics2D g, BestButton button) {
+            draw(g,
+                 button.getText(),
+                 button.getFontSize(),
+                 button.getFontType(),
+                 Color.WHITE,
+                 Color.BLACK,
+                 new BasicStroke(3),
+                 button.getWidth()-3,
+                 button.getHeight()-3, 3, 3
+            );
+        }
+
+        private void draw(
+                Graphics2D g,
+                String text,
+                Size size,
+                int fontType,
+                Color backgroundColor,
+                Color outlineColor,
+                Stroke stroke,
+                int width,
+                int height, int x, int y) {
+            //g.setClip(-1000, -1000, BestWindow.get().getWidth(), BestWindow.get().getHeight());
+            g.setStroke(stroke);
+            g.setColor(backgroundColor);
+            g.fillRect(0, 0, width, height);
+            g.setColor(outlineColor);
+
+            g.drawRect(x, y, width, height);
+            if (text != null) {
+                drawCenteredText(g, new Dimension(width, height), text, size, fontType);
+            }
+        }
     }
 }

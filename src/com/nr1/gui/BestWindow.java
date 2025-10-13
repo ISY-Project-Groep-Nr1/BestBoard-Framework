@@ -1,8 +1,11 @@
 package com.nr1.gui;
 
+import com.nr1.gui.elements.BestCanvas;
 import com.nr1.gui.styles.FlatStyle;
 import com.nr1.Layer;
 import com.nr1.LayerManager;
+import com.nr1.interfaces.BestGuiElement;
+import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
 import com.nr1.interfaces.GuiRepresentable;
 
@@ -10,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class BestWindow{
@@ -33,62 +35,96 @@ public class BestWindow{
 
     private final JFrame frame;
     private final LayerManager layerManager;
-    private final JPanel panel;
+    private JPanel panel;
+    private BestCanvas canvas;
 
 
     private BestWindow(LayerManager layerManager, String title) {
         this.layerManager = layerManager;
+        this.frame = new JFrame(){
+            //@Override
+            //public void paint(Graphics g) {
+            //    super.paint(g);
+            //    //System.out.println(1);
+            //    Graphics2D g2d = (Graphics2D) g.create();
+            //    for (Layer<?> layer : layerManager.getAllActive()) {
+            //        for (Object layerElement : layer.getOfType(Drawable.class)) {
+            //            Drawable drawable = (Drawable) layerElement;
+            //            drawable.draw(g2d);
+            //        }
+            //    }
+            //}
+        };
 
 
-        this.frame = new JFrame();
-        this.panel = new JPanel();
-        frame.add(panel);
+
         frame.setTitle(title);
-        //frame.setSize(400,400);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
 
-    public Style getDefaultStyle() {
-        return new FlatStyle();
-    }
-
 
     public void update() {
         List<Layer<?>> sortedLayers = layerManager.getSortedOn(Layer.RENDER_PRIORITY_KEY);
-
+        if (panel != null) {
+            frame.remove(panel);
+        }
+        panel = new JPanel();
+        this.canvas = null;
+        frame.add(panel);
 
         SwingUtilities.invokeLater( () -> {
-            boolean hasBeenPrepared = false;
-            //frame.removeAll();
-            //panel.removeAll();
             panel.setLayout(new FlowLayout());
-            for (Layer<?> layer : sortedLayers) {
-                if (!hasBeenPrepared && layer.getPersistent(Layer.FRAME_PREPARER) != null) {
-                    layer.<Function<JComponent, JComponent>>getPersistent(Layer.FRAME_PREPARER).apply(panel);
-                    hasBeenPrepared = true;
-                }
 
-                if (layer instanceof GuiRepresentable<?> guiLayer) {
-                    panel.add(guiLayer.getComponent());
+            addLayers(sortedLayers);
 
-                } else {
-                    for (Object component : layer.getOfType(JComponent.class)) {
-                        panel.add((JComponent)component);
-                    }
-                    for (Object component : layer.getOfType(GuiRepresentable.class)) {
-                        panel.add(((GuiRepresentable<?>)component).getComponent());
-                    }
-                }
-            }
-
-            //frame.setVisible(true);
             frame.setSize(500, 500);
             panel.revalidate();
             panel.repaint();
-            frame.revalidate();
-            frame.repaint();
         });
+    }
+
+    private void addLayers(List<Layer<?>> layers){
+        boolean hasBeenPrepared = false;
+        for (Layer<?> layer : layers) {
+            if (!hasBeenPrepared && layer.getPersistent(Layer.FRAME_PREPARER_KEY) != null) {
+                layer.<Function<JComponent, JComponent>>getPersistent(Layer.FRAME_PREPARER_KEY).apply(panel);
+                hasBeenPrepared = true;
+            }
+
+            if (layer instanceof GuiRepresentable<?> guiLayer) {
+                panel.add(guiLayer.getComponent());
+            } else {
+                for (Object component : layer.getOfType(JComponent.class)) {
+                    if (component instanceof BestGuiElement<?> bestGuiElement) {
+                        bestGuiElement.getComponentConfigurer(layer).addComponent(panel, (JComponent) component);
+                    }
+                    if (component instanceof BestCanvas bestCanvas) {
+                        if (this.canvas != null) {
+                            throw new IllegalStateException("Only one canvas can exist at a time!");
+                        }
+                        this.canvas = bestCanvas;
+                    }
+
+                    panel.add((JComponent)component);
+                }
+                for (Object component : layer.getOfType(GuiRepresentable.class)) {
+                    panel.add(((GuiRepresentable<?>)component).getComponent());
+                }
+            }
+        }
+    }
+
+    public int getWidth(){
+        return panel.getWidth();
+    }
+
+    public int getHeight(){
+        return panel.getHeight();
+    }
+
+    public BestCanvas getCanvas(){
+        return canvas;
     }
 
     public void setVisible() {
@@ -96,6 +132,18 @@ public class BestWindow{
     }
 
 
+    public Style getDefaultStyle() {
+        return new FlatStyle();
+    }
+
+    public ComponentConfigurer getDefaultConfigurer(){
+        return new ComponentConfigurer(){
+            @Override
+            public void addComponent(Container parent, JComponent component) {
+                parent.add(component);
+            }
+        };
+    }
 
 
 
@@ -111,4 +159,6 @@ public class BestWindow{
         FontRenderContext context = new FontRenderContext(font.getTransform(), false, false);
         return font.getStringBounds(text, context).getBounds().getSize();
     }
+
+
 }
