@@ -14,7 +14,6 @@ public class MouseManager {
         return new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                System.out.println(1);
                 super.mousePressed(e);
                 events.add(e);
             }

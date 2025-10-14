@@ -28,9 +28,7 @@ public class BestLabel extends JLabel implements BestGuiElement<BestLabel>{
 
     @Override
     public void paintComponent(Graphics g){
-        System.out.println(124);
         if (centered){
-            System.out.println(125);
             style.drawCenteredText(
                     (Graphics2D) g.create(),
                     getSize(),

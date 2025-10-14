@@ -62,9 +62,7 @@ public class GuiPanel extends JPanel {
         JComponent parent = this;
         for (Layer<?> layer : layers) {
             if (!hasBeenPrepared && layer.getPersistent(Layer.FRAME_PREPARER_KEY) != null) {
-               // System.out.println(Layer.FRAME_PREPARER_KEY);
                 parent = layer.<Function<JComponent, JComponent>> getPersistent(Layer.FRAME_PREPARER_KEY).apply(parent);
-                //System.out.println(parent);
                 hasBeenPrepared = true;
             }
 
@@ -73,9 +71,6 @@ public class GuiPanel extends JPanel {
             } else {
                 for (Object component : layer.getOfType(JComponent.class)) {
                     if (component instanceof BestGuiElement<?> bestGuiElement) {
-                        //System.out.println(parent.getLayout());
-                        //System.out.println(layer.getPersistent(Layer.NAME_KEY).toString());
-                        //System.out.println(component);
                         bestGuiElement.getComponentConfigurer(layer).addComponent(parent, (JComponent) component);
                     } else {
                         parent.add((JComponent) component);

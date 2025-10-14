@@ -27,17 +27,14 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
         BestCanvas canvas = new BestCanvas(manager, style, 301, 301);
         super.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER_KEY, (component) -> {
             component.setLayout(new GridBagLayout());
-            System.out.println("nerd2");
             return component;
         });
         super.<ComponentConfigurer>addPersistent(DEFAULT_CONFIGURER_KEY, (container, element) -> {
-            System.out.println(container.getLayout());
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = 0; // Column
             gbc.gridy = 0; // Row
             gbc.anchor = GridBagConstraints.CENTER; // Center alignment
             container.add(element, gbc);
-            //container.add(element, BorderLayout.CENTER);
         });
 
         canvas.addMouseListener(MouseManager.getMouseListener());

@@ -20,7 +20,6 @@ public class BestCanvas extends JPanel implements BestGuiElement<BestCanvas>{
 
 
     public BestCanvas(LayerManager drawables, Style style, int width, int height) {
-        System.out.println(3);
         this.drawables = drawables;
         this.width = width;
         this.height = height;
