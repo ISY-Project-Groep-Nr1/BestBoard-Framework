@@ -1,19 +1,17 @@
 package com.nr1.gui;
 
 import com.nr1.gui.elements.BestCanvas;
+import com.nr1.gui.elements.GuiPanel;
 import com.nr1.gui.styles.FlatStyle;
 import com.nr1.Layer;
 import com.nr1.LayerManager;
-import com.nr1.interfaces.BestGuiElement;
 import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
-import com.nr1.interfaces.GuiRepresentable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.util.List;
-import java.util.function.Function;
 
 public class BestWindow{
     private static BestWindow instance;
@@ -35,11 +33,12 @@ public class BestWindow{
 
     private final JFrame frame;
     private final LayerManager layerManager;
-    private JPanel panel;
+    private GuiPanel panel;
     private BestCanvas canvas;
-
+    private Style style = getDefaultStyle();
 
     private BestWindow(LayerManager layerManager, String title) {
+        System.setProperty("awt.useSystemAAFontSettings","on");
         this.layerManager = layerManager;
         this.frame = new JFrame(){
             //@Override
@@ -69,51 +68,18 @@ public class BestWindow{
         if (panel != null) {
             frame.remove(panel);
         }
-        panel = new JPanel();
-        this.canvas = null;
+        panel = new GuiPanel(style, false);
         frame.add(panel);
 
         SwingUtilities.invokeLater( () -> {
-            panel.setLayout(new FlowLayout());
-
-            addLayers(sortedLayers);
+            canvas = panel.addLayers(sortedLayers);
 
             frame.setSize(500, 500);
-            panel.revalidate();
-            panel.repaint();
+
         });
     }
 
-    private void addLayers(List<Layer<?>> layers){
-        boolean hasBeenPrepared = false;
-        for (Layer<?> layer : layers) {
-            if (!hasBeenPrepared && layer.getPersistent(Layer.FRAME_PREPARER_KEY) != null) {
-                layer.<Function<JComponent, JComponent>>getPersistent(Layer.FRAME_PREPARER_KEY).apply(panel);
-                hasBeenPrepared = true;
-            }
 
-            if (layer instanceof GuiRepresentable<?> guiLayer) {
-                panel.add(guiLayer.getComponent());
-            } else {
-                for (Object component : layer.getOfType(JComponent.class)) {
-                    if (component instanceof BestGuiElement<?> bestGuiElement) {
-                        bestGuiElement.getComponentConfigurer(layer).addComponent(panel, (JComponent) component);
-                    }
-                    if (component instanceof BestCanvas bestCanvas) {
-                        if (this.canvas != null) {
-                            throw new IllegalStateException("Only one canvas can exist at a time!");
-                        }
-                        this.canvas = bestCanvas;
-                    }
-
-                    panel.add((JComponent)component);
-                }
-                for (Object component : layer.getOfType(GuiRepresentable.class)) {
-                    panel.add(((GuiRepresentable<?>)component).getComponent());
-                }
-            }
-        }
-    }
 
     public int getWidth(){
         return panel.getWidth();
@@ -136,6 +102,10 @@ public class BestWindow{
         return new FlatStyle();
     }
 
+    public JFrame getFrame() {
+        return frame;
+    }
+
     public ComponentConfigurer getDefaultConfigurer(){
         return new ComponentConfigurer(){
             @Override
@@ -148,9 +118,9 @@ public class BestWindow{
 
 
     public static Point calculateCenteredStringPosition(Graphics2D g2d, String text, Dimension parentSize) {  // yoinked from the internet
-        var textWidth = g2d.getFontMetrics().stringWidth(text);                                         // // nooit dat yoinked een echt woord is
+        var textWidth = g2d.getFontMetrics().stringWidth(text);        // // nooit dat yoinked een echt woord is
         var horizontalPosition = (parentSize.getWidth() / 2d) - (textWidth / 2d);
-        var verticalPosition = parentSize.getHeight()/2;
+        var verticalPosition = parentSize.getHeight()/2d + g2d.getFontMetrics().getHeight()/3d;
         return new Point((int) horizontalPosition, (int) verticalPosition);
     }
 

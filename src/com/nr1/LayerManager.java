@@ -33,6 +33,9 @@ public class LayerManager {
         layers.put(name, layer);
     }
 
+    public void putLayer(Layer<?> layer) {
+        putLayer(layer.getPersistent(Layer.NAME_KEY), layer);
+    }
 
     private void ensureUnique(String name) {
         if (layers.containsKey(name)) {

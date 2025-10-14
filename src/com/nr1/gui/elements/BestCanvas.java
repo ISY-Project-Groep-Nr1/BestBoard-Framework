@@ -69,6 +69,8 @@ public class BestCanvas extends JPanel implements BestGuiElement<BestCanvas>{
         if (this.configurer != null) {
             throw new IllegalStateException("Cannot set configurer twice");
         }
+        this.configurer = configurer;
+
         return this;
     }
 

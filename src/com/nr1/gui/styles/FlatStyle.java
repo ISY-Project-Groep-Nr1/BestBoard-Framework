@@ -116,7 +116,7 @@ public class FlatStyle implements Style{
             //g.setClip(-1000, -1000, BestWindow.get().getWidth(), BestWindow.get().getHeight());
             g.setStroke(stroke);
             g.setColor(backgroundColor);
-            g.fillRect(0, 0, width, height);
+            g.fillRect(x, y, width, height);
             g.setColor(outlineColor);
 
             g.drawRect(x, y, width, height);

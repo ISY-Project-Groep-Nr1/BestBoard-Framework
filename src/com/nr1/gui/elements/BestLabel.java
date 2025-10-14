@@ -28,9 +28,11 @@ public class BestLabel extends JLabel implements BestGuiElement<BestLabel>{
 
     @Override
     public void paintComponent(Graphics g){
+        System.out.println(124);
         if (centered){
+            System.out.println(125);
             style.drawCenteredText(
-                    (Graphics2D) g.create(getX(),  getY(), getWidth(), getHeight()),
+                    (Graphics2D) g.create(),
                     getSize(),
                     getText(),
                     fontSize,
@@ -59,12 +61,14 @@ public class BestLabel extends JLabel implements BestGuiElement<BestLabel>{
         if (this.configurer != null) {
             throw new IllegalStateException("Cannot set configurer twice");
         }
+        this.configurer = configurer;
         return this;
     }
 
     @Override
     public ComponentConfigurer getComponentConfigurer(Layer<?> parent) {
         if (this.configurer != null) {
+            System.out.println(2);
             return this.configurer;
         }
 

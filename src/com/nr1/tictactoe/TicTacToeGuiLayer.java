@@ -3,9 +3,15 @@ package com.nr1.tictactoe;
 import com.nr1.LayerManager;
 import com.nr1.ListLayer;
 import com.nr1.MouseManager;
+import com.nr1.gui.BestWindow;
+import com.nr1.gui.elements.BestButton;
 import com.nr1.gui.elements.BestCanvas;
+import com.nr1.gui.elements.BestLabel;
+import com.nr1.gui.elements.BestPopUp;
+import com.nr1.interfaces.BestGuiElement;
 import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
+import com.nr1.interfaces.Style.Size;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,8 +59,53 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
 
 
 
-    private void showEndDialog(String message) {
-        Object[] options = {"New game", "Main menu"};
+    public void showEndDialog(String message) {
+        BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getDefaultStyle(), "Game ended");
+        ListLayer<BestGuiElement<?>> elements = new ListLayer<>(true, "dialog_main");
+
+        JPanel top = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        elements.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER_KEY, (jComponent -> {
+            JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
+            splitPane.setDividerSize(0);
+            jComponent.add(splitPane);
+            return splitPane;
+        }));
+
+        ComponentConfigurer topComponentConfigurer = ComponentConfigurer.getExternalAdderComponentConfigurer(top);
+        ComponentConfigurer bottomComponentConfigurer = ComponentConfigurer.getExternalAdderComponentConfigurer(bottom);
+
+        elements.add(new BestLabel(message, style, Size.MEDIUM, Font.PLAIN, true)
+                             .setConfigurer(topComponentConfigurer)
+                             .setPreferredSize(350, 40)
+                             .setMinSize(350, 40)
+        );
+
+        elements.add(new BestButton("restart", style,() -> {
+            popUp.setVisible(false);
+            popUp.dispose();
+            TicTacToe.destroyGame(TicTacToe.getManager());
+            TicTacToe.startNewGame();
+        })
+                             .setConfigurer(bottomComponentConfigurer)
+                             .setPreferredSize(250, 40)
+                             .setMinSize(250, 40)
+
+        );
+        elements.add(new BestButton("to main menu", style, () -> {
+            popUp.setVisible(false);
+            popUp.dispose();
+            TicTacToe.destroyGame(TicTacToe.getManager());
+            TicTacToe.showMainMenu();
+        })
+                             .setConfigurer(bottomComponentConfigurer)
+                             .setPreferredSize(250, 40)
+                             .setMinSize(250, 40)
+        );
+
+        popUp.getLayerManager().putLayer(elements);
+        popUp.setVisible();
+        //Object[] options = {"New game", "Main menu"};
         //int choice = JOptionPane.showOptionDialog(
         //        TicTacToeGuiLayer,
         //        message,

@@ -1,16 +1,16 @@
 package com.nr1.gui;
 
-import com.nr1.gui.elements.BestPanel;
+import com.nr1.gui.elements.GuiPanel;
 import com.nr1.HashMapLayer;
 import com.nr1.interfaces.GuiRepresentable;
 
 import javax.swing.*;
 
-public class PanelLayer extends HashMapLayer<JComponent> implements GuiRepresentable<BestPanel>{
-    private final BestPanel panel;
+public class PanelLayer extends HashMapLayer<JComponent> implements GuiRepresentable<GuiPanel>{
+    private final GuiPanel panel;
 
 
-    public PanelLayer(boolean active, String name, BestPanel panel) {
+    public PanelLayer(boolean active, String name, GuiPanel panel) {
         super(active, name);
         this.panel = panel;
     }
@@ -28,7 +28,7 @@ public class PanelLayer extends HashMapLayer<JComponent> implements GuiRepresent
     }
 
     @Override
-    public BestPanel getComponent() {
+    public GuiPanel getComponent() {
         return panel;
     }
 }

@@ -96,6 +96,7 @@ public class BestButton extends JButton implements BestGuiElement<BestButton>{
         if (this.configurer != null) {
             throw new IllegalStateException("Cannot set configurer twice");
         }
+        this.configurer = configurer;
         return this;
     }
 

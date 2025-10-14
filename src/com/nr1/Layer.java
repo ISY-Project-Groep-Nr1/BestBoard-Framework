@@ -9,7 +9,17 @@ public abstract class Layer<T> {
     public static final String ACTIVE_KEY = "active";
     public static final String NAME_KEY = "name";
     public static final String RENDER_PRIORITY_KEY = "render_priority";
+    /**
+     * type = {@code Function <JComponent, JComponent>} geeft als input de huidige container waar gui op gerendered word. <br>
+     * Met als return de nieuwe container waar op gerendered word (NYI). mag input returnen om dezelfde container te houden. <br>
+     * Gebruikt voor parent specifieke preperation functies, zoals {@code JComponent.setLayout()}
+     */
     public static final String FRAME_PREPARER_KEY = "frame_preparer";
+    /**
+     * type = {@code CodeConfigurer} verantwoordelijk voor het toevoegen van elk gegeven element waar géén
+     * {@code CodeConfigurer} is gespecificeerd toe te voegen aan de gegeven Container. <br>
+     * Werkt alleen maar bij {@code BestGuiElement}
+     */
     public static final String DEFAULT_CONFIGURER_KEY = "default_configurer";
 
     public boolean isActive() {

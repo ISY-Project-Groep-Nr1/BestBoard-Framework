@@ -19,12 +19,11 @@ public final class TicTacToe {
     private static String player2Name = "Player 2";
     private static TicTacToeBoard ticTacToeBoard;
 
-    public static void main(final String[] args) {
+    static void main(final String[] args) {
         manager = new LayerManager();
         window = BestWindow.create(manager, "Tic tac toe");
 
         SwingUtilities.invokeLater(() -> {
-
             //frame.setJMenuBar(MenuBar.createMenuBar(frame));
             showMainMenu();
             window.update();
@@ -125,15 +124,20 @@ public final class TicTacToe {
 
         window.update();
 
-        SwingUtilities.invokeLater(() -> {
-            Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
-            if (playerX instanceof AiPlayer && playerO instanceof AiPlayer) {
-                runAiGameLoop(manager); // 🔁 Volledige AI vs AI simulatie
-            } else if (currentPlayer instanceof AiPlayer) {
-                currentPlayer.makeMove(manager);
-                //turnLabel.setText("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());
-            }
-        });
+
+        Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
+        if (playerX instanceof AiPlayer && playerO instanceof AiPlayer) {
+            runAiGameLoop(manager); // 🔁 Volledige AI vs AI simulatie
+        } else if (currentPlayer instanceof AiPlayer) {
+            currentPlayer.makeMove(manager);
+            //turnLabel.setText("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());
+        }
+    }
+
+    static void destroyGame(LayerManager manager) {
+        manager.deleteLayer("game_gui");
+        manager.deleteLayer("background");
+        manager.deleteLayer("board");
     }
 
 
@@ -154,13 +158,13 @@ public final class TicTacToe {
         Player winner = ticTacToeBoard.checkWinnerPlayer();
         if (winner != null) {
             System.out.println("winner winner chicken dinner");
-            //showEndDialog("Winner: " + winner.getComponentConfigurer());
+            guiLayer.showEndDialog("Winner: " + winner.getName());
             return;
         }
 
         if (ticTacToeBoard.checkDraw()) {
             System.out.println("draw draw tofu lunch");
-            //showEndDialog("Draw!");
+            guiLayer.showEndDialog("Draw!");
             return;
         }
 
@@ -178,13 +182,13 @@ public final class TicTacToe {
     static void checkWinnerAndContinue(LayerManager manager, TicTacToeBoard board) {
         final Player winner = board.checkWinnerPlayer();
         if (winner != null) {
-            //showEndDialog("Winner: " + winner.getName());
+            guiLayer.showEndDialog("Winner: " + winner.getName());
             System.out.println("winner winner chicken dinner");
             return;
         }
 
         if (board.checkDraw()) {
-            //showEndDialog("Draw!");
+            guiLayer.showEndDialog("Draw!");
             System.out.println("draw draw tofu lunch");
             return;
         }
