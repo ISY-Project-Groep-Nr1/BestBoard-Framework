@@ -4,10 +4,7 @@ import com.nr1.LayerManager;
 import com.nr1.ListLayer;
 import com.nr1.MouseManager;
 import com.nr1.gui.BestWindow;
-import com.nr1.gui.elements.BestButton;
-import com.nr1.gui.elements.BestCanvas;
-import com.nr1.gui.elements.BestLabel;
-import com.nr1.gui.elements.BestPopUp;
+import com.nr1.gui.elements.*;
 import com.nr1.interfaces.BestGuiElement;
 import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
@@ -60,11 +57,17 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
         BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getDefaultStyle(), "Game ended");
         ListLayer<BestGuiElement<?>> elements = new ListLayer<>(true, "dialog_main");
 
-        JPanel top = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel top = new GuiPanel(style, false);
+        top.setOpaque(false);
+        top.setBackground(style.getBackgroundColor());
+        JPanel bottom = new GuiPanel(style, false);
+        top.setOpaque(false);
+        top.setBackground(style.getBackgroundColor());
         elements.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER_KEY, (jComponent -> {
             JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
             splitPane.setDividerSize(0);
+            splitPane.setOpaque(false);
+            splitPane.setBackground(new Color(0, 0, 0, 0));
             jComponent.add(splitPane);
             return splitPane;
         }));

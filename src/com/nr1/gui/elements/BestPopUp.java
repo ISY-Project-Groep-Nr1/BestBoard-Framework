@@ -23,9 +23,10 @@ public class BestPopUp extends JDialog{
         super.setTitle(title);
         super.setUndecorated(true);
         super.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        super.setBackground(style.getBackgroundColor());
 
         this.style = style;
-        this.gui = new GuiPanel(style, false);
+        this.gui = new GuiPanel(style, true);
     }
 
     public LayerManager getLayerManager() {

@@ -1,5 +1,6 @@
 package com.nr1.interfaces;
 
+import javax.swing.*;
 import java.awt.*;
 
 public interface Style {

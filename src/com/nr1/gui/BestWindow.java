@@ -5,6 +5,7 @@ import com.nr1.gui.elements.GuiPanel;
 import com.nr1.gui.styles.FlatStyle;
 import com.nr1.Layer;
 import com.nr1.LayerManager;
+import com.nr1.gui.styles.MatrixStyle;
 import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
 
@@ -40,25 +41,13 @@ public class BestWindow{
     private BestWindow(LayerManager layerManager, String title) {
         System.setProperty("awt.useSystemAAFontSettings","on");
         this.layerManager = layerManager;
-        this.frame = new JFrame(){
-            //@Override
-            //public void paint(Graphics g) {
-            //    super.paint(g);
-            //    //System.out.println(1);
-            //    Graphics2D g2d = (Graphics2D) g.create();
-            //    for (Layer<?> layer : layerManager.getAllActive()) {
-            //        for (Object layerElement : layer.getOfType(Drawable.class)) {
-            //            Drawable drawable = (Drawable) layerElement;
-            //            drawable.draw(g2d);
-            //        }
-            //    }
-            //}
-        };
-
-
-
+        this.frame = new JFrame();
         frame.setTitle(title);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        System.out.println(
+                Toolkit.getDefaultToolkit().getScreenSize()
+        );
+        frame.setSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));
     }
 
 
@@ -74,7 +63,7 @@ public class BestWindow{
         SwingUtilities.invokeLater( () -> {
             canvas = panel.addLayers(sortedLayers);
 
-            frame.setSize(500, 500);
+
 
         });
     }
@@ -99,7 +88,7 @@ public class BestWindow{
 
 
     public Style getDefaultStyle() {
-        return new FlatStyle();
+        return new MatrixStyle();
     }
 
     public JFrame getFrame() {
