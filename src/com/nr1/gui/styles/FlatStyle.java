@@ -70,8 +70,8 @@ public class FlatStyle implements Style{
                  Color.WHITE,
                  Color.DARK_GRAY,
                  new BasicStroke(1),
-                 button.getWidth(),
-                 button.getHeight(), 0 ,0
+                 button.getWidth()-1,
+                 button.getHeight()-1, 0 ,0
             );
         }
 
@@ -83,9 +83,9 @@ public class FlatStyle implements Style{
                  button.getFontType(),
                  Color.WHITE,
                  Color.BLACK,
-                 new BasicStroke(1),
-                 button.getWidth(),
-                 button.getHeight(), 0, 0
+                 new BasicStroke(2),
+                 button.getWidth()-4,
+                 button.getHeight()-4, 2, 2
             );
         }
 
