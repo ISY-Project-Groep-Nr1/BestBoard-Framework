@@ -24,7 +24,6 @@ public class MatrixStyle implements Style{
     static {
         try {
             Font font = Font.createFont(Font.TRUETYPE_FONT, new File("recourses/Steelar-j9Vnj.otf"));
-            System.out.println(font.getFontName());
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
         } catch (FontFormatException | IOException e) {
             throw new RuntimeException(e);
@@ -135,7 +134,7 @@ public class MatrixStyle implements Style{
         return switch (size){
             case SMALL -> 10;
             case MEDIUM -> 18;
-            case LARGE -> 48;
+            case LARGE -> 55;
         };
     }
 
@@ -147,6 +146,7 @@ public class MatrixStyle implements Style{
                  button.getFontSize(),
                  button.getFontType(),
                  new Color(30, 120, 40),
+                 new Color(26, 75, 29),
                  Color.DARK_GRAY,
                  new BasicStroke(1),
                  button.getWidth()-1,
@@ -161,6 +161,7 @@ public class MatrixStyle implements Style{
                  button.getFontSize(),
                  button.getFontType(),
                  new Color(30, 120, 40),
+                 new Color(26, 75, 29),
                  Color.BLACK,
                  new BasicStroke(2),
                  button.getWidth()-4,
@@ -175,6 +176,7 @@ public class MatrixStyle implements Style{
                  button.getFontSize(),
                  button.getFontType(),
                  new Color(30, 120, 40),
+                 new Color(26, 75, 29),
                  Color.BLACK,
                  new BasicStroke(3),
                  button.getWidth()-6,
@@ -188,6 +190,7 @@ public class MatrixStyle implements Style{
                 Size size,
                 int fontType,
                 Color backgroundColor,
+                Color backgroundColor2,
                 Color outlineColor,
                 Stroke stroke,
                 int width,
@@ -195,7 +198,7 @@ public class MatrixStyle implements Style{
             //g.setClip(-1000, -1000, BestWindow.get().getWidth(), BestWindow.get().getHeight());
             Shape futuristicRectangle = getFuturisticRectangle(x, y, width, height);
             g.setStroke(stroke);
-            g.setColor(backgroundColor);
+            g.setPaint(new GradientPaint(0, 0, backgroundColor, 5, height, backgroundColor2));
             g.fill(futuristicRectangle);
             g.setColor(outlineColor);
             g.draw(futuristicRectangle);

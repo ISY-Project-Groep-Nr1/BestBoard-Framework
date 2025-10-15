@@ -33,32 +33,28 @@ public class MainMenuPanel extends ListLayer<Component> {
         super.<Function<JComponent, JComponent>>addPersistent(
                 FRAME_PREPARER_KEY, panel -> {
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-            //panel.setAlignmentY(Component);
+            panel.setAlignmentY(Component.TOP_ALIGNMENT);
             return panel;
         });
 
         ComponentConfigurer buttons = ComponentConfigurer.create()
                 .horizontalCentered()
                 .verticalTop()
-                .maxSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-                .minSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-                .preferredSize(BUTTON_WIDTH, BUTTON_HEIGHT)
+                .staticSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .appendFiller(new Dimension(5, 15) ,new Dimension(5, 15), new Dimension(5, 15))
                 .add();
 
         ComponentConfigurer label = ComponentConfigurer.create()
                 .horizontalCentered()
                 .verticalTop()
-                .maxSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-                .minSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-                .preferredSize(BUTTON_WIDTH, BUTTON_HEIGHT)
+                .appendGlue()
                 .add();
 
         super.add(new BestLabel("Tic Tac Toe", style, Size.LARGE, Font.BOLD, true)
                           .setConfigurer(label)
                           .setMinSize(500, 50)
-                          .setMinSize(500, 50)
-                          .setMinSize(500, 50)
+                          .setMaxSize(800, 50)
+                          .setPreferredSize(800, 50)
         );
 
         super.add(new BestButton("User vs User", style, onUserVsUser).setConfigurer(buttons));

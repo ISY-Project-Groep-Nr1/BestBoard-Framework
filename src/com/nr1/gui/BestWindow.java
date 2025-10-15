@@ -44,9 +44,6 @@ public class BestWindow{
         this.frame = new JFrame();
         frame.setTitle(title);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        System.out.println(
-                Toolkit.getDefaultToolkit().getScreenSize()
-        );
         frame.setSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));
     }
 
@@ -85,7 +82,7 @@ public class BestWindow{
 
 
     public Style getDefaultStyle() {
-        return new MatrixStyle();
+        return new FlatStyle();
     }
 
     public JFrame getFrame() {

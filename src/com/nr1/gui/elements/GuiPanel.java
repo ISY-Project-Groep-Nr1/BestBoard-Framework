@@ -60,6 +60,7 @@ public class GuiPanel extends JPanel {
         boolean hasBeenPrepared = false;
         BestCanvas canvas = null;
         JComponent parent = this;
+        this.removeAll();
         for (Layer<?> layer : layers) {
             if (!hasBeenPrepared && layer.getPersistent(Layer.FRAME_PREPARER_KEY) != null) {
                 parent = layer.<Function<JComponent, JComponent>> getPersistent(Layer.FRAME_PREPARER_KEY).apply(parent);

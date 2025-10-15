@@ -32,7 +32,6 @@ public class BestLabel extends JLabel implements BestGuiElement<BestLabel>, Tick
 
     @Override
     public void paintComponent(Graphics g){
-        System.out.println(1);
         if (centered){
             style.drawCenteredText(
                     (Graphics2D) g.create(),
@@ -71,7 +70,6 @@ public class BestLabel extends JLabel implements BestGuiElement<BestLabel>, Tick
     @Override
     public ComponentConfigurer getComponentConfigurer(Layer<?> parent) {
         if (this.configurer != null) {
-            System.out.println(2);
             return this.configurer;
         }
 

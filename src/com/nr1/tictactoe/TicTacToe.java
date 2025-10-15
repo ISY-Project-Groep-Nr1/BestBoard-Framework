@@ -26,6 +26,7 @@ public final class TicTacToe {
         SwingUtilities.invokeLater(() -> {
             //frame.setJMenuBar(MenuBar.createMenuBar(frame));
             showMainMenu();
+
             window.update();
             window.setVisible();
         });
@@ -111,6 +112,7 @@ public final class TicTacToe {
         );
         manager.putLayer("main_menu", menu);
         window.update();
+
     }
 
 

@@ -72,15 +72,30 @@ public class ComponentConfigurerBuilder{
 
     public ComponentConfigurerBuilder appendFiller(Dimension minSize, Dimension maxSize, Dimension preferredSize) {
         postFunctions.add((parent, component) -> {
-            System.out.println(12);
             parent.add(new Filler(minSize, maxSize, preferredSize));
+        });
+        return this;
+    }
+
+    public ComponentConfigurerBuilder appendGlue() {
+        postFunctions.add((parent, component) -> {
+            parent.add(Box.createGlue());
+        });
+        return this;
+    }
+
+    public ComponentConfigurerBuilder staticSize(int width, int height) {
+        functions.add((parent, component) -> {
+            component.setPreferredSize(new Dimension(width, height));
+            component.setMinimumSize(new Dimension(width, height));
+            component.setMaximumSize(new Dimension(width, height));
+            return parent;
         });
         return this;
     }
 
     public ComponentConfigurer add() {
         functions.add((parent, component) -> {
-            System.out.println(6);
             parent.add(component);
             return parent;
         });
@@ -95,7 +110,6 @@ public class ComponentConfigurerBuilder{
             for (BiConsumer<Container, JComponent> function : postFunctions) {
                 function.accept(parent, component);
             }
-            System.out.println(parent.getComponent(0));
         };
     }
 
