@@ -43,7 +43,7 @@ public class MainMenuPanel extends ListLayer<Component> {
                 .maxSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .minSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .preferredSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-                .appendFiller(new Dimension(5, 5) ,new Dimension(5, 5), new Dimension(5, 5))
+                .appendFiller(new Dimension(5, 15) ,new Dimension(5, 15), new Dimension(5, 15))
                 .add();
 
         ComponentConfigurer label = ComponentConfigurer.create()
