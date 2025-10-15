@@ -82,7 +82,7 @@ public class BestWindow{
 
 
     public Style getDefaultStyle() {
-        return new FlatStyle();
+        return new MatrixStyle();
     }
 
     public JFrame getFrame() {

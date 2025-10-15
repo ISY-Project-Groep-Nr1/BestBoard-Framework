@@ -7,7 +7,20 @@ the best framework (hell yeah) (tevreden RUBEN?) (Ja hoor, ziet er geweldig uit!
 # Layers
 The core of the framework works 
 ![story dependency chart(1).png](../../Downloads/story%20dependency%20chart%281%29.png)
+According to this flowchart.<br>
+The framework is centered around layers, and the LayerManager that contains it.
+All states that the framework holds are stored in these layers,
+and every layer only holds one type (but multiple childTypes), in a group.<br> 
+Layer is abstract and thus allows for multiple implementations,
+by default there are HashMapLayer, ListLayer, MatrixLayer and SingleLayer.
+All layers come with persistent variables,
+which is a String to Object mapping for custom use, with a couple that are used by the framework itself.
+The layer also comes with predefined getters, setters, and deleters for the Implementation to use when relevant.
 
+
+## LayerManager
+The layer manager stores all layers, in most cases there should only be 1 LayerManager.
+The LayerManager is a wrapper of a HashMap with getters and setters to change its values
 
 
 # Graphics
