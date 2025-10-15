@@ -62,9 +62,6 @@ public class BestWindow{
 
         SwingUtilities.invokeLater( () -> {
             canvas = panel.addLayers(sortedLayers);
-
-
-
         });
     }
 
@@ -119,5 +116,7 @@ public class BestWindow{
         return font.getStringBounds(text, context).getBounds().getSize();
     }
 
-
+    public static int getFrame(long modulo, long millisecondsPerFrame){
+        return Math.toIntExact((System.currentTimeMillis() / millisecondsPerFrame % modulo));
+    }
 }

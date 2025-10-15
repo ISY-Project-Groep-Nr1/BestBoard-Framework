@@ -52,6 +52,11 @@ public class FlatStyle implements Style{
         return new ButtonRenderer();
     }
 
+    @Override
+    public boolean isTextAnimated(Size size) {
+        return false;
+    }
+
     private int actualSize(Size size) {
         return switch (size){
             case SMALL -> 10;

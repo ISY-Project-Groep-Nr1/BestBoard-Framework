@@ -69,11 +69,11 @@ public class GuiPanel extends JPanel {
             if (layer instanceof GuiRepresentable<?> guiLayer) {
                 parent.add(guiLayer.getComponent());
             } else {
-                for (Object component : layer.getOfType(JComponent.class)) {
+                for (Object component : layer.getOfType(Component.class)) {
                     if (component instanceof BestGuiElement<?> bestGuiElement) {
                         bestGuiElement.getComponentConfigurer(layer).addComponent(parent, (JComponent) component);
                     } else {
-                        parent.add((JComponent) component);
+                        parent.add((Component) component);
                     }
                     if (component instanceof BestCanvas bestCanvas) {
                         if (canvas != null) {

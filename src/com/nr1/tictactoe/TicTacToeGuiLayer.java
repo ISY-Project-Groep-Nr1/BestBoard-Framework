@@ -72,8 +72,8 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
             return splitPane;
         }));
 
-        ComponentConfigurer topComponentConfigurer = ComponentConfigurer.getExternalAdderComponentConfigurer(top);
-        ComponentConfigurer bottomComponentConfigurer = ComponentConfigurer.getExternalAdderComponentConfigurer(bottom);
+        ComponentConfigurer topComponentConfigurer = ComponentConfigurer.create().swapParent(top).add();
+        ComponentConfigurer bottomComponentConfigurer = ComponentConfigurer.create().swapParent(bottom).add();
 
         elements.add(new BestLabel(message, style, Size.MEDIUM, Font.PLAIN, true)
                              .setConfigurer(topComponentConfigurer)
@@ -86,42 +86,16 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
             popUp.dispose();
             TicTacToe.destroyGame(TicTacToe.getManager());
             TicTacToe.startNewGame();
-        })
-                             .setConfigurer(bottomComponentConfigurer)
-                             .setPreferredSize(250, 40)
-                             .setMinSize(250, 40)
-
-        );
+        }).setConfigurer(bottomComponentConfigurer).setPreferredSize(250, 40).setMinSize(250, 40));
         elements.add(new BestButton("to main menu", style, () -> {
             popUp.setVisible(false);
             popUp.dispose();
             TicTacToe.destroyGame(TicTacToe.getManager());
             TicTacToe.showMainMenu();
-        })
-                             .setConfigurer(bottomComponentConfigurer)
-                             .setPreferredSize(250, 40)
-                             .setMinSize(250, 40)
-        );
+        }).setConfigurer(bottomComponentConfigurer).setPreferredSize(250, 40).setMinSize(250, 40));
 
         popUp.getLayerManager().putLayer(elements);
         popUp.setVisible();
-        //Object[] options = {"New game", "Main menu"};
-        //int choice = JOptionPane.showOptionDialog(
-        //        TicTacToeGuiLayer,
-        //        message,
-        //        "Game ended",
-        //        JOptionPane.YES_NO_OPTION,
-        //        JOptionPane.INFORMATION_MESSAGE,
-        //        null,
-        //        options,
-        //        options[0]);
-//
-        //if (choice == 0) {
-        //    TicTacToe.startNewGame();
-        //}
-        //if (choice == 1) {
-        //    TicTacToe.showMainMenu();
-        //}
     }
 
 

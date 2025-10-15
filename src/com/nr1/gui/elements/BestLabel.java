@@ -6,28 +6,33 @@ import com.nr1.interfaces.BestGuiElement;
 import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
 import com.nr1.interfaces.Style.Size;
+import com.nr1.interfaces.Tickable;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class BestLabel extends JLabel implements BestGuiElement<BestLabel>{
+public class BestLabel extends JLabel implements BestGuiElement<BestLabel>, Tickable{
     private final Style style;
     private final boolean centered;
     private final Size fontSize;
     private final int fontType;
     private ComponentConfigurer configurer;
+    private final boolean isAnimated;
 
     public BestLabel(String text, Style style, Size fontSize, int fontType, boolean centered){
         this.style = style;
         this.centered = centered;
         this.fontSize = fontSize;
         this.fontType = fontType;
+        this.isAnimated = style.isTextAnimated(fontSize);
         super.setText(text);
         super.setFont(style.getFont(fontType, fontSize));
+
     }
 
     @Override
     public void paintComponent(Graphics g){
+        System.out.println(1);
         if (centered){
             style.drawCenteredText(
                     (Graphics2D) g.create(),
@@ -77,4 +82,22 @@ public class BestLabel extends JLabel implements BestGuiElement<BestLabel>{
 
         return BestWindow.get().getDefaultConfigurer();
     }
+
+    @Override
+    public void tick() {
+        if (isAnimated) {
+            repaint();
+        }
+    }
+
+    //@Override
+    //public Dimension getSize() {
+    //    return new Dimension(getWidth()*2, getHeight()*2);
+    //}
+//
+    //@Override
+    //public Dimension getSize(Dimension dimension) {
+    //    dimension.setSize(getWidth()*2, getHeight()*2);
+    //    return dimension;
+    //}
 }

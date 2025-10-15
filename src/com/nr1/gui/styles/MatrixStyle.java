@@ -12,13 +12,15 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 
 
 public class MatrixStyle implements Style{
     public static final String FONT_NAME = "STEELAR";
+    private final HashMap<Size, Dimension> fontBounds = new HashMap<>();
+
     static {
         try {
             Font font = Font.createFont(Font.TRUETYPE_FONT, new File("recourses/Steelar-j9Vnj.otf"));
@@ -59,19 +61,54 @@ public class MatrixStyle implements Style{
             FontRenderContext frc = g.getFontRenderContext();
             TextLayout layout = new TextLayout(text, font, frc);
             Shape textShape = layout.getOutline(null);
-            AffineTransform transform = AffineTransform.getTranslateInstance(drawLocation.x, drawLocation.y);
-            g.setClip(transform.createTransformedShape(textShape));
+            g.setClip(AffineTransform.getTranslateInstance(drawLocation.x, drawLocation.y).createTransformedShape(textShape));
 
             AffineTransform oldTransform = g.getTransform();
-            g.setTransform(AffineTransform.getScaleInstance(2, 2));
-            g.drawImage(ImageManager.getImage("matrix"), 0, 0, null);
+
+            long elapsed = System.currentTimeMillis() ;
+            float interpolationFactor = (elapsed % 4000) / 4000f; // Loop every 4 seconds
+
+            Color color1 = Color.getHSBColor(interpolationFactor, 1.0f, 1.0f); // Moving through hues
+            Color color2 = Color.getHSBColor(interpolationFactor + 0.5f, 1.0f, 1.0f); // Shift hue
+
+            GradientPaint gradientPaint = new GradientPaint(0, 0, color1, 0, bounds.height, color2);
+            g.setPaint(gradientPaint);
+
+            //g.setPaint(new GradientPaint(
+            //        0,
+            //        0,
+            //        Style.interpolateColor(color1, color2, factor1),
+            //        0,
+            //        bounds.height,
+            //        Style.interpolateColor(color1, color2, factor2)
+            //));
+            g.fillRect(0, 0, bounds.width*5, bounds.height*5);
 
             g.setTransform(oldTransform);
+
+            GlyphVector glyphVector = font.createGlyphVector(frc, text);
+            g.setColor(Color.GREEN);
+            g.setStroke(new BasicStroke(2));
+            g.draw(glyphVector.getOutline(drawLocation.x, drawLocation.y));
             g.setClip(oldClip);
+
         } else {
             g.setColor(new Color(18, 53, 36));
             g.drawString(text, drawLocation.x, drawLocation.y);
         }
+    }
+
+
+    private Shape getFuturisticRectangle(int x, int y, int width, int height) {
+        int cutSize = (int) ((width > height) ? height/3f : width/3f);
+        Polygon polygon = new Polygon();
+        polygon.addPoint(x, y);
+        polygon.addPoint(x + width - cutSize, y);
+        polygon.addPoint(width, y+ cutSize);
+        polygon.addPoint(x + width, y + height);
+        polygon.addPoint(x + cutSize, y + height);
+        polygon.addPoint(x, y + height-cutSize);
+        return polygon;
     }
 
     @Override
@@ -89,11 +126,16 @@ public class MatrixStyle implements Style{
         return new ButtonRenderer();
     }
 
+    @Override
+    public boolean isTextAnimated(Size size) {
+        return size == Size.LARGE;
+    }
+
     private int actualSize(Size size) {
         return switch (size){
             case SMALL -> 10;
             case MEDIUM -> 18;
-            case LARGE -> 55;
+            case LARGE -> 48;
         };
     }
 
@@ -151,12 +193,12 @@ public class MatrixStyle implements Style{
                 int width,
                 int height, int x, int y) {
             //g.setClip(-1000, -1000, BestWindow.get().getWidth(), BestWindow.get().getHeight());
+            Shape futuristicRectangle = getFuturisticRectangle(x, y, width, height);
             g.setStroke(stroke);
             g.setColor(backgroundColor);
-            g.fillRect(x, y, width, height);
+            g.fill(futuristicRectangle);
             g.setColor(outlineColor);
-
-            g.drawRect(x, y, width, height);
+            g.draw(futuristicRectangle);
             if (text != null) {
                 drawCenteredText(g, new Dimension(width, height), text, size, fontType);
             }
