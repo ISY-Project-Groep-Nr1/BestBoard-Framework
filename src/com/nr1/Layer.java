@@ -3,6 +3,11 @@ package com.nr1;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * The abstract type of Layer contains all query methods, to be implemented by a child.
+ * And persistent variables for other stuff
+ * @param <T> The type of the layer
+ */
 public abstract class Layer<T> {
     protected final HashMap<String, Object> persistentVariables = new HashMap<>();
     public static final String UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE = "Invalid operation for this layer.";
@@ -22,34 +27,78 @@ public abstract class Layer<T> {
      */
     public static final String DEFAULT_CONFIGURER_KEY = "default_configurer";
 
+    /**
+     * Checks if the layer is active, reads the ACTIVE_KEY
+     * @return if the layer is active
+     */
     public boolean isActive() {
         Object active = persistentVariables.get(ACTIVE_KEY);
         return active instanceof Boolean && (Boolean) active;
     }
 
+    /**
+     * Sets the layer to active, sets the ACTIVE_KEY
+     * @param active to set the layer to active or not.
+     */
     public void setActive(boolean active) {
         persistentVariables.put(ACTIVE_KEY, active);
     }
 
 
-    public Layer(boolean isActive, String name) {
+    protected Layer(boolean isActive, String name) {
         persistentVariables.put(ACTIVE_KEY, isActive);
         persistentVariables.put(NAME_KEY, name);
     }
 
-
+    /**
+     * gets the element at the 2d location (x;y)
+     * @param x the x location
+     * @param y the y location
+     * @return the element
+     * @throws UnsupportedOperationException if the layer doesn't support 2d location
+     */
     public abstract T get(int x, int y);
 
+    /**
+     * get all elements and filters it by elements that have that type or parentType
+     * @param type the type as class
+     * @return a list filtered by type, but still the specified type by this Layer
+     */
     public abstract List<T> getOfType(Class<?> type);
 
+    /**
+     * get all elements as a List<T></T>
+     * @return a list containing all elements
+     */
     public abstract List<T> getAll();
 
+    /**
+     * Gets an element at a numeric index
+     * @param index the index at which to get the element
+     * @return the element to get
+     * @throws UnsupportedOperationException if the layer doesnt support numeric indexes.
+     */
     public abstract T get(int index);
 
+    /**
+     * Gets an element at a String mapped index
+     * @param index the String at which to get the element
+     * @return the element to get
+     * @throws UnsupportedOperationException if the layer doesn't support String mapped indexes
+     */
     public abstract T get(String index);
 
+    /**
+     * @return the type of the layer As a class
+     */
     public abstract Class<?> getLayerType();
 
+    /**
+     * Deletes an element at a 2d location (x;y)
+     * @param x the x location
+     * @param y the y location
+     * @throws UnsupportedOperationException if
+     */
     public abstract void delete(int x, int y);
 
     public abstract void delete(T element);
