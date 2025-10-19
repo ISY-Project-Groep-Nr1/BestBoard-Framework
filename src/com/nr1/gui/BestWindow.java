@@ -2,7 +2,6 @@ package com.nr1.gui;
 
 import com.nr1.gui.elements.BestCanvas;
 import com.nr1.gui.elements.GuiPanel;
-import com.nr1.gui.styles.FlatStyle;
 import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.gui.styles.MatrixStyle;

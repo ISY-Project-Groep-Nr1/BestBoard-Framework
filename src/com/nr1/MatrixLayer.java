@@ -85,7 +85,14 @@ public class MatrixLayer<T> extends Layer<T> {
 
     @Override
     public void delete(T index) {
-        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+        for (T[] column : mainMatrix) {
+            for (int i = 0; i < column.length; i++) {
+                if (column[i].equals(index)) {
+                    column[i] = null;
+                    return;
+                }
+            }
+        }
     }
 
     @Override

@@ -31,7 +31,6 @@ public class HashMapLayer<T> extends Layer<T> {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
-
     @Override
     public List<T> getOfType(Class<?> type) {
         final List<T> result = new ArrayList<>();

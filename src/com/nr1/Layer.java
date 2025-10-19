@@ -97,38 +97,97 @@ public abstract class Layer<T> {
      * Deletes an element at a 2d location (x;y)
      * @param x the x location
      * @param y the y location
-     * @throws UnsupportedOperationException if
+     * @throws UnsupportedOperationException if the layer doesn't support 2d indexing
      */
     public abstract void delete(int x, int y);
 
+    /**
+     * Deletes an element from the layer, based on value
+     * @param element the element to be removed
+     * should always work, and only delete 1 element
+     */
     public abstract void delete(T element);
 
+    /**
+     * Deletes an element from the layer, based on a numeric index
+     * @param index the index at which to remove an element
+     * @throws UnsupportedOperationException if the layer doesn't support numeric indexes
+     */
     public abstract void delete(int index);
 
+    /**
+     * not functioning yet
+     */
     public abstract void deleteOfType(T type);
 
+    /**
+     * clears the layer of ALL elements
+     */
     public abstract void deleteAll();
 
+    /**
+     * adds an element at a 2d location (x;y)
+     * @param x the x location
+     * @param y the y location
+     * @param element the element to add
+     * @throws UnsupportedOperationException if the layer doesn't support 2d indexing
+     */
     public abstract void add(int x, int y, T element);
 
+    /**
+     * adds an element to the collection, without a specified index.
+     * If index is required, it should be at the end (if relevant) of the collection,
+     * if this is not possible it should fail
+     * @param object the object to add
+     * @throws UnsupportedOperationException if the layer requires index an index,
+     * and one cannot be generated at the end.
+     */
     public abstract void add(T object);
 
+    /**
+     * adds an element to the layer, at a String index
+     * @param index the index at which to store the element
+     * @param element the element to store
+     * @throws UnsupportedOperationException if the element doesn't support String indexes
+     */
     public abstract void add(String index, T element);
 
+    /**
+     * gets a persistent variable, with an unknown type.
+     * @param name the name of the variable
+     * @return the variable, or null if not found
+     * @param <U> a convenience, so casting doesn't need to be done by the caller
+     */
     @SuppressWarnings("unchecked")
     public <U> U getPersistent(String name) {
         return (U) persistentVariables.get(name);
     }
 
+    /**
+     * adds a persistent variable, replaces if already present
+     * @param name the name of the variable
+     * @param value the value of the variable
+     * @return self, for chaining
+     * @param <V> a convenience, so the caller doesn't need to cast.
+     */
     public<V> Layer<T> addPersistent(String name, V value) {
         persistentVariables.put(name, value);
         return this;
     }
 
+    /**
+     * deletes a persistent variable, if the variable is not present, do nothing.
+     * @param name the name of the variable
+     */
     public void deletePersistent(String name) {
         persistentVariables.remove(name);
     }
 
+    /**
+     * updates a persistent variable, if the variable is not present, do nothing
+     * @param name the name of the variable
+     * @param value the new value of the variable
+     */
     public void updatePersistent(String name, Object value) {
         persistentVariables.replace(name, value);
     }
