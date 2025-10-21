@@ -102,7 +102,7 @@ public class MatrixLayer<T> extends Layer<T> {
 
 
     @Override
-    public void deleteOfType(T type) {
+    public void deleteOfType(Class<?> type) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 

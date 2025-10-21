@@ -27,6 +27,7 @@ public class BestButton extends JButton implements BestGuiElement<BestButton>{
         this.text = text;
         setVisible(true);
         setContentAreaFilled(false);
+        setOpaque(false);
         this.setFont(style.getFont(fontType, fontSize));
         super.addActionListener(_ -> onClick.run());
         renderer = style.getButtonRenderer();
@@ -40,6 +41,9 @@ public class BestButton extends JButton implements BestGuiElement<BestButton>{
 
     @Override
     public void paint(Graphics g) {
+        if (renderer.propagateRepaints()) {
+            getParent().repaint();
+        }
         Graphics2D graphics2D = (Graphics2D) g.create();
         if (getModel().isPressed()) {
             renderer.paintClicked(graphics2D, this);

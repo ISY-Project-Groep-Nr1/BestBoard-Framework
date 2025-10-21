@@ -118,7 +118,7 @@ public abstract class Layer<T> {
     /**
      * not functioning yet
      */
-    public abstract void deleteOfType(T type);
+    public abstract void deleteOfType(Class<?> type);
 
     /**
      * clears the layer of ALL elements
@@ -170,7 +170,7 @@ public abstract class Layer<T> {
      * @return self, for chaining
      * @param <V> a convenience, so the caller doesn't need to cast.
      */
-    public<V> Layer<T> addPersistent(String name, V value) {
+    public <V> Layer<T> addPersistent(String name, V value) {
         persistentVariables.put(name, value);
         return this;
     }
@@ -181,14 +181,5 @@ public abstract class Layer<T> {
      */
     public void deletePersistent(String name) {
         persistentVariables.remove(name);
-    }
-
-    /**
-     * updates a persistent variable, if the variable is not present, do nothing
-     * @param name the name of the variable
-     * @param value the new value of the variable
-     */
-    public void updatePersistent(String name, Object value) {
-        persistentVariables.replace(name, value);
     }
 }

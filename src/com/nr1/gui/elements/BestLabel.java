@@ -40,6 +40,8 @@ public class BestLabel extends JLabel implements BestGuiElement<BestLabel>, Tick
                     fontSize,
                     fontType
             );
+        } else {
+            style.drawText((Graphics2D) g.create(), getText(), fontSize, fontType);
         }
     }
 

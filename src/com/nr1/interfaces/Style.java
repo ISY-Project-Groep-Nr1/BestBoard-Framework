@@ -13,6 +13,8 @@ public interface Style {
 
     boolean isTextAnimated(Size size);
 
+    boolean propagateRepaints();
+
     enum Size {
         SMALL, MEDIUM, LARGE;
     }

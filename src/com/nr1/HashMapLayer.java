@@ -97,7 +97,7 @@ public class HashMapLayer<T> extends Layer<T> {
      * Unsupported by this layer
      */
     @Override
-    public void deleteOfType(T type) {
+    public void deleteOfType(Class<?> type) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
 
     }

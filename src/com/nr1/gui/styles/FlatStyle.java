@@ -57,6 +57,11 @@ public class FlatStyle implements Style{
         return false;
     }
 
+    @Override
+    public boolean propagateRepaints() {
+        return false;
+    }
+
     private int actualSize(Size size) {
         return switch (size){
             case SMALL -> 10;
@@ -106,6 +111,11 @@ public class FlatStyle implements Style{
                  button.getWidth()-6,
                  button.getHeight()-6, 3, 3
             );
+        }
+
+        @Override
+        public boolean propagateRepaints() {
+            return false;
         }
 
         private void draw(

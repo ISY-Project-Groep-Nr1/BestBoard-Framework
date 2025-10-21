@@ -12,15 +12,52 @@ The framework is centered around layers, and the LayerManager that contains it.
 All states that the framework holds are stored in these layers,
 and every layer only holds one type (but multiple childTypes), in a group.<br> 
 Layer is abstract and thus allows for multiple implementations,
-by default there are HashMapLayer, ListLayer, MatrixLayer and SingleLayer.
 All layers come with persistent variables,
-which is a String to Object mapping for custom use, with a couple that are used by the framework itself.
-The layer also comes with predefined getters, setters, and deleters for the Implementation to use when relevant.
+which is a String to Object mapping for custom use, with a couple that are used by the framework itself.<br>
 
+The layer also comes with predefined getters, setters, and deleters for the Implementation to use when relevant.
+## Methods:
+| Name                        | Returns  | Explanation                                                                                                  |
+|-----------------------------|:--------:|:-------------------------------------------------------------------------------------------------------------|
+| isActive()                  | boolean  | returns if ACTIVE_KEY is set                                                                                 |
+| setActive(boolean)          |   void   | sets the ACTIVE_KEY                                                                                          |
+| get(...)                    |    T     | returns the element at the given index. </br> There are multiple index choices based on layer type           |
+| getOfType(Class)            | List\<T> | returns all elements that are instances of the given class                                                   |
+| getAll()                    | List\<T> | returns all elements, without indexes                                                                        |
+| delete(...)                 |   void   | deletes the element at the given index. </br> There are multiple index choices based on layer type           |
+| delete(T)                   |   void   | deletes the element, at an unknown index                                                                     |
+| deleteOfType(Class)         |   void   | deletes all elements that are an instance of the given class                                                 |
+| deleteAll()                 |   void   | clears all elements from the layer                                                                           |
+| add(..., T)                 |   void   | adds an element at a given index. </br> There are multiple index choices based on layer type                 |
+| add(T)                      |   void   | adds an element, at the end, if indexed. adds regularly if not indexed.                                      |
+| getPersistent<U>(String)    |    U     | gets the persistent value at the given String mapping, or null if missing. </br> Auto casted for convenience |
+| addPersistent<V>(String, V) |   self   | adds a value at the given String mapping. </br> Generic typed for convenience. returns self for chaining     |
+| deletePersistent(String)    |   void   | removes a value at the given String mapping                                                                  |
 
 ## LayerManager
 The layer manager stores all layers, in most cases there should only be 1 LayerManager.
 The LayerManager is a wrapper of a HashMap with getters and setters to change its values
+
+
+## Layer types
+### HashMapLayer 
+A layer that wraps a HashMap<String, T>. <br>
+supports: getOfType(Class), getAll(), get(String), getLayerType(), delete(T), deleteAll(), add(String, T)
+
+### ListLayer
+A layer that wraps an ArrayList<T>. <br>
+supports: getOfType(Class), getAll(), get(int), getLayerType(), delete(T), delete(int), deleteAll(), add(T)
+
+### MatrixLayer
+A layer that wraps a 2d array.<br>
+supports get(int, int), getOfType(Class), getAll(), getLayerType(), delete(T), deleteAll(), add(int, int, T)
+also has 
+
+### SyncedLayer
+**W.I.P**
+
+
+
 
 
 # Graphics
@@ -67,13 +104,16 @@ Example:
 ### BestButton
 A button with a custom [style](#style), [font size, font type](#Font), and onClick Runnable. <br>
 
+
 ### BestLabel
 A label with a custom [style](#style), [font size and font type](#Font). <br>
+
 
 ### BestPopUp
 A popup, used for things like confirmation boxes.
 It Has its own LayerManager elements drawn on this popUp.
 Look at TicTacToeGuiLayer for an example.
+
 
 ### BestCanvas
 The element responsible for drawing all drawables.
@@ -82,9 +122,11 @@ Has a fixed width and height.
 All drawables are drawn relative to this element.
 Only one BestCanvas can exist at a time, having a second one in your layers results in a crash.
 
+
 ## Style
 Style is an interface responsible for the visuals of the framework.<br>
-This includes, drawing panels, drawing text, background color, choosing fonts and drawing buttons.
+This includes drawing panels, drawing text, background color, choosing fonts and drawing buttons.
+
 
 #### Font
 Some styles need different sizes of fonts than other styles. 

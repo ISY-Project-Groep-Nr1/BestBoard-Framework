@@ -8,4 +8,6 @@ public interface StyledButtonRenderer{
     void paint(Graphics2D g, BestButton button);
     void paintHighlighted(Graphics2D g, BestButton button);
     void paintClicked(Graphics2D g, BestButton button);
+
+    boolean propagateRepaints();
 }

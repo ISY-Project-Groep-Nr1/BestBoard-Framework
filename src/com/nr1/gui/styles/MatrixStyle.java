@@ -19,7 +19,6 @@ import java.util.HashMap;
 
 public class MatrixStyle implements Style{
     public static final String FONT_NAME = "STEELAR";
-    private final HashMap<Size, Dimension> fontBounds = new HashMap<>();
 
     static {
         try {
@@ -32,7 +31,6 @@ public class MatrixStyle implements Style{
     }
     @Override
     public void drawBestPanel(Graphics2D g, Dimension bounds) {
-        g.setColor(new Color(59,75,51));
         g.setPaint(new GradientPaint(0, 0, new Color(25, 42, 25), 0, bounds.height, new Color(0, 0 ,0)));
         g.fillRect(0, 0, bounds.width, bounds.height);
         //g.setColor(new Color(99,173,88));
@@ -72,15 +70,6 @@ public class MatrixStyle implements Style{
 
             GradientPaint gradientPaint = new GradientPaint(0, 0, color1, 0, bounds.height, color2);
             g.setPaint(gradientPaint);
-
-            //g.setPaint(new GradientPaint(
-            //        0,
-            //        0,
-            //        Style.interpolateColor(color1, color2, factor1),
-            //        0,
-            //        bounds.height,
-            //        Style.interpolateColor(color1, color2, factor2)
-            //));
             g.fillRect(0, 0, bounds.width*5, bounds.height*5);
 
             g.setTransform(oldTransform);
@@ -128,6 +117,11 @@ public class MatrixStyle implements Style{
     @Override
     public boolean isTextAnimated(Size size) {
         return size == Size.LARGE;
+    }
+
+    @Override
+    public boolean propagateRepaints() {
+        return false;
     }
 
     private int actualSize(Size size) {
@@ -182,6 +176,11 @@ public class MatrixStyle implements Style{
                  button.getWidth()-6,
                  button.getHeight()-6, 3, 3
             );
+        }
+
+        @Override
+        public boolean propagateRepaints() {
+            return false;
         }
 
         private void draw(

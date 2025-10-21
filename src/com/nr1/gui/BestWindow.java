@@ -5,6 +5,7 @@ import com.nr1.gui.elements.GuiPanel;
 import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.gui.styles.MatrixStyle;
+import com.nr1.gui.styles.UnicornStyle;
 import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
 
@@ -81,7 +82,7 @@ public class BestWindow{
 
 
     public Style getDefaultStyle() {
-        return new MatrixStyle();
+        return new UnicornStyle();
     }
 
     public JFrame getFrame() {
@@ -102,7 +103,7 @@ public class BestWindow{
     public static Point calculateCenteredStringPosition(Graphics2D g2d, String text, Dimension parentSize) {  // yoinked from the internet
         var textWidth = g2d.getFontMetrics().stringWidth(text);        // // nooit dat yoinked een echt woord is
         var horizontalPosition = (parentSize.getWidth() / 2d) - (textWidth / 2d);
-        var verticalPosition = parentSize.getHeight()/2d + g2d.getFontMetrics().getHeight()/3d;
+        var verticalPosition = parentSize.getHeight()/2d + g2d.getFontMetrics().getHeight()/2d;
         return new Point((int) horizontalPosition, (int) verticalPosition);
     }
 
