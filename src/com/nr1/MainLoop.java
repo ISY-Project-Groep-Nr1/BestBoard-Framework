@@ -1,26 +1,30 @@
 package com.nr1;
 
 import com.nr1.gui.BestWindow;
-import com.nr1.gui.elements.BestCanvas;
 import com.nr1.interfaces.Clickable;
 import com.nr1.interfaces.ServerListener;
 import com.nr1.interfaces.Tickable;
 import com.nr1.servermanager.ServerManager;
 
-import javax.swing.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainLoop {
     private boolean stopping = false;
-    public final int TARGET_FPS = 64;
-    private ArrayList<MouseEvent> mouseEvents = new ArrayList<>();
+    public final int targetTps;
+    private final LayerManager layerManager;
+    private final ServerManager serverManager;
 
 
-    public void loop(LayerManager layerManager, ServerManager serverManager) {
+    public MainLoop(int targetTps, LayerManager layerManager, ServerManager serverManager) {
+        this.layerManager = layerManager;
+        this.serverManager = serverManager;
+        this.targetTps = targetTps;
+    }
+
+
+    public void loop() {
         while (true) {
             int startTimeNanoSeconds = LocalTime.now().getNano();
 
@@ -59,7 +63,6 @@ public class MainLoop {
             }
 
             if(BestWindow.get().getCanvas() != null){
-
                 BestWindow.get().getCanvas().refresh();
             }
 
@@ -67,10 +70,10 @@ public class MainLoop {
             int finalTimeNanoSeconds = LocalTime.now().getNano();
             int timeNanoSeconds = finalTimeNanoSeconds - startTimeNanoSeconds;
             try {
-                if ((1000 / TARGET_FPS) - (timeNanoSeconds / 1000000) > 0) {
-                    Thread.sleep((1000 / TARGET_FPS) - (timeNanoSeconds / 1000000));
+                if ((1000 / targetTps) - (timeNanoSeconds / 1000000) > 0) {
+                    Thread.sleep((1000 / targetTps) - (timeNanoSeconds / 1000000));
                 } else {
-                    Thread.sleep(1000 / TARGET_FPS);
+                    Thread.sleep(1000 / targetTps);
                 }
             }
             catch (Exception e) {

@@ -5,8 +5,8 @@ the best framework (hell yeah) (tevreden RUBEN?) (Ja hoor, ziet er geweldig uit!
 # Documentation
 
 # Layers
-The core of the framework works 
-![story dependency chart(1).png](../../Downloads/story%20dependency%20chart%281%29.png)
+The core of the framework works via simple chart
+![story dependency chart(1).png](framework flowchart.svg)
 According to this flowchart.<br>
 The framework is centered around layers, and the LayerManager that contains it.
 All states that the framework holds are stored in these layers,
@@ -55,6 +55,30 @@ also has
 
 ### SyncedLayer
 **W.I.P**
+
+
+
+# Main loop
+The main loop is responsible for running all code that needs to be executed each tick. 
+It is constructed with the following constructor:
+
+    public MainLoop(int targetTps, LayerManager layerManager, ServerManager serverManager)
+in which the targetTps is the amount if times the loop runs each second,
+layerManager is the backing layerManager, and serverManager sends the server events.<br>
+To start the loop just call:
+    
+    public void loop()
+! No code can run after the loop() call until the loop is closed.<br>
+The loop calls the following things each tick, in this order:
+
+* Tickable.tick(), for every Tickable in the backed LayerManager
+* ServerListener.message(String), in every ServerListener in the backed LayerManager,
+  for every response the server sent since the last check.
+* Clickable.click(), for every time the mouse has been clicked, 
+while inside the hitbox of the given clickable inside the given clickable inside LayerManager
+* Canvas.refresh(), if a canvas is known to the BestWindow
+
+
 
 
 
@@ -125,9 +149,14 @@ Only one BestCanvas can exist at a time, having a second one in your layers resu
 
 ## Style
 Style is an interface responsible for the visuals of the framework.<br>
-This includes drawing panels, drawing text, background color, choosing fonts and drawing buttons.
-
+This includes drawing panels, drawing text, background color, choosing fonts and drawing buttons.<br>
+To create a new Style, simply implement Style and fill in the blanks
 
 #### Font
 Some styles need different sizes of fonts than other styles. 
 To help abstract this from the GuiElements and users, size is instead specified in Sizes: large, medium and small.
+
+
+
+# Entry points
+In the framework, all game specific code should be in the game logic section

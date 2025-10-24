@@ -30,8 +30,8 @@ public final class TicTacToe {
             window.update();
             window.setVisible();
         });
-            MainLoop mainLoop = new MainLoop();
-            mainLoop.loop(manager, new ServerManager());
+            MainLoop mainLoop = new MainLoop(60, manager, new ServerManager());
+            mainLoop.loop();
 
     }
 
