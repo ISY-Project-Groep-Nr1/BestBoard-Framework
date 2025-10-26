@@ -8,8 +8,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class ServerManager implements Runnable{
+public class ServerManager{
 
     private static final String HOSTNAME = "127.0.0.1";
     private static final int PORT = 7789;
@@ -18,20 +19,22 @@ public class ServerManager implements Runnable{
     private BufferedReader in;
     private PrintWriter out;
 
-    private final List<String> serverReturnBuffer = Collections.synchronizedList(new ArrayList<>());
+    private final ConcurrentLinkedDeque<String> serverReturnBuffer = new ConcurrentLinkedDeque<>();
 
-    @Override
-    public void run() {
+    public ServerManager(){
         try {
             socket = new Socket(HOSTNAME, PORT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Connected!");
+            getGamelist();
+            Thread serverThread = new Thread(this::serverListener);
 
+            serverThread.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        serverListener();
+
     }
 
 
@@ -81,7 +84,8 @@ public class ServerManager implements Runnable{
 
 
     public void move(int cell) {
-        out.println("move " + cell);
+        System.out.println("move " + cell);
+        out.println("Move " + cell );
     }
 
 
@@ -109,8 +113,12 @@ public class ServerManager implements Runnable{
         out.println("message " + message);
     }
 
+    public void help(String command) {
+        out.println("help " + command);
+    }
 
-    public List<String> getServerReturnBuffer() {
+
+    public ConcurrentLinkedDeque<String> getServerReturnBuffer() {
         return serverReturnBuffer;
     }
 }

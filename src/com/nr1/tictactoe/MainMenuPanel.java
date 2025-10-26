@@ -22,9 +22,7 @@ public class MainMenuPanel extends ListLayer<Component> {
             Runnable onAiVsUser,
             Runnable onAiVsAi,
             Runnable onUserVsServer,
-            Runnable onServerVsUser,
             Runnable onAiVsServer,
-            Runnable onServerVsAi,
             Runnable onSettings
     ) {
         super(true, "main_menu_panel");
@@ -62,9 +60,7 @@ public class MainMenuPanel extends ListLayer<Component> {
         super.add(new BestButton("Ai Vs User", style, onAiVsUser).setConfigurer(buttons));
         super.add(new BestButton("Ai Vs Ai", style, onAiVsAi).setConfigurer(buttons));
         super.add(new BestButton("User vs Server", style, onUserVsServer).setConfigurer(buttons));
-        super.add(new BestButton("Server vs User", style, onServerVsUser).setConfigurer(buttons));
         super.add(new BestButton("Ai vs Server", style, onAiVsServer).setConfigurer(buttons));
-        super.add(new BestButton("Server vs Ai", style, onServerVsAi).setConfigurer(buttons));
         super.add(new BestButton("Settings", style, onSettings).setConfigurer(buttons));
         super.add(Box.createGlue());
     }
