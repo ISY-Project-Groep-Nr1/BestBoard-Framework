@@ -81,6 +81,7 @@ public class LayerManager {
     public List<Layer<?>> getAllActive() {
         final List<Layer<?>> activeLayers = new ArrayList<>();
         for (Layer<?> layer : layers.values()) {
+            //System.out.println((String) layer.getPersistent(Layer.NAME_KEY));
             if (layer.isActive()) {
                 activeLayers.add(layer);
             }

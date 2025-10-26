@@ -1,13 +1,11 @@
 package com.nr1.tictactoe;
 
-import com.nr1.LayerManager;
+import com.nr1.Layer;
 import com.nr1.MatrixLayer;
 
-import static com.nr1.tictactoe.TicTacToe.checkWinnerAndContinue;
 
 public class AiPlayer extends Player {
     private final char opponentMark;
-
 
     public AiPlayer(String name, char mark) {
         super(name, mark);
@@ -16,39 +14,42 @@ public class AiPlayer extends Player {
 
 
     @Override
-    public void makeMove(LayerManager manager) {
-        @SuppressWarnings("unchecked")
-        MatrixLayer<TicTacToeCell> board = (MatrixLayer<TicTacToeCell>) manager.getLayer("board");
-
+    public void makeMove(Layer<?> layer) {
+        TicTacToeBoard board = (TicTacToeBoard) layer;
         bestMove(board);
+        
     }
 
 
-    public void bestMove(MatrixLayer<TicTacToeCell> board) {
+    private void bestMove(TicTacToeBoard board) {
         int[] bestMove = new int[]{-1, -1};
         int bestScore = Integer.MIN_VALUE;
+        char[][] clone = board.asMatrix();
 
-        for (int row = 0; row < board.getRows(); row++) {
-            for (int col = 0; col < board.getCols(); col++) {
-                if (board.get(row, col).isEmpty()) {
-                    board.get(row, col).setMark(this.mark);
-                    int score = miniMax(board,  false);
-                    board.get(row, col).setMark(' ');
+        for (int row = 0; row < TicTacToeBoard.WIDTH; row++) {
+            for (int col = 0; col < TicTacToeBoard.HEIGHT; col++) {
+                if (clone[row][col] == ' ') {
+                    clone[row][col] = (this.mark);
+                    int score = miniMax(clone,  false);
+                    clone[row][col] = (' ');
                     if (score > bestScore) {
                         bestScore = score;
                         bestMove[0] = row;
                         bestMove[1] = col;
+                        break;
                     }
                 }
             }
         }
-
-        TicTacToeCell cell = board.get(bestMove[0], bestMove[1]);
-        cell.click();
+        if (bestMove[0] == -1) {
+            board.makeMove(0, 0);
+        } else {
+            board.makeMove(bestMove[0], bestMove[1]);
+        }
     }
 
 
-    public int miniMax(MatrixLayer<TicTacToeCell> board, boolean isMaximizing) {
+    private int miniMax(char[][] board, boolean isMaximizing) {
         int boardValue = checkBoardValue(board);
 
         if (boardValue == 1 || boardValue == -1 || CheckWinner.checkDraw(board)) {
@@ -58,13 +59,13 @@ public class AiPlayer extends Player {
         if (isMaximizing) {
             int maxScore = Integer.MIN_VALUE;
 
-            for (int row = 0; row < board.getRows(); row++) {
-                for (int col = 0; col < board.getCols(); col++) {
-                    TicTacToeCell cell = board.get(row, col);
-                    if (cell.isEmpty()) {
-                        board.get(row, col).setMark(this.mark);
+            for (int row = 0; row < TicTacToeBoard.WIDTH; row++) {
+                for (int col = 0; col < TicTacToeBoard.HEIGHT; col++) {
+                    char cell = board[row][col];
+                    if (cell == ' ') {
+                        board[row][col] = this.mark;
                         maxScore = Math.max(maxScore, miniMax(board,  false));
-                        board.get(row, col).setMark(' ');
+                        board[row][col] = ' ';
                     }
                 }
             }
@@ -72,13 +73,13 @@ public class AiPlayer extends Player {
         } else {
             int minScore = Integer.MAX_VALUE;
 
-            for (int row = 0; row < board.getRows(); row++) {
-                for (int col = 0; col < board.getCols(); col++) {
-                    TicTacToeCell cell = board.get(row, col);
-                    if (cell.isEmpty()) {
-                        board.get(row, col).setMark(this.opponentMark);
+            for (int row = 0; row < TicTacToeBoard.WIDTH; row++) {
+                for (int col = 0; col < TicTacToeBoard.HEIGHT; col++) {
+                    char cell = board[row][col];
+                    if (cell == ' ') {
+                        board[row][col] = (this.opponentMark);
                         minScore = Math.min(minScore, miniMax(board,  true));
-                        board.get(row, col).setMark(' ');
+                        board[row][col] = (' ');
                     }
                 }
             }
@@ -87,7 +88,7 @@ public class AiPlayer extends Player {
     }
 
 
-    public int checkBoardValue(MatrixLayer<TicTacToeCell> board) {
+    private int checkBoardValue(char[][] board) {
         char boardWinner = CheckWinner.checkWinner(board);
 
         if (boardWinner == this.mark) {

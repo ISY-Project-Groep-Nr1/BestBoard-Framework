@@ -2,30 +2,40 @@ package com.nr1.tictactoe;
 
 import com.nr1.ListLayer;
 import com.nr1.MatrixLayer;
-import com.nr1.gui.elements.BestCanvas;
+import com.nr1.SyncedLayer;
+import com.nr1.interfaces.ServerListener;
+import com.nr1.servermanager.ServerManager;
 
-import static com.nr1.tictactoe.TicTacToe.checkWinnerAndContinue;
-import static com.nr1.tictactoe.TicTacToe.getManager;
+import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public final class TicTacToeBoard{
-    private final MatrixLayer<TicTacToeCell> board;
+import static com.nr1.tictactoe.TicTacToe.*;
+
+public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer<TicTacToeCell>>{
     private final ListLayer<BackgroundGrid> background;
     private final Player playerX;
     private final Player playerO;
     private Player currentPlayer;
+    private final ServerManager serverManager;
+    private final int cellSize;
+    public static final int WIDTH = 3;
+    public static final int HEIGHT = 3;
 
-    public TicTacToeBoard(final int cellSize, Player playerX, Player playerO) {
+    public TicTacToeBoard(final int cellSize, Player playerX, Player playerO, ServerManager server) {
+        super(new MatrixLayer<>(true, "board", 3, 3));
         background = new ListLayer<>(true, "background");
-        board = new MatrixLayer<>(true, "board", 3, 3);
         background.add(new BackgroundGrid(cellSize, 3));
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
-                board.add(x, y, new TicTacToeCell(x, y, cellSize, this));
+                super.add(x, y, new TicTacToeCell(x, y, cellSize, this));
             }
         }
+        this.cellSize = cellSize;
         this.playerX = playerX;
         this.playerO = playerO;
         this.currentPlayer = playerX;
+        this.serverManager = server;
     }
 
 
@@ -34,15 +44,10 @@ public final class TicTacToeBoard{
     }
 
 
-    public final MatrixLayer<TicTacToeCell> getLayer() {
-        return board;
-    }
-
-
     public final boolean makeMove(final int x, final int y) {
-        final TicTacToeCell cell = board.get(x, y);
+        final TicTacToeCell cell = super.get(x, y);
         if (cell.isEmpty()) {
-            cell.getMark();
+            super.add(x, y, new TicTacToeCell(x, y, cellSize, this, ticTacToeBoard.currentPlayer.mark));
             switchPlayer();
             return true;
         }
@@ -50,9 +55,16 @@ public final class TicTacToeBoard{
     }
 
 
-    public final void switchPlayer() {
+    private final void switchPlayer() {
+        TicTacToe.checkWinner(TicTacToe.getManager(), this);
         currentPlayer = (currentPlayer == playerX) ? playerO : playerX;
-        TicTacToe.checkWinnerAndContinue(TicTacToe.getManager(), this);
+        currentPlayer.makeMove(this);
+    }
+
+    private final void setPlayer(Player player) {
+        TicTacToe.checkWinner(TicTacToe.getManager(), this);
+        currentPlayer = player;
+        currentPlayer.makeMove(this);
     }
 
 
@@ -67,12 +79,12 @@ public final class TicTacToeBoard{
 
 
     public final char checkWinner() {
-        return CheckWinner.checkWinner(board);
+        return CheckWinner.checkWinner(this.asMatrix());
     }
 
 
     public final Player checkWinnerPlayer() {
-        char winnerMark = CheckWinner.checkWinner(board);
+        char winnerMark = CheckWinner.checkWinner(this.asMatrix());
         if (winnerMark == 'X') return playerX;
         if (winnerMark == 'O') return playerO;
         return null;
@@ -80,6 +92,62 @@ public final class TicTacToeBoard{
 
 
     public boolean checkDraw() {
-        return CheckWinner.checkDraw(board);
+        return CheckWinner.checkDraw(this.asMatrix());
+    }
+
+    @Override
+    public void translateOut(MatrixLayer<TicTacToeCell> layer, String method, Object... parameters) {
+        if (serverManager == null)
+            return;
+        if (method.equals("add") && parameters.length == 3) {
+            if (currentPlayer instanceof ServerPlayer){
+                return;
+            }
+            serverManager.move((int)parameters[0] + (int)parameters[1] * 3);
+        }
+    }
+
+
+    private static final Pattern PATTERN = Pattern.compile(
+            "\\{PLAYER: \"(.*?)\", MOVE: \"(.*?)\", DETAILS: \"(.*?)\"\\}"
+    );
+    @Override
+    public boolean onEvent(String command) {
+        if (serverManager == null){
+            return false;
+        }
+        if (command.startsWith("SVR GAME MOVE")) {
+            Matcher matcher = PATTERN.matcher(command);
+            if (matcher.find()) {
+                String opponent = matcher.group(1);
+                int move = Integer.parseInt(matcher.group(2));
+                System.out.println("[SVR] Opponent moved, cell: " + move);
+                if (getCurrentPlayer() instanceof ServerPlayer serverPlayer){
+                    serverPlayer.setPlayerName(opponent);
+                }
+
+                add(move%3, move/3, new TicTacToeCell(move%3, move/3, cellSize, this, getCurrentPlayer().mark));
+                return true;
+            }
+        } else if(command.startsWith("SVR GAME YOURTURN")){
+            if (!(playerO instanceof ServerPlayer)){
+                setPlayer(playerO);
+            } else if (!(playerX instanceof ServerPlayer)){
+                setPlayer(playerX);
+            } else {
+                throw new IllegalStateException("server request without a server!");
+            }
+        }
+        return false;
+    }
+
+    public char[][] asMatrix(){
+        char[][] clone = new  char[3][3];
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                clone[x][y] = get(x, y).getMark();
+            }
+        }
+        return clone;
     }
 }

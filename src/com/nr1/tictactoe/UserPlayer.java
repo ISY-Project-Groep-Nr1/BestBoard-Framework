@@ -1,5 +1,6 @@
 package com.nr1.tictactoe;
 
+import com.nr1.Layer;
 import com.nr1.LayerManager;
 
 public class UserPlayer extends Player {
@@ -9,7 +10,6 @@ public class UserPlayer extends Player {
 
 
     @Override
-    public void makeMove(LayerManager manager) {
-
+    public void makeMove(Layer<?> manager) {
     }
 }

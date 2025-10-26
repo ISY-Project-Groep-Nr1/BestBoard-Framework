@@ -1,5 +1,6 @@
 package com.nr1.tictactoe;
 
+import com.nr1.Layer;
 import com.nr1.LayerManager;
 
 public abstract class Player {
@@ -15,7 +16,7 @@ public abstract class Player {
         }
 
 
-        public abstract void makeMove(LayerManager manager);
+        public abstract void makeMove(Layer<?> manager);
 
 
         public String getName() {

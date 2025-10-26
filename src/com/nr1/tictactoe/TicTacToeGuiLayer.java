@@ -68,6 +68,9 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
             splitPane.setDividerSize(0);
             splitPane.setOpaque(false);
             splitPane.setBackground(new Color(0, 0, 0, 0));
+
+            jComponent.setOpaque(false);
+            jComponent.setBackground(new Color(0, 0, 0, 0));
             jComponent.add(splitPane);
             return splitPane;
         }));
@@ -84,8 +87,7 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
         elements.add(new BestButton("restart", style,() -> {
             popUp.setVisible(false);
             popUp.dispose();
-            TicTacToe.destroyGame(TicTacToe.getManager());
-            TicTacToe.startNewGame();
+            TicTacToe.restart();
         }).setConfigurer(bottomComponentConfigurer).setPreferredSize(250, 40).setMinSize(250, 40));
         elements.add(new BestButton("to main menu", style, () -> {
             popUp.setVisible(false);
