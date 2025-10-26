@@ -26,7 +26,7 @@ public class ServerManager implements Runnable{
             socket = new Socket(HOSTNAME, PORT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
+            System.out.println("Connected!");
 
         } catch (IOException e) {
             throw new RuntimeException(e);

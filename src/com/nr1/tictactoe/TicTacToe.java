@@ -3,6 +3,8 @@ package com.nr1.tictactoe;
 import com.nr1.LayerManager;
 import com.nr1.MainLoop;
 import com.nr1.gui.BestWindow;
+import com.nr1.servermanager.GameHandler;
+import com.nr1.servermanager.Server;
 import com.nr1.servermanager.ServerManager;
 
 import javax.swing.*;
@@ -19,7 +21,7 @@ public final class TicTacToe {
     private static String player2Name = "Player 2";
     private static TicTacToeBoard ticTacToeBoard;
 
-    static void main(final String[] args) {
+    public static void main(final String[] args) {
         manager = new LayerManager();
         window = BestWindow.create(manager, "Tic tac toe");
 
@@ -30,8 +32,15 @@ public final class TicTacToe {
             window.update();
             window.setVisible();
         });
-            MainLoop mainLoop = new MainLoop(60, manager, new ServerManager());
-            mainLoop.loop();
+
+        ServerManager serverManager = new ServerManager();
+        Thread serverThread = new Thread(serverManager);
+        serverThread.start();
+
+        GameHandler gameHandler = new TicTacToeHandler(new Server(serverManager));
+
+        MainLoop mainLoop = new MainLoop(60, manager, serverManager, gameHandler);
+        mainLoop.loop();
 
     }
 
