@@ -1,12 +1,14 @@
 package com.nr1.servermanager;
 
-public class Server {
-    private final ServerManager serverManager;
+import com.nr1.tictactoe.TicTacToe;
 
-    public Server(ServerManager serverManager) {
+public class Server{
+    final ServerManager serverManager;
+    boolean isSubscribed;
+
+    public Server(ServerManager serverManager){
         this.serverManager = serverManager;
     }
-
     public void login(String username) {
         serverManager.login(username);
     }

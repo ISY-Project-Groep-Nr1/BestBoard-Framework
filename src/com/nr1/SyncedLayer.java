@@ -5,28 +5,30 @@ import com.nr1.interfaces.ServerListener;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class SyncedLayer <T, L extends Layer<T>> implements ServerListener {
+public abstract class SyncedLayer <T, L extends Layer<T>> extends Layer<T> implements ServerListener {
     protected final HashMap<String, Object> persistentVariables = new HashMap<>();
     public static final String ACTIVE_KEY = "active";
 
     private final L layer;
 
+
+
+
+    public SyncedLayer(L layer) {
+        super(layer.getPersistent(ACTIVE_KEY), layer.getPersistent(NAME_KEY));
+        this.layer = layer;
+    }
+
     public abstract void translateOut(L layer, String method, Object... parameters);
 
     public boolean isActive() {
-        Object active = persistentVariables.get(ACTIVE_KEY);
+        Object active = getPersistent(ACTIVE_KEY);
         return active instanceof Boolean && (Boolean) active;
     }
 
     public void setActive(boolean active) {
-        persistentVariables.put(ACTIVE_KEY, active);
+        addPersistent(ACTIVE_KEY, active);
     }
-
-
-    public SyncedLayer(L layer) {
-        this.layer = layer;
-    }
-
 
     public T get(int x, int y){
         translateOut(layer, "get", x, y);
@@ -114,21 +116,17 @@ public abstract class SyncedLayer <T, L extends Layer<T>> implements ServerListe
     @SuppressWarnings("unchecked")
     public <U> U getPersistent(String name) {
         translateOut(layer, "getPersistent", name);
-        return (U) persistentVariables.get(name);
+        return (U) layer.getPersistent(name);
     }
 
-    public void addPersistent(String name, Object value) {
+    public SyncedLayer<T, L> addPersistent(String name, Object value) {
         translateOut(layer, "addPersistent", name, value);
-        persistentVariables.put(name, value);
+        layer.addPersistent(name, value);
+        return this;
     }
 
     public void deletePersistent(String name) {
         translateOut(layer, "deletePersistent", name);
-        persistentVariables.remove(name);
-    }
-
-    public void updatePersistent(String name, Object value) {
-        translateOut(layer, "updatePersistent", name, value);
-        persistentVariables.replace(name, value);
+        layer.deletePersistent(name);
     }
 }
