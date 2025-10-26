@@ -29,7 +29,7 @@ public final class TicTacToe {
     private static Player playerO;
 
     public static TicTacToeBoard ticTacToeBoard;
-    volatile public static ServerManager serverManager;
+    public static ServerManager serverManager;
 
     public static void main(final String[] args) {
         player1Name = args[0];
@@ -42,10 +42,11 @@ public final class TicTacToe {
         });
 
         serverManager = new ServerManager();
-        System.out.println(serverManager);
-        manager.putLayer(new SettingsLayer(new Server(serverManager)));
+        serverManager.login(player1Name);
 
         showMainMenu();
+        manager.putLayer(new SettingsLayer(new Server(serverManager)));
+
         MainLoop mainLoop = new MainLoop(60, manager, serverManager);
         mainLoop.loop();
     }
@@ -82,22 +83,10 @@ public final class TicTacToe {
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
+
                     startNewGame(
                             new UserPlayer(TicTacToe.getPlayer1Name(), 'X'),
                             new AiPlayer("Computer", 'O')
-                    ); },
-                () -> {
-                    manager.deleteLayer("main_menu");
-                    startNewGame(
-                            new AiPlayer("Computer", 'X'),
-                            new UserPlayer(TicTacToe.getPlayer1Name(), 'O')
-                    ); },
-                () -> {
-                    manager.deleteLayer("main_menu");
-
-                    startNewGame(
-                            new AiPlayer("AI 1", 'X'),
-                            new AiPlayer("AI 2", 'O')
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
@@ -138,9 +127,16 @@ public final class TicTacToe {
         startNewGame(playerX, playerO);
     }
 
+    static void restart(){
+        destroyGame(manager);
+        startNewGame(playerX, playerO);
+    }
+
     static void startNewGame(Player playerX, Player playerO) {
         TicTacToe.playerX = playerX;
         TicTacToe.playerO = playerO;
+        guiLayer = new TicTacToeGuiLayer(manager, window.getDefaultStyle(), playerX, playerO);
+        ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, serverManager);
 
         guiLayer = new TicTacToeGuiLayer(manager, window.getStyle(), playerX, playerO);
         ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, serverManager);
@@ -156,9 +152,16 @@ public final class TicTacToe {
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "lost ):": comment, "lost ):")
 
         ));
+        manager.putLayer("game_gui", guiLayer);
+        manager.putLayer("background", ticTacToeBoard.getBackgroundLayer());
+        manager.putLayer("board", ticTacToeBoard);
+
 
         window.update();
 
+
+        Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
+        currentPlayer.makeMove(manager.getLayer("board"));
         if (!(playerX instanceof ServerPlayer || playerO instanceof ServerPlayer)) {
             Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
             currentPlayer.makeMove(manager.getLayer("board"));
@@ -235,38 +238,6 @@ public final class TicTacToe {
 
 
     static void checkWinner(LayerManager manager, TicTacToeBoard board) {
-    static boolean hasPlayers() {
-        return playerX != null && playerO != null;
-    }
-
-    private static void runAiGameLoop(LayerManager manager) {
-        Player current = ticTacToeBoard.getCurrentPlayer();
-
-//        Player winner = ticTacToeBoard.checkWinnerPlayer();
-//        if (winner != null) {
-//            System.out.println("winner winner chicken dinner");
-//            guiLayer.showEndDialog("Winner: " + winner.getName());
-//            return;
-//        }
-//
-//        if (ticTacToeBoard.checkDraw()) {
-//            System.out.println("draw draw tofu lunch");
-//            guiLayer.showEndDialog("Draw!");
-//            return;
-//        }
-
-        if (current instanceof AiPlayer) {
-            current.makeMove(manager);
-            //repaint();
-            //turnLabel.setText("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());
-        }
-
-        Timer timer = new Timer(1, e -> runAiGameLoop(manager));
-        timer.setRepeats(false);
-        timer.start();
-    }
-
-    static void checkWinnerAndContinue(LayerManager manager, TicTacToeBoard board) {
         final Player winner = board.checkWinnerPlayer();
         if (winner != null) {
             if (!(board.getPlayerO() instanceof ServerPlayer || board.getPlayerX() instanceof ServerPlayer)) {
@@ -283,6 +254,8 @@ public final class TicTacToe {
             System.out.println("draw draw tofu lunch");
             return;
         }
+
+
     }
 
     public static LayerManager getManager() {

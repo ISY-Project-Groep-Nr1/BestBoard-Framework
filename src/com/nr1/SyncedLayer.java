@@ -19,6 +19,14 @@ public abstract class SyncedLayer <T, L extends Layer<T>> extends Layer<T> imple
         this.wrapped = wrapped;
     }
 
+
+
+
+    public SyncedLayer(L layer) {
+        super(layer.getPersistent(ACTIVE_KEY), layer.getPersistent(NAME_KEY));
+        this.layer = layer;
+    }
+
     public abstract void translateOut(L layer, String method, Object... parameters);
 
     public boolean isActive() {

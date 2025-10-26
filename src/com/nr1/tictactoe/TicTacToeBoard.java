@@ -3,10 +3,18 @@ package com.nr1.tictactoe;
 import com.nr1.ListLayer;
 import com.nr1.MatrixLayer;
 import com.nr1.SyncedLayer;
+import com.nr1.interfaces.ServerListener;
+import com.nr1.servermanager.ServerManager;
+import com.nr1.SyncedLayer;
 import com.nr1.servermanager.ServerManager;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.nr1.tictactoe.TicTacToe.*;
 
 public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer<TicTacToeCell>>{
     private final ListLayer<BackgroundGrid> background;
@@ -55,15 +63,23 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     }
 
 
+    private final void switchPlayer() {
+        TicTacToe.checkWinner(TicTacToe.getManager(), this);
+        currentPlayer = (currentPlayer == playerX) ? playerO : playerX;
+        currentPlayer.makeMove(this);
+    }
+
+    private final void setPlayer(Player player) {
+        TicTacToe.checkWinner(TicTacToe.getManager(), this);
+        currentPlayer = player;
+        currentPlayer.makeMove(this);
+    }
+
     private final Player getOpposite(Player player) {
         return (player == playerX) ? playerO : playerX;
     }
 
-    private final void setPlayer(Player player) {
-        //TicTacToe.checkWinner(TicTacToe.getManager(), this);
-        currentPlayer = player;
-        currentPlayer.makeMove(this);
-    }
+
 
 
     public final Player getCurrentPlayer() {

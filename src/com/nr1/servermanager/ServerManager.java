@@ -19,9 +19,8 @@ public class ServerManager{
     private BufferedReader in;
     private PrintWriter out;
 
-    private boolean loggedIn = false;
-
     private final ConcurrentLinkedDeque<String> serverReturnBuffer = new ConcurrentLinkedDeque<>();
+    private boolean loggedIn = false;
 
     public ServerManager(){
         try {
