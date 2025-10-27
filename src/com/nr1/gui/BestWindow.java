@@ -4,6 +4,7 @@ import com.nr1.gui.elements.BestCanvas;
 import com.nr1.gui.elements.GuiPanel;
 import com.nr1.Layer;
 import com.nr1.LayerManager;
+import com.nr1.gui.styles.FlatStyle;
 import com.nr1.gui.styles.MatrixStyle;
 import com.nr1.gui.styles.UnicornStyle;
 import com.nr1.interfaces.ComponentConfigurer;
@@ -83,6 +84,23 @@ public class BestWindow{
 
     public Style getDefaultStyle() {
         return new UnicornStyle();
+    }
+
+    public Style getStyle() {
+        return style;
+    }
+
+
+    public void setStyle(Style style) {
+        if (style instanceof FlatStyle) {
+            this.style = new FlatStyle();
+        }
+        else if (style instanceof MatrixStyle) {
+            this.style = new MatrixStyle();
+        }
+        else if (style instanceof UnicornStyle) {
+            this.style = new UnicornStyle();
+        }
     }
 
     public JFrame getFrame() {

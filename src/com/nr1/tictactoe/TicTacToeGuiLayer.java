@@ -39,10 +39,10 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
 
 
 
-        //turnLabel = new JLabel("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer(), SwingConstants.CENTER);
-        //turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        //turnLabel.setForeground(Color.BLACK);
-        //add(turnLabel, BorderLayout.NORTH);
+//        turnLabel = new JLabel("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer(), SwingConstants.CENTER);
+//        turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
+//        turnLabel.setForeground(Color.BLACK);
+//        add(turnLabel, BorderLayout.NORTH);
 
 
 
@@ -54,7 +54,7 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
 
 
     public void showEndDialog(String message) {
-        BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getDefaultStyle(), "Game ended");
+        BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getStyle(), "Game ended");
         ListLayer<BestGuiElement<?>> elements = new ListLayer<>(true, "dialog_main");
 
         JPanel top = new GuiPanel(style, false);

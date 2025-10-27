@@ -1,35 +1,91 @@
 package com.nr1.tictactoe;
 
+import com.nr1.ListLayer;
+import com.nr1.gui.elements.BestButton;
+import com.nr1.gui.elements.BestLabel;
+import com.nr1.gui.styles.FlatStyle;
+import com.nr1.gui.styles.MatrixStyle;
+import com.nr1.gui.styles.UnicornStyle;
+import com.nr1.interfaces.ComponentConfigurer;
+import com.nr1.interfaces.Style;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.function.Function;
 
-public class SettingsPanel  extends JPanel {
-    public SettingsPanel(ActionListener onTest1) {
-        setLayout(new GridLayout(0,1,10,10));
+public class SettingsPanel  extends ListLayer<Component> {
+    private static final int BUTTON_WIDTH = 500;
+    private static final int BUTTON_HEIGHT = 50;
+    Style flatStyle      = new FlatStyle();
+    Style matrixStyle    = new MatrixStyle();
+    Style unicornStyle   = new UnicornStyle();
 
-        JLabel title = new JLabel("Settings", SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 24));
-        add(title);
+    public SettingsPanel(Style style,
+                         Runnable onFlatStyle,
+                         Runnable onMatrixStyle,
+                         Runnable onUnicornStyle,
+                         Runnable onMainMenu) {
+        super(true, "settings_panel");
 
-        JButton test1 = new JButton("Test 1");
-        test1.addActionListener(onTest1);
-        add(test1);
+        super.<Function<JComponent, JComponent>>addPersistent(
+                FRAME_PREPARER_KEY, panel -> {
+                    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                    panel.setAlignmentY(Component.TOP_ALIGNMENT);
+                    return panel;
+                });
 
-        JLabel nameLabel1 = new JLabel("Player 1 Name:", SwingConstants.CENTER);
-        add(nameLabel1);
+        ComponentConfigurer buttons = ComponentConfigurer.create()
+                .horizontalCentered()
+                .verticalTop()
+                .staticSize(BUTTON_WIDTH, BUTTON_HEIGHT)
+                .appendFiller(new Dimension(5, 15) ,new Dimension(5, 15), new Dimension(5, 15))
+                .add();
+
+        ComponentConfigurer label = ComponentConfigurer.create()
+                .horizontalCentered()
+                .verticalTop()
+                .appendGlue()
+                .add();
+
+        super.add(new BestLabel("Settings", style, Style.Size.LARGE, Font.BOLD, true)
+                .setConfigurer(label)
+                .setMinSize(500, 50)
+                .setMaxSize(800, 50)
+                .setPreferredSize(800, 50)
+        );
+
+
+
+        super.add(new BestLabel("Player 1 Name:", style, Style.Size.LARGE, Font.BOLD, true)
+                .setConfigurer(label)
+                .setMinSize(500, 50)
+                .setMaxSize(800, 50)
+                .setPreferredSize(800, 50)
+        );
 
         JTextField nameField1 = new JTextField(TicTacToe.getPlayer1Name());
-        add(nameField1);
+        nameField1.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        nameField1.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        nameField1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        super.add(nameField1);
 
-        JLabel nameLabel2 = new JLabel("Player 2 Name:", SwingConstants.CENTER);
-        add(nameLabel2);
+
+        super.add(new BestLabel("Player 2 Name:", style, Style.Size.LARGE, Font.BOLD, true)
+                .setConfigurer(label)
+                .setMinSize(500, 50)
+                .setMaxSize(800, 50)
+                .setPreferredSize(800, 50)
+        );
 
         JTextField nameField2 = new JTextField(TicTacToe.getPlayer2Name());
-        add(nameField2);
+        nameField2.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        nameField2.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        nameField2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        super.add(nameField2);
 
-        JButton saveButton = new JButton("Save");
-        saveButton.addActionListener(e -> {
+
+        Runnable onSave = () -> {
             String newName1 = nameField1.getText().trim();
             String newName2 = nameField2.getText().trim();
 
@@ -40,12 +96,24 @@ public class SettingsPanel  extends JPanel {
                 TicTacToe.setPlayer2Name(newName2);
             }
 
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(
+                    null,
                     "Names saved:\nPlayer 1: " + TicTacToe.getPlayer1Name() +
                             "\nPlayer 2: " + TicTacToe.getPlayer2Name(),
                     "Settings saved",
-                    JOptionPane.INFORMATION_MESSAGE);
-        });
-        add(saveButton);
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+        };
+
+        super.add(
+                new BestButton("Save", style, onSave)
+                        .setConfigurer(buttons)
+        );
+
+        super.add(new BestButton("Flat Style", flatStyle, onFlatStyle).setConfigurer(buttons));
+        super.add(new BestButton("Matrix Style", matrixStyle, onMatrixStyle).setConfigurer(buttons));
+        super.add(new BestButton("Unicorn Style", unicornStyle, onUnicornStyle).setConfigurer(buttons));
+        super.add(new BestButton("Main Menu", style, onMainMenu).setConfigurer(buttons));
+        super.add(Box.createGlue());
     }
 }
