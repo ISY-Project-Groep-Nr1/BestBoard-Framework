@@ -17,7 +17,6 @@ public class AiPlayer extends Player {
     public void makeMove(Layer<?> layer) {
         TicTacToeBoard board = (TicTacToeBoard) layer;
         bestMove(board);
-        
     }
 
 
@@ -42,9 +41,9 @@ public class AiPlayer extends Player {
             }
         }
         if (bestMove[0] == -1) {
-            board.makeMove(0, 0);
+            board.makeMove(this, 0, 0);
         } else {
-            board.makeMove(bestMove[0], bestMove[1]);
+            board.makeMove(this, bestMove[0], bestMove[1]);
         }
     }
 
