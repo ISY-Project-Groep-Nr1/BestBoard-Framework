@@ -29,9 +29,6 @@ public class BestWindow{
     }
 
 
-
-
-
     private final JFrame frame;
     private final LayerManager layerManager;
     private GuiPanel panel;
@@ -46,7 +43,6 @@ public class BestWindow{
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(new Dimension(Toolkit.getDefaultToolkit().getScreenSize()));
     }
-
 
 
     public void update() {
