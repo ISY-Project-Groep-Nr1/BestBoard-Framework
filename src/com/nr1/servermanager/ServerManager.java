@@ -19,10 +19,13 @@ public class ServerManager{
     private BufferedReader in;
     private PrintWriter out;
 
+    private boolean loggedIn = false;
+
     private final ConcurrentLinkedDeque<String> serverReturnBuffer = new ConcurrentLinkedDeque<>();
 
     public ServerManager(){
         try {
+
             socket = new Socket(HOSTNAME, PORT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -50,6 +53,9 @@ public class ServerManager{
         }
     }
 
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
 
     private void serverListener() {
         String inputLine;
@@ -64,7 +70,11 @@ public class ServerManager{
 
 
     public void login(String name) {
+        if (loggedIn) {
+            return;
+        }
         out.println("login " + name);
+        loggedIn = true;
     }
 
 
@@ -121,5 +131,7 @@ public class ServerManager{
     public ConcurrentLinkedDeque<String> getServerReturnBuffer() {
         return serverReturnBuffer;
     }
+
+
 }
 

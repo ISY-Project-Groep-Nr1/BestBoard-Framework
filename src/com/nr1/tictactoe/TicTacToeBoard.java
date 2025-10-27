@@ -24,7 +24,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
         background.add(new BackgroundGrid(cellSize, 3));
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
-                super.add(x, y, new TicTacToeCell(x, y, cellSize, this));
+                super.wrapped.add(x, y, new TicTacToeCell(x, y, cellSize, this));
             }
         }
         this.cellSize = cellSize;
@@ -46,9 +46,11 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
             return;
         }
         if (cell.isEmpty()) {
-            add(x, y, new TicTacToeCell(x, y, cellSize, this, player.mark));
+            add(x, y, new TicTacToeCell(x, y, cellSize, this, player.getMark()));
             TicTacToe.checkWinner(TicTacToe.getManager(), this);
             setPlayer(getOpposite(player));
+        } else {
+            throw new IllegalArgumentException("cell is not empty: " + x + " " + y);
         }
     }
 
@@ -58,7 +60,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     }
 
     private final void setPlayer(Player player) {
-        TicTacToe.checkWinner(TicTacToe.getManager(), this);
+        //TicTacToe.checkWinner(TicTacToe.getManager(), this);
         currentPlayer = player;
         currentPlayer.makeMove(this);
     }
@@ -91,14 +93,24 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
         return CheckWinner.checkDraw(this.asMatrix());
     }
 
+    public Player getPlayerX() {
+        return playerX;
+    }
+
+    public Player getPlayerO() {
+        return playerO;
+    }
+
+
     @Override
     public void translateOut(MatrixLayer<TicTacToeCell> layer, String method, Object... parameters) {
-        if (serverManager == null)
+        if (serverManager == null || !serverManager.isLoggedIn())
             return;
         if (method.equals("add") && parameters.length == 3) {
             if (currentPlayer instanceof ServerPlayer){
                 return;
             }
+            System.out.println();
             serverManager.move((int)parameters[0] + (int)parameters[1] * 3);
         }
     }
@@ -137,28 +149,35 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     );
     @Override
     public boolean onEvent(String command) {
-        System.out.println(serverManager);
-
         if (serverManager == null){
             return false;
         }
         if (command.startsWith("SVR GAME MOVE")) {
             Matcher matcher = PATTERN.matcher(command);
             if (matcher.find()) {
-                String opponent = matcher.group(1);
+                String playerName = matcher.group(1);
                 int move = Integer.parseInt(matcher.group(2));
-                System.out.println("[SVR] Opponent moved, cell: " + move);
-                makeMove(getPlayerForName(opponent), move % 3, move / 3);
+                int x = move % 3;
+                int y = Math.floorDiv(move, 3);
+
+                Player player = getPlayerForName(playerName);
+                if (!getPlayerForName(playerName).equals(getServerPlayer())) {
+                    return false;
+                }
+
+                final TicTacToeCell cell = super.get(x, y);
+                //setPlayer(player);
+                System.out.println("[SVR] Opponent moved, cell: " + move + " mark: " + player.getMark());
+                System.out.println("placed at: " + x + " " + y);
+                if (cell.isEmpty()) {
+                    wrapped.add(x, y, new TicTacToeCell(x, y, cellSize, this, player.getMark()));
+                    TicTacToe.checkWinner(TicTacToe.getManager(), this);
+                }
+                //makeMove(player, move % 3, move / 3);
+                //setPlayer(getSelf());
             }
         } else if(command.startsWith("SVR GAME YOURTURN")){
-            System.out.println(3);
-            if (!(playerO instanceof ServerPlayer)){
-                setPlayer(playerO);
-            } else if (!(playerX instanceof ServerPlayer)){
-                setPlayer(playerX);
-            } else {
-                throw new IllegalStateException("server request without a server!");
-            }
+            setPlayer(getSelf());
         }
         return false;
     }

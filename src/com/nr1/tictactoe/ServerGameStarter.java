@@ -24,10 +24,10 @@ public class ServerGameStarter extends ListLayer<ServerListener>{
         add(new MatchListener((starter, opponent) -> {
             manager.deleteLayer("server_game_starter");
             if (starter.equals(selfPlayer.name)) {
-                selfPlayer.mark = 'X';
+                selfPlayer.setMark('X');
                 onStart.accept(selfPlayer, new ServerPlayer(opponent, 'O', serverManager));
             } else {
-                selfPlayer.mark = 'O';
+                selfPlayer.setMark('O');
                 onStart.accept(new ServerPlayer(opponent, 'X', serverManager), selfPlayer);
             }
         },"tic-tac-toe"));
@@ -35,6 +35,9 @@ public class ServerGameStarter extends ListLayer<ServerListener>{
     }
 
     public void start(String game) {
+        if (!serverManager.isLoggedIn()) {
+            serverManager.login(selfPlayer.name);
+        }
         serverManager.subscribe(game);
     }
 

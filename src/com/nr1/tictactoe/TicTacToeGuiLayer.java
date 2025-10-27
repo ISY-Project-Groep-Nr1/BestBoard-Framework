@@ -36,25 +36,20 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
 
         canvas.addMouseListener(MouseManager.getMouseListener());
         super.add(canvas);
-
-
-
-//        turnLabel = new JLabel("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer(), SwingConstants.CENTER);
-//        turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
-//        turnLabel.setForeground(Color.BLACK);
-//        add(turnLabel, BorderLayout.NORTH);
-
-
-
-
+        //turnLabel = new JLabel("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer(), SwingConstants.CENTER);
+        //turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        //turnLabel.setForeground(Color.BLACK);
+        //add(turnLabel, BorderLayout.NORTH);
     }
 
 
+    public void showEndDialog(String message){
+        showEndDialog(message, "Game ended");
+    }
 
 
-
-    public void showEndDialog(String message) {
-        BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getStyle(), "Game ended");
+    public void showEndDialog(String message, String title) {
+        BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getStyle(), title);
         ListLayer<BestGuiElement<?>> elements = new ListLayer<>(true, "dialog_main");
 
         JPanel top = new GuiPanel(style, false);

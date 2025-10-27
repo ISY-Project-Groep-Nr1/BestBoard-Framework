@@ -2,9 +2,11 @@ package com.nr1.tictactoe;
 
 import com.nr1.Layer;
 import com.nr1.LayerManager;
+import com.nr1.ListLayer;
 import com.nr1.MainLoop;
 import com.nr1.SyncedLayer;
 import com.nr1.gui.BestWindow;
+import com.nr1.listeners.ResultListener;
 import com.nr1.gui.styles.FlatStyle;
 import com.nr1.gui.styles.MatrixStyle;
 import com.nr1.gui.styles.UnicornStyle;
@@ -27,7 +29,7 @@ public final class TicTacToe {
     private static Player playerO;
 
     public static TicTacToeBoard ticTacToeBoard;
-    public static ServerManager serverManager;
+    volatile public static ServerManager serverManager;
 
     public static void main(final String[] args) {
         player1Name = args[0];
@@ -35,17 +37,15 @@ public final class TicTacToe {
         window = BestWindow.create(manager, "Tic tac toe");
 
         SwingUtilities.invokeLater(() -> {
-            showMainMenu();
-
             window.update();
             window.setVisible();
         });
 
         serverManager = new ServerManager();
-        serverManager.login(player1Name);
-
+        System.out.println(serverManager);
         manager.putLayer(new SettingsLayer(new Server(serverManager)));
 
+        showMainMenu();
         MainLoop mainLoop = new MainLoop(60, manager, serverManager);
         mainLoop.loop();
     }
@@ -141,19 +141,29 @@ public final class TicTacToe {
     static void startNewGame(Player playerX, Player playerO) {
         TicTacToe.playerX = playerX;
         TicTacToe.playerO = playerO;
+
         guiLayer = new TicTacToeGuiLayer(manager, window.getStyle(), playerX, playerO);
         ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, serverManager);
 
-        manager.putLayer("game_gui", guiLayer);
-        manager.putLayer("background", ticTacToeBoard.getBackgroundLayer());
-        manager.putLayer("board", ticTacToeBoard);
+        manager.putLayer(guiLayer);
+        manager.putLayer(ticTacToeBoard.getBackgroundLayer());
+        manager.putLayer(ticTacToeBoard);
+        ListLayer<Object> listenerLayer = new ListLayer<>(true, "listener");
+        manager.putLayer(listenerLayer);
+        listenerLayer.add(new ResultListener(
+                (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "tie!": comment, "tie!"),
+                (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "won!": comment, "won!"),
+                (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "lost ):": comment, "lost ):")
 
+        ));
 
         window.update();
 
+        if (!(playerX instanceof ServerPlayer || playerO instanceof ServerPlayer)) {
+            Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
+            currentPlayer.makeMove(manager.getLayer("board"));
+        }
 
-        Player currentPlayer = ticTacToeBoard.getCurrentPlayer();
-        currentPlayer.makeMove(manager.getLayer("board"));
             //turnLabel.setText("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());
 
     }
@@ -259,18 +269,20 @@ public final class TicTacToe {
     static void checkWinnerAndContinue(LayerManager manager, TicTacToeBoard board) {
         final Player winner = board.checkWinnerPlayer();
         if (winner != null) {
-            guiLayer.showEndDialog("Winner: " + winner.getName());
+            if (!(board.getPlayerO() instanceof ServerPlayer || board.getPlayerX() instanceof ServerPlayer)) {
+                guiLayer.showEndDialog("Winner: " + winner.getName());
+            }
             System.out.println("winner winner chicken dinner");
             return;
         }
 
         if (board.checkDraw()) {
-            guiLayer.showEndDialog("Draw!");
+            if (!(board.getPlayerO() instanceof ServerPlayer || board.getPlayerX() instanceof ServerPlayer)) {
+                guiLayer.showEndDialog("Draw!");
+            }
             System.out.println("draw draw tofu lunch");
             return;
         }
-
-
     }
 
     public static LayerManager getManager() {
