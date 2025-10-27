@@ -43,17 +43,12 @@ public class MainLoop {
             for (String message : serverReturnBuffer) {
                 System.out.println(message);
                 for (final Layer<?> layer : layerManager.getAllActive()) {
-                    System.out.print("\t" +  layer.getPersistent(Layer.NAME_KEY));
                     if (layer instanceof ServerListener listenerLayer){
                         listenerLayer.onEvent(message);
                     }
                     for (final Object object : layer.getOfType(ServerListener.class)) {
-                        if (((ServerListener) object).onEvent(message)) {
-                            System.out.println(" "+object);
-                            break;
-                        }
+                        ((ServerListener) object).onEvent(message);
                     }
-                    System.out.println();
                 }
             }
             serverReturnBuffer.clear();
@@ -63,7 +58,6 @@ public class MainLoop {
             for (MouseEvent event : MouseManager.getMouseEvents()) {
                 final int mouseX = event.getX();
                 final int mouseY = event.getY();
-                System.out.println(mouseX + ", " + mouseY);
                 for (final Layer<?> layer : layerManager.getAllActive()) {
                     for (final Object object : layer.getOfType(Clickable.class)) {
 
