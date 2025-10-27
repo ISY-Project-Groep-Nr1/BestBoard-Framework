@@ -67,50 +67,50 @@ public abstract class SyncedLayer <T, L extends Layer<T>> extends Layer<T> imple
 
 
     public void delete(int x, int y){
-        translateOut(wrapped, "delete", x, y);
         wrapped.delete(x, y);
+        translateOut(wrapped, "delete", x, y);
     }
 
 
     public void delete(T element){
-        translateOut(wrapped, "delete", element);
         wrapped.delete(element);
+        translateOut(wrapped, "delete", element);
     }
 
 
     public void delete(int index){
-        translateOut(wrapped, "delete", index);
         wrapped.delete(index);
+        translateOut(wrapped, "delete", index);
     }
 
 
     public void deleteOfType(Class<?> type){
-        translateOut(wrapped, "deleteOfType", type);
         wrapped.deleteOfType(type);
+        translateOut(wrapped, "deleteOfType", type);
     }
 
 
     public void deleteAll(){
-        translateOut(wrapped, "deleteAll");
         wrapped.deleteAll();
+        translateOut(wrapped, "deleteAll");
     }
 
 
     public void add(int x, int y, T element){
-        translateOut(wrapped, "add", x, y, element);
         wrapped.add(x, y, element);
+        translateOut(wrapped, "add", x, y, element);
     }
 
 
     public void add(T object){
-        translateOut(wrapped, "add", object);
         wrapped.add(object);
+        translateOut(wrapped, "add", object);
     }
 
 
     public void add(String index, T element){
-        translateOut(wrapped, "add", index, element);
         wrapped.add(index, element);
+        translateOut(wrapped, "add", index, element);
     }
 
     @SuppressWarnings("unchecked")
@@ -120,13 +120,13 @@ public abstract class SyncedLayer <T, L extends Layer<T>> extends Layer<T> imple
     }
 
     public SyncedLayer<T, L> addPersistent(String name, Object value) {
-        translateOut(wrapped, "addPersistent", name, value);
         wrapped.addPersistent(name, value);
+        translateOut(wrapped, "addPersistent", name, value);
         return this;
     }
 
     public void deletePersistent(String name) {
-        translateOut(wrapped, "deletePersistent", name);
         wrapped.deletePersistent(name);
+        translateOut(wrapped, "deletePersistent", name);
     }
 }
