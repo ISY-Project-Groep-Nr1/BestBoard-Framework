@@ -48,7 +48,6 @@ public final class TicTacToe {
 
         MainLoop mainLoop = new MainLoop(60, manager, serverManager);
         mainLoop.loop();
-
     }
 
 

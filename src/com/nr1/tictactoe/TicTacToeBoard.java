@@ -3,14 +3,10 @@ package com.nr1.tictactoe;
 import com.nr1.ListLayer;
 import com.nr1.MatrixLayer;
 import com.nr1.SyncedLayer;
-import com.nr1.interfaces.ServerListener;
 import com.nr1.servermanager.ServerManager;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.nr1.tictactoe.TicTacToe.*;
 
 public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer<TicTacToeCell>>{
     private final ListLayer<BackgroundGrid> background;
@@ -44,21 +40,21 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     }
 
 
-    public final boolean makeMove(final int x, final int y) {
+    public final void makeMove(Player player, final int x, final int y) {
         final TicTacToeCell cell = super.get(x, y);
-        if (cell.isEmpty()) {
-            super.add(x, y, new TicTacToeCell(x, y, cellSize, this, ticTacToeBoard.currentPlayer.mark));
-            switchPlayer();
-            return true;
+        if (player != currentPlayer){
+            return;
         }
-        return false;
+        if (cell.isEmpty()) {
+            add(x, y, new TicTacToeCell(x, y, cellSize, this, player.mark));
+            TicTacToe.checkWinner(TicTacToe.getManager(), this);
+            setPlayer(getOpposite(player));
+        }
     }
 
 
-    private final void switchPlayer() {
-        TicTacToe.checkWinner(TicTacToe.getManager(), this);
-        currentPlayer = (currentPlayer == playerX) ? playerO : playerX;
-        currentPlayer.makeMove(this);
+    private final Player getOpposite(Player player) {
+        return (player == playerX) ? playerO : playerX;
     }
 
     private final void setPlayer(Player player) {
@@ -107,12 +103,42 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
         }
     }
 
+    private Player getSelf(){
+        if (!(playerO instanceof ServerPlayer)){
+            return playerO;
+        } else if (!(playerX instanceof ServerPlayer)){
+            return playerX;
+        } else {
+            throw new IllegalStateException("server request without a server!");
+        }
+    }
+
+    private Player getServerPlayer(){
+        if ((playerO instanceof ServerPlayer)){
+            return playerO;
+        } else if ((playerX instanceof ServerPlayer)){
+            return playerX;
+        } else {
+            throw new IllegalStateException("server request without a server!");
+        }
+    }
+
+    private Player getPlayerForName(String playerName){
+        if (getSelf().name.equals(playerName)){
+            return getSelf();
+        } else {
+            getServerPlayer().name = playerName;
+            return getServerPlayer();
+        }
+    }
 
     private static final Pattern PATTERN = Pattern.compile(
             "\\{PLAYER: \"(.*?)\", MOVE: \"(.*?)\", DETAILS: \"(.*?)\"\\}"
     );
     @Override
     public boolean onEvent(String command) {
+        System.out.println(serverManager);
+
         if (serverManager == null){
             return false;
         }
@@ -122,14 +148,10 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
                 String opponent = matcher.group(1);
                 int move = Integer.parseInt(matcher.group(2));
                 System.out.println("[SVR] Opponent moved, cell: " + move);
-                if (getCurrentPlayer() instanceof ServerPlayer serverPlayer){
-                    serverPlayer.setPlayerName(opponent);
-                }
-
-                add(move%3, move/3, new TicTacToeCell(move%3, move/3, cellSize, this, getCurrentPlayer().mark));
-                return true;
+                makeMove(getPlayerForName(opponent), move % 3, move / 3);
             }
         } else if(command.startsWith("SVR GAME YOURTURN")){
+            System.out.println(3);
             if (!(playerO instanceof ServerPlayer)){
                 setPlayer(playerO);
             } else if (!(playerX instanceof ServerPlayer)){

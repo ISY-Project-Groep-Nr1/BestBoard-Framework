@@ -9,14 +9,14 @@ public abstract class SyncedLayer <T, L extends Layer<T>> extends Layer<T> imple
     protected final HashMap<String, Object> persistentVariables = new HashMap<>();
     public static final String ACTIVE_KEY = "active";
 
-    private final L layer;
+    protected final L wrapped;
 
 
 
 
-    public SyncedLayer(L layer) {
-        super(layer.getPersistent(ACTIVE_KEY), layer.getPersistent(NAME_KEY));
-        this.layer = layer;
+    public SyncedLayer(L wrapped) {
+        super(wrapped.getPersistent(ACTIVE_KEY), wrapped.getPersistent(NAME_KEY));
+        this.wrapped = wrapped;
     }
 
     public abstract void translateOut(L layer, String method, Object... parameters);
@@ -31,102 +31,102 @@ public abstract class SyncedLayer <T, L extends Layer<T>> extends Layer<T> imple
     }
 
     public T get(int x, int y){
-        translateOut(layer, "get", x, y);
-        return layer.get(x, y);
+        translateOut(wrapped, "get", x, y);
+        return wrapped.get(x, y);
     }
 
 
     public List<T> getOfType(Class<?> type){
-        translateOut(layer, "getOfType", type);
-        return layer.getOfType(type);
+        translateOut(wrapped, "getOfType", type);
+        return wrapped.getOfType(type);
     }
 
 
     public List<T> getAll(){
-        translateOut(layer, "getAll");
-        return layer.getAll();
+        translateOut(wrapped, "getAll");
+        return wrapped.getAll();
     }
 
 
     public T get(int index){
-        translateOut(layer, "get", index);
-        return layer.get(index);
+        translateOut(wrapped, "get", index);
+        return wrapped.get(index);
     }
 
 
     public T get(String index){
-        translateOut(layer, "get", index);
-        return layer.get(index);
+        translateOut(wrapped, "get", index);
+        return wrapped.get(index);
     }
 
 
     public Class<?> getLayerType(){
-        translateOut(layer, "getLayerType");
-        return layer.getLayerType();
+        translateOut(wrapped, "getLayerType");
+        return wrapped.getLayerType();
     }
 
 
     public void delete(int x, int y){
-        translateOut(layer, "delete", x, y);
-        layer.delete(x, y);
+        translateOut(wrapped, "delete", x, y);
+        wrapped.delete(x, y);
     }
 
 
     public void delete(T element){
-        translateOut(layer, "delete", element);
-        layer.delete(element);
+        translateOut(wrapped, "delete", element);
+        wrapped.delete(element);
     }
 
 
     public void delete(int index){
-        translateOut(layer, "delete", index);
-        layer.delete(index);
+        translateOut(wrapped, "delete", index);
+        wrapped.delete(index);
     }
 
 
     public void deleteOfType(Class<?> type){
-        translateOut(layer, "deleteOfType", type);
-        layer.deleteOfType(type);
+        translateOut(wrapped, "deleteOfType", type);
+        wrapped.deleteOfType(type);
     }
 
 
     public void deleteAll(){
-        translateOut(layer, "deleteAll");
-        layer.deleteAll();
+        translateOut(wrapped, "deleteAll");
+        wrapped.deleteAll();
     }
 
 
     public void add(int x, int y, T element){
-        translateOut(layer, "add", x, y, element);
-        layer.add(x, y, element);
+        translateOut(wrapped, "add", x, y, element);
+        wrapped.add(x, y, element);
     }
 
 
     public void add(T object){
-        translateOut(layer, "add", object);
-        layer.add(object);
+        translateOut(wrapped, "add", object);
+        wrapped.add(object);
     }
 
 
     public void add(String index, T element){
-        translateOut(layer, "add", index, element);
-        layer.add(index, element);
+        translateOut(wrapped, "add", index, element);
+        wrapped.add(index, element);
     }
 
     @SuppressWarnings("unchecked")
     public <U> U getPersistent(String name) {
-        translateOut(layer, "getPersistent", name);
-        return (U) layer.getPersistent(name);
+        translateOut(wrapped, "getPersistent", name);
+        return (U) wrapped.getPersistent(name);
     }
 
     public SyncedLayer<T, L> addPersistent(String name, Object value) {
-        translateOut(layer, "addPersistent", name, value);
-        layer.addPersistent(name, value);
+        translateOut(wrapped, "addPersistent", name, value);
+        wrapped.addPersistent(name, value);
         return this;
     }
 
     public void deletePersistent(String name) {
-        translateOut(layer, "deletePersistent", name);
-        layer.deletePersistent(name);
+        translateOut(wrapped, "deletePersistent", name);
+        wrapped.deletePersistent(name);
     }
 }

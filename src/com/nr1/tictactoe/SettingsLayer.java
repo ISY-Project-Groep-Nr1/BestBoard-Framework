@@ -68,9 +68,6 @@ public class SettingsLayer extends SyncedLayer<Object, Layer<Object>> {
                 addPersistent("yourturn", false);
                 return true;
             }
-        } else if (command.startsWith("SVR GAME YOURTURN")) {
-            addPersistent("yourturn", true);
-            return true;
         } else if (command.startsWith("SVR GAME WIN") ||
                 command.startsWith("SVR GAME LOSS") ||
                 command.startsWith("SVR GAME DRAW")
@@ -87,8 +84,6 @@ public class SettingsLayer extends SyncedLayer<Object, Layer<Object>> {
                 addPersistent("comment", comment);
                 return true;
             }
-        } else {
-            return SettingsLayer.this.onEvent(command);
         }
         return false;
     }

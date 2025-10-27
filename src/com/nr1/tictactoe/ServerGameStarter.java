@@ -21,14 +21,14 @@ public class ServerGameStarter extends ListLayer<ServerListener>{
 
         this.selfPlayer = selfPlayer;
         this.serverManager = serverManager;
-        add(new MatchListener((player1, player2) -> {
+        add(new MatchListener((starter, opponent) -> {
             manager.deleteLayer("server_game_starter");
-            if (player1.equals(selfPlayer.name)) {
+            if (starter.equals(selfPlayer.name)) {
                 selfPlayer.mark = 'X';
-                onStart.accept(selfPlayer, new ServerPlayer(player2, 'O', serverManager));
+                onStart.accept(selfPlayer, new ServerPlayer(opponent, 'O', serverManager));
             } else {
                 selfPlayer.mark = 'O';
-                onStart.accept(new ServerPlayer(player1, 'X', serverManager), selfPlayer);
+                onStart.accept(new ServerPlayer(opponent, 'X', serverManager), selfPlayer);
             }
         },"tic-tac-toe"));
         manager.putLayer(this);
