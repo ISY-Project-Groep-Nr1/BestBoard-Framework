@@ -39,8 +39,7 @@ public class AiPlayer extends Player {
         if (bestMove[0] == -1) {
             board.makeMove(this, 0, 0);
         } else {
-            board.makeMove(this, bestMove[0], bestMove[1]);
-        }
+            board.makeMove(this, bestMove[0], bestMove[1]);}
     }
 
 
