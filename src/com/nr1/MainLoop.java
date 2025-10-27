@@ -49,7 +49,6 @@ public class MainLoop {
                     for (final Object object : layer.getOfType(ServerListener.class)) {
                         ((ServerListener) object).onEvent(message);
                     }
-                    System.out.println();
                 }
             }
             serverReturnBuffer.clear();

@@ -66,7 +66,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     }
 
     private final void setPlayer(Player player) {
-        TicTacToe.checkWinner(TicTacToe.getManager(), this);
+        //TicTacToe.checkWinner(TicTacToe.getManager(), this);
         currentPlayer = player;
         currentPlayer.makeMove(this);
     }
@@ -161,8 +161,6 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     );
     @Override
     public boolean onEvent(String command) {
-        System.out.println(serverManager);
-
         if (serverManager == null){
             return false;
         }
