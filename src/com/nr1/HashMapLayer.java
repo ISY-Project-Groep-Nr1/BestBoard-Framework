@@ -129,4 +129,14 @@ public class HashMapLayer<T> extends Layer<T> {
     public void add(String index, T element) {
         mainHashMap.put(index, element);
     }
+
+    @Override
+    public void set(T element) {
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+    }
+
+    @Override
+    public T get() {
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+    }
 }

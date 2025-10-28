@@ -35,6 +35,15 @@ public abstract class SyncedLayer <T, L extends Layer<T>> extends Layer<T> imple
         return wrapped.get(x, y);
     }
 
+    public T get(){
+        translateOut(wrapped, "get");
+        return wrapped.get();
+    }
+
+    public void set(T element){
+        wrapped.set(element);
+        translateOut(wrapped, "set", element);
+    }
 
     public List<T> getOfType(Class<?> type){
         translateOut(wrapped, "getOfType", type);
