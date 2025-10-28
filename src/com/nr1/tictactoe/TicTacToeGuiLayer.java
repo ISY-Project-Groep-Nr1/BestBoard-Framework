@@ -82,11 +82,13 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent> {
         elements.add(new BestButton("restart", style, () -> {
             popUp.setVisible(false);
             popUp.dispose();
+            popUp.getLayerManager().deleteLayer("dialog_main");
             TicTacToe.restart();
         }).setConfigurer(bottomComponentConfigurer).setPreferredSize(250, 40).setMinSize(250, 40));
         elements.add(new BestButton("to main menu", style, () -> {
             popUp.setVisible(false);
             popUp.dispose();
+            popUp.getLayerManager().deleteLayer("dialog_main");
             System.out.println(6);
             TicTacToe.destroyGame(TicTacToe.getManager());
             TicTacToe.showMainMenu();

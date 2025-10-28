@@ -16,6 +16,7 @@ public class BestPopUp extends JDialog{
     private final GuiPanel gui;
 
     public BestPopUp(BestWindow window, Style style, String title) {
+        System.out.println("boop");
         super(window.getFrame(), title, ModalityType.APPLICATION_MODAL);
         super.setVisible(false);
         super.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
