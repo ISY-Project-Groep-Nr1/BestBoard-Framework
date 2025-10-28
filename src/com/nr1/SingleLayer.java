@@ -1,115 +1,116 @@
 package com.nr1;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class ListLayer<T> extends Layer<T> {
-    private final ArrayList<T> mainList;
+public class SingleLayer<T> extends Layer<T> {
+    private T mainObject;
 
-
-
-    public ListLayer(boolean active, String name) {
+    public SingleLayer(boolean active, String name) {
         super(active, name);
-        mainList = new ArrayList<>();
+        this.mainObject = null;
     }
 
+    @Override
+    public T get() {
+        return mainObject;
+    }
+
+    @Override
+    public void set(T element) {
+        this.mainObject = element;
+    }
 
     @Override
     public T get(int x, int y) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
-
     @Override
     public List<T> getOfType(Class<?> type) {
-        final List<T> result = new ArrayList<>();
-        for (T value : mainList) {
-            if(type.isInstance(value)) {
-                result.add(value);
-            }
+        if (type.isInstance(mainObject)) {
+            List<T> result = new ArrayList<>(1);
+            result.add(mainObject);
+            return result;
         }
-        return result;
+        return Collections.emptyList();
     }
-
 
     @Override
     public List<T> getAll() {
-        return mainList;
+        if (mainObject == null) {
+            return Collections.emptyList();
+        }
+        List<T> single = new ArrayList<>(1);
+        single.add(mainObject);
+        return single;
     }
-
 
     @Override
     public T get(int index) {
-        return mainList.get(index);
+        if (index == 0) {
+            return mainObject;
+        }
+        throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + (mainObject == null ? 0 : 1));
     }
-
 
     @Override
     public T get(String index) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
-
     @Override
     public Class<?> getLayerType() {
         return this.getClass();
     }
-
 
     @Override
     public void delete(int x, int y) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
-
     @Override
     public void delete(T element) {
-        mainList.remove(element);
+        if (mainObject == null) return;
+        if (mainObject.equals(element)) {
+            mainObject = null;
+        }
     }
-
 
     @Override
     public void delete(int index) {
-        mainList.remove(index);
+        if (index == 0) {
+            mainObject = null;
+            return;
+        }
+        throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + (mainObject == null ? 0 : 1));
     }
-
 
     @Override
     public void deleteOfType(Class<?> type) {
-        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+        if (type.isInstance(mainObject)) {
+            mainObject = null;
+        }
     }
-
 
     @Override
     public void deleteAll() {
-        mainList.clear();
+        mainObject = null;
     }
-
 
     @Override
     public void add(int x, int y, T element) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
-
     @Override
     public void add(T object) {
-        mainList.add(object);
+        this.mainObject = object;
     }
-
 
     @Override
     public void add(String index, T element) {
-        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
-    }
-
-    @Override
-    public void set(T element) {
-        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
-    }
-
-    @Override
-    public T get() {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 }

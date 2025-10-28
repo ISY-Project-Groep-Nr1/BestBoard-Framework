@@ -8,43 +8,56 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
-public class ServerManager implements Runnable{
-    public static final String HOSTNAME = "127.0.0.1";
-    public static final int PORT = 7789;
+public class ServerManager{
 
-    private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    private static final String HOSTNAME = "172.201.112.199";
+    private static final int PORT = 7789;
 
-    private final List<String> serverReturnBuffer = Collections.synchronizedList(new ArrayList<>());
+    volatile private Socket socket;
+    volatile private BufferedReader in;
+    volatile private PrintWriter out;
+    volatile private Thread serverThread;
 
+    private boolean loggedIn = false;
 
-    @Override
-    public void run() {
+    private final ConcurrentLinkedDeque<String> serverReturnBuffer = new ConcurrentLinkedDeque<>();
+
+    public ServerManager(){
         try {
+
             socket = new Socket(HOSTNAME, PORT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            System.out.println("Connected!");
+            getGamelist();
+            serverThread = new Thread(this::serverListener);
+
+            serverThread.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        serverListener();
+
     }
 
 
     public void shutdown() {
         try {
+
             in.close();
             out.close();
             if (!socket.isClosed()){
                 socket.close();
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+
         }
     }
 
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
 
     private void serverListener() {
         String inputLine;
@@ -54,12 +67,32 @@ public class ServerManager implements Runnable{
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException _) {
+
         }
     }
 
+    public void resetConnection(){
+        shutdown();
+        System.out.println(2);
+        try {
+            socket = new Socket(HOSTNAME, PORT);
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            serverThread = new Thread(this::serverListener);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
     public void login(String name) {
+        if (loggedIn) {
+            return;
+        }
         out.println("login " + name);
+        loggedIn = true;
     }
 
 
@@ -79,7 +112,8 @@ public class ServerManager implements Runnable{
 
 
     public void move(int cell) {
-        out.println("move " + cell);
+        System.out.println("move " + cell);
+        out.println("Move " + cell );
     }
 
 
@@ -107,9 +141,15 @@ public class ServerManager implements Runnable{
         out.println("message " + message);
     }
 
+    public void help(String command) {
+        out.println("help " + command);
+    }
 
-    public List<String> getServerReturnBuffer() {
+
+    public ConcurrentLinkedDeque<String> getServerReturnBuffer() {
         return serverReturnBuffer;
     }
+
+
 }
 

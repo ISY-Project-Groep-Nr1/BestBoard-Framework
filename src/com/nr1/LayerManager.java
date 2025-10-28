@@ -1,35 +1,46 @@
 package com.nr1;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 public class LayerManager {
-    public final HashMap<String, Layer<?>> layers = new HashMap<>();
+    private final HashMap<String, Layer<?>> layers = new HashMap<>();
 
 
 
     public void addListLayer (boolean active, String name) {
-        if (layers.containsKey(name)) {
-            throw new IllegalArgumentException("This name already exists: " + name);
-        }
+        ensureUnique(name);
         layers.put(name, new ListLayer<>(active, name));
     }
 
 
     public void addMatrixLayer (boolean active, String name, int width, int height) {
-        if (layers.containsKey(name)) {
-            throw new IllegalArgumentException("This name already exists: " + name);
-        }
+        ensureUnique(name);
         layers.put(name, new MatrixLayer<>(active, name, width, height));
     }
 
 
     public void addHashMapLayer (boolean active, String name) {
+        ensureUnique(name);
+        layers.put(name, new HashMapLayer<>(active, name));
+    }
+
+
+    public void putLayer(String name, Layer<?> layer) {
+        ensureUnique(name);
+        layers.put(name, layer);
+    }
+
+    public void putLayer(Layer<?> layer) {
+        putLayer(layer.getPersistent(Layer.NAME_KEY), layer);
+    }
+
+    private void ensureUnique(String name) {
         if (layers.containsKey(name)) {
             throw new IllegalArgumentException("This name already exists: " + name);
         }
-        layers.put(name, new HashMapLayer<>(active, name));
     }
 
 
@@ -70,11 +81,22 @@ public class LayerManager {
     public List<Layer<?>> getAllActive() {
         final List<Layer<?>> activeLayers = new ArrayList<>();
         for (Layer<?> layer : layers.values()) {
+            //System.out.println((String) layer.getPersistent(Layer.NAME_KEY));
             if (layer.isActive()) {
                 activeLayers.add(layer);
             }
         }
         return activeLayers;
+    }
+
+
+    public List<Layer<?>> getSortedOn(String persistentName) {
+        return layers.values().stream().filter(Layer::isActive)
+                .sorted(Comparator.comparingInt(
+                        (layer)-> (layer.getPersistent(persistentName) != null)?
+                                layer.getPersistent(persistentName) : 0
+                ))
+                .toList();
     }
 
 }

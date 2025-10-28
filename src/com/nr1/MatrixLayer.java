@@ -87,7 +87,14 @@ public class MatrixLayer<T> extends Layer<T> {
 
     @Override
     public void delete(T index) {
-        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+        for (T[] column : mainMatrix) {
+            for (int i = 0; i < column.length; i++) {
+                if (column[i].equals(index)) {
+                    column[i] = null;
+                    return;
+                }
+            }
+        }
     }
 
     @Override
@@ -97,7 +104,7 @@ public class MatrixLayer<T> extends Layer<T> {
 
 
     @Override
-    public void deleteOfType(T type) {
+    public void deleteOfType(Class<?> type) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 
@@ -112,6 +119,7 @@ public class MatrixLayer<T> extends Layer<T> {
 
     @Override
     public void add(int x, int y, T element) {
+        System.out.println(x + "'" + y);
         mainMatrix[x][y] = element;
     }
 
@@ -124,6 +132,16 @@ public class MatrixLayer<T> extends Layer<T> {
 
     @Override
     public void add(String index, T element) {
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+    }
+
+    @Override
+    public void set(T element) {
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+    }
+
+    @Override
+    public T get() {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
 }
