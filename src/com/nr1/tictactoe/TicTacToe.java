@@ -33,7 +33,10 @@ public final class TicTacToe {
     volatile public static ServerManager serverManager;
 
     public static void main(final String[] args) {
-       // player1Name = args[0];
+        if (args.length >= 1) {
+            player1Name = args[0];
+        }
+       //
         manager = new LayerManager();
         window = BestWindow.create(manager, "Tic tac toe");
 
