@@ -43,7 +43,8 @@ public final class TicTacToeCell implements Drawable, Clickable {
     @Override
     public final void click() {
         if (TicTacToe.ticTacToeBoard.getCurrentPlayer() instanceof UserPlayer) {
-            TicTacToe.ticTacToeBoard.makeMove(TicTacToe.ticTacToeBoard.getCurrentPlayer(), x, y);
+            if (ticTacToeBoard.get(x, y).getMark() == ' ')
+                TicTacToe.ticTacToeBoard.makeMove(TicTacToe.ticTacToeBoard.getCurrentPlayer(), x, y);
         }
     }
 

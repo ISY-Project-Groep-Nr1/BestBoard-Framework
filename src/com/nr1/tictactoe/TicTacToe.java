@@ -33,7 +33,7 @@ public final class TicTacToe {
     volatile public static ServerManager serverManager;
 
     public static void main(final String[] args) {
-        player1Name = args[0];
+       // player1Name = args[0];
         manager = new LayerManager();
         window = BestWindow.create(manager, "Tic tac toe");
 
@@ -182,6 +182,7 @@ public final class TicTacToe {
         manager.deleteLayer("game_gui");
         manager.deleteLayer("background");
         manager.deleteLayer("board");
+        manager.deleteLayer("listener");
     }
 
 
@@ -243,6 +244,10 @@ public final class TicTacToe {
         BestWindow.get().getFrame().repaint();
     }
 
+
+    static boolean hasPlayers() {
+        return playerX != null && playerO != null;
+    }
 
     static void checkWinner(LayerManager manager, TicTacToeBoard board) {
         final Player winner = board.checkWinnerPlayer();

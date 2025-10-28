@@ -14,7 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Function;
 
-public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
+public final class TicTacToeGuiLayer extends ListLayer<JComponent> {
     //private final JLabel turnLabel;
     private final Style style;
 
@@ -43,7 +43,7 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
     }
 
 
-    public void showEndDialog(String message){
+    public void showEndDialog(String message) {
         showEndDialog(message, "Game ended");
     }
 
@@ -74,12 +74,12 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
         ComponentConfigurer bottomComponentConfigurer = ComponentConfigurer.create().swapParent(bottom).add();
 
         elements.add(new BestLabel(message, style, Size.MEDIUM, Font.PLAIN, true)
-                             .setConfigurer(topComponentConfigurer)
-                             .setPreferredSize(350, 40)
-                             .setMinSize(350, 40)
+                .setConfigurer(topComponentConfigurer)
+                .setPreferredSize(350, 40)
+                .setMinSize(350, 40)
         );
 
-        elements.add(new BestButton("restart", style,() -> {
+        elements.add(new BestButton("restart", style, () -> {
             popUp.setVisible(false);
             popUp.dispose();
             TicTacToe.restart();
@@ -87,6 +87,7 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
         elements.add(new BestButton("to main menu", style, () -> {
             popUp.setVisible(false);
             popUp.dispose();
+            System.out.println(6);
             TicTacToe.destroyGame(TicTacToe.getManager());
             TicTacToe.showMainMenu();
         }).setConfigurer(bottomComponentConfigurer).setPreferredSize(250, 40).setMinSize(250, 40));
@@ -94,7 +95,5 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent>{
         popUp.getLayerManager().putLayer(elements);
         popUp.setVisible();
     }
-
-
 
 }
