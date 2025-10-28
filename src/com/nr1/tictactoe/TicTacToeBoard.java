@@ -68,7 +68,6 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     private final void setPlayer(Player player) {
         //TicTacToe.checkWinner(TicTacToe.getManager(), this);
         currentPlayer = player;
-        System.out.println(player.getName());
         currentPlayer.makeMove(this);
     }
 

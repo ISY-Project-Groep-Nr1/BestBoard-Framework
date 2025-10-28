@@ -12,17 +12,17 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class ServerManager{
 
-    private static final String HOSTNAME = "127.0.0.1";
+    private static final String HOSTNAME = "172.201.112.199";
     private static final int PORT = 7789;
 
-    private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    volatile private Socket socket;
+    volatile private BufferedReader in;
+    volatile private PrintWriter out;
+    volatile private Thread serverThread;
 
     private boolean loggedIn = false;
 
     private final ConcurrentLinkedDeque<String> serverReturnBuffer = new ConcurrentLinkedDeque<>();
-    private boolean loggedIn = false;
 
     public ServerManager(){
         try {
@@ -32,7 +32,7 @@ public class ServerManager{
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Connected!");
             getGamelist();
-            Thread serverThread = new Thread(this::serverListener);
+            serverThread = new Thread(this::serverListener);
 
             serverThread.start();
         } catch (IOException e) {
@@ -44,6 +44,7 @@ public class ServerManager{
 
     public void shutdown() {
         try {
+
             in.close();
             out.close();
             if (!socket.isClosed()){
@@ -66,9 +67,25 @@ public class ServerManager{
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (NullPointerException _) {
+
         }
     }
 
+    public void resetConnection(){
+        shutdown();
+        System.out.println(2);
+        try {
+            socket = new Socket(HOSTNAME, PORT);
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            serverThread = new Thread(this::serverListener);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
     public void login(String name) {
         if (loggedIn) {

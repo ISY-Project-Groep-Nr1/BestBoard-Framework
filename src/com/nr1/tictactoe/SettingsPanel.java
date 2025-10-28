@@ -8,6 +8,7 @@ import com.nr1.gui.styles.MatrixStyle;
 import com.nr1.gui.styles.UnicornStyle;
 import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
+import com.nr1.servermanager.ServerManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,7 @@ public class SettingsPanel  extends ListLayer<Component> {
     Style matrixStyle    = new MatrixStyle();
     Style unicornStyle   = new UnicornStyle();
 
-    public SettingsPanel(Style style,
+    public SettingsPanel(Style style, ServerManager serverManager,
                          Runnable onFlatStyle,
                          Runnable onMatrixStyle,
                          Runnable onUnicornStyle,
@@ -90,6 +91,10 @@ public class SettingsPanel  extends ListLayer<Component> {
             String newName2 = nameField2.getText().trim();
 
             if (!newName1.isEmpty()) {
+                //System.out.println(newName1);
+                //serverManager.resetConnection();
+                //System.out.println(newName1);
+                //serverManager.login(newName1);
                 TicTacToe.setPlayer1Name(newName1);
             }
             if (!newName2.isEmpty()) {

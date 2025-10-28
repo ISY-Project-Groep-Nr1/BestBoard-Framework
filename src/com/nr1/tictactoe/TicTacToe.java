@@ -24,7 +24,7 @@ public final class TicTacToe {
     private static TicTacToeGuiLayer guiLayer;
     private static LayerManager manager;
     private static BestWindow window;
-    private static String player1Name = "Player 1";
+    private static String player1Name = "BestPlayer";
     private static String player2Name = "Player 2";
     private static Player playerX;
     private static Player playerO;
@@ -84,10 +84,22 @@ public final class TicTacToe {
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
-
                     startNewGame(
                             new UserPlayer(TicTacToe.getPlayer1Name(), 'X'),
                             new AiPlayer("Computer", 'O')
+                    ); },
+                () -> {
+                    manager.deleteLayer("main_menu");
+                    startNewGame(
+                            new AiPlayer("Computer", 'X'),
+                            new UserPlayer(TicTacToe.getPlayer1Name(), 'O')
+                    ); },
+                () -> {
+                    manager.deleteLayer("main_menu");
+
+                    startNewGame(
+                            new AiPlayer("AI 1", 'X'),
+                            new AiPlayer("AI 2", 'O')
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
@@ -128,10 +140,6 @@ public final class TicTacToe {
         startNewGame(playerX, playerO);
     }
 
-    static void restart(){
-        destroyGame(manager);
-        startNewGame(playerX, playerO);
-    }
 
     static void startNewGame(Player playerX, Player playerO) {
         TicTacToe.playerX = playerX;
@@ -140,9 +148,6 @@ public final class TicTacToe {
         guiLayer = new TicTacToeGuiLayer(manager, window.getDefaultStyle(), playerX, playerO);
         ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, serverManager);
 
-        guiLayer = new TicTacToeGuiLayer(manager, window.getStyle(), playerX, playerO);
-        ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, serverManager);
-
         manager.putLayer(guiLayer);
         manager.putLayer(ticTacToeBoard.getBackgroundLayer());
         manager.putLayer(ticTacToeBoard);
@@ -154,17 +159,7 @@ public final class TicTacToe {
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "lost ):": comment, "lost ):")
 
         ));
-        manager.putLayer(guiLayer);
-        manager.putLayer(ticTacToeBoard.getBackgroundLayer());
-        manager.putLayer(ticTacToeBoard);
-        ListLayer<Object> listenerLayer = new ListLayer<>(true, "listener");
-        manager.putLayer(listenerLayer);
-        listenerLayer.add(new ResultListener(
-                (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "tie!": comment, "tie!"),
-                (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "won!": comment, "won!"),
-                (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "lost ):": comment, "lost ):")
 
-        ));
 
         window.update();
 
@@ -179,7 +174,7 @@ public final class TicTacToe {
     }
 
     static void destroyGame(LayerManager manager) {
-        manager.deleteLayer("game_gui");
+        manager.deleteLayer("gui_panel");
         manager.deleteLayer("background");
         manager.deleteLayer("board");
         manager.deleteLayer("listener");
@@ -220,6 +215,7 @@ public final class TicTacToe {
 
         SettingsPanel newSettings = new SettingsPanel(
                 BestWindow.get().getStyle(),
+                serverManager,
                 () -> {
                     BestWindow.get().setStyle(new FlatStyle());
                     refreshSettingsScreen();
