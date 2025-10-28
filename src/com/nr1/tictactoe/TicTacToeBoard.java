@@ -66,6 +66,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     }
 
     private final void setPlayer(Player player) {
+        System.out.println(player.getMark());
         //TicTacToe.checkWinner(TicTacToe.getManager(), this);
         currentPlayer = player;
         currentPlayer.makeMove(this);
@@ -169,6 +170,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
             if (matcher.find()) {
                 String playerName = matcher.group(1);
                 int move = Integer.parseInt(matcher.group(2));
+                System.out.println(playerName);
                 int x = move % 3;
                 int y = Math.floorDiv(move, 3);
 

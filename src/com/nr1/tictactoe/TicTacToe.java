@@ -22,7 +22,7 @@ public final class TicTacToe {
     private TicTacToe() {}
 
     private static TicTacToeGuiLayer guiLayer;
-    private static LayerManager manager;
+    private static final LayerManager manager = new LayerManager();;
     private static BestWindow window;
     private static String player1Name = "BestPlayer";
     private static String player2Name = "Player 2";
@@ -37,7 +37,7 @@ public final class TicTacToe {
             player1Name = args[0];
         }
        //
-        manager = new LayerManager();
+
         window = BestWindow.create(manager, "Tic tac toe");
 
         SwingUtilities.invokeLater(() -> {
@@ -160,7 +160,6 @@ public final class TicTacToe {
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "tie!": comment, "tie!"),
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "won!": comment, "won!"),
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "lost ):": comment, "lost ):")
-
         ));
 
 
