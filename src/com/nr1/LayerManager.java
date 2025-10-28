@@ -37,6 +37,15 @@ public class LayerManager {
         putLayer(layer.getPersistent(Layer.NAME_KEY), layer);
     }
 
+    public void deleteLayer(Layer<?> layer) {
+        System.out.println((String)layer.getPersistent(Layer.NAME_KEY));
+        deleteLayer((String)layer.getPersistent(Layer.NAME_KEY));
+    }
+
+    public <T> void putSingleLayer(String name, T element) {
+        putLayer(name, new SingleLayer<>(true, name, element));
+    }
+
     private void ensureUnique(String name) {
         if (layers.containsKey(name)) {
             throw new IllegalArgumentException("This name already exists: " + name);

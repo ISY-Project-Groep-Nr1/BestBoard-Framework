@@ -13,6 +13,8 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class ServerManager{
 
     private static final String HOSTNAME = "172.201.112.199";
+    //private static final String HOSTNAME = "127.0.0.1";
+
     private static final int PORT = 7789;
 
     volatile private Socket socket;
@@ -118,7 +120,7 @@ public class ServerManager{
 
 
     public void subscribe(String game) {
-        out.println("subscribe " + game);
+        //out.println("subscribe " + game);
     }
 
 
