@@ -12,10 +12,12 @@ public class SingleLayer<T> extends Layer<T> {
         this.mainObject = null;
     }
 
+    @Override
     public T get() {
         return mainObject;
     }
 
+    @Override
     public void set(T element) {
         this.mainObject = element;
     }

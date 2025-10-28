@@ -131,4 +131,14 @@ public class MatrixLayer<T> extends Layer<T> {
     public void add(String index, T element) {
         throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
     }
+
+    @Override
+    public void set(T element) {
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+    }
+
+    @Override
+    public T get() {
+        throw new UnsupportedOperationException(Layer.UNSUPPORTED_OPERATION_EXCEPTION_MESSAGE);
+    }
 }

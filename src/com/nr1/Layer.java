@@ -182,4 +182,8 @@ public abstract class Layer<T> {
     public void deletePersistent(String name) {
         persistentVariables.remove(name);
     }
+
+    public abstract void set(T element);
+
+    public abstract T get();
 }
