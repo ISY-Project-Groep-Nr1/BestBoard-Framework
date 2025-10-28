@@ -33,26 +33,29 @@ public final class TicTacToe {
     volatile public static ServerManager serverManager;
 
     public static void main(final String[] args) {
-        if (args.length >= 1) {
-            player1Name = args[0];
+        try {
+            if (args.length >= 1) {
+                player1Name = args[0];
+            }
+            window = BestWindow.create(manager, "Tic tac toe");
+
+            SwingUtilities.invokeLater(() -> {
+                window.update();
+                window.setVisible();
+            });
+
+            serverManager = new ServerManager();
+            serverManager.login(player1Name);
+
+            manager.putLayer(new SettingsLayer(new Server(serverManager)));
+
+            showMainMenu();
+            MainLoop mainLoop = new MainLoop(60, manager, serverManager);
+            mainLoop.loop();
+        }catch (Exception e){
+            e.printStackTrace();
+            main(args);
         }
-       //
-
-        window = BestWindow.create(manager, "Tic tac toe");
-
-        SwingUtilities.invokeLater(() -> {
-            window.update();
-            window.setVisible();
-        });
-
-        serverManager = new ServerManager();
-        serverManager.login(player1Name);
-
-        manager.putLayer(new SettingsLayer(new Server(serverManager)));
-
-        showMainMenu();
-        MainLoop mainLoop = new MainLoop(60, manager, serverManager);
-        mainLoop.loop();
     }
 
 
