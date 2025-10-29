@@ -128,12 +128,11 @@ public class SettingsPanel  extends ListLayer<Component> {
         super.add(Box.createGlue());
     }
 
+
     private void showSettingsSavedDialog(Style style, String playerName1, String playerName2) {
-        // 1. create popup + layer
         BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getStyle(), "Settings saved");
         ListLayer<BestGuiElement<?>> elements = new ListLayer<>(true, "settings_confirmation");
 
-        // 2. make the same top/bottom panels like showEndDialog
         JPanel top = new GuiPanel(style, false);
         top.setOpaque(false);
         top.setBackground(style.getBackgroundColor());
@@ -143,11 +142,10 @@ public class SettingsPanel  extends ListLayer<Component> {
         bottom.setOpaque(false);
         bottom.setBackground(style.getBackgroundColor());
 
-        // 3. persistent FRAME_PREPARER_KEY that installs the splitpane into the popup root
         elements.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER_KEY, (rootComponent -> {
             JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
             splitPane.setDividerSize(0);
-            splitPane.setResizeWeight(0.70); // top gets ~70%, tweak if you like
+            splitPane.setResizeWeight(0.70);
             splitPane.setOpaque(false);
             splitPane.setBackground(new Color(0, 0, 0, 0));
 
@@ -159,21 +157,19 @@ public class SettingsPanel  extends ListLayer<Component> {
             return splitPane;
         }));
 
-        // 4. configurers that tell BestLabel / BestButton which panel to attach to
         ComponentConfigurer topCfg = ComponentConfigurer.create()
-                .swapParent(top)           // mount into `top` instead of default
+                .swapParent(top)
                 .horizontalCentered()
                 .verticalTop()
                 .add();
 
         ComponentConfigurer bottomCfg = ComponentConfigurer.create()
-                .swapParent(bottom)        // mount into `bottom`
+                .swapParent(bottom)
                 .horizontalCentered()
                 .verticalTop()
                 .appendGlue()
                 .add();
 
-        // 5. message label
         elements.add(
                 new BestLabel("Names saved:", style, Style.Size.MEDIUM, Font.PLAIN, true)
                         .setConfigurer(topCfg)
@@ -195,7 +191,6 @@ public class SettingsPanel  extends ListLayer<Component> {
                         .setMinSize(350, 40)
         );
 
-        // 6. OK button that just closes and cleans up the layer
         elements.add(
                 new BestButton("OK", style, () -> {
                     popUp.setVisible(false);
@@ -207,7 +202,6 @@ public class SettingsPanel  extends ListLayer<Component> {
                         .setMinSize(250, 40)
         );
 
-        // 7. show it
         popUp.getLayerManager().putLayer(elements);
         popUp.setVisible();
     }
