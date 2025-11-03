@@ -54,7 +54,7 @@ public final class TicTacToe {
             mainLoop.loop();
         }catch (Exception e){
             e.printStackTrace();
-            main(args);
+            //main(args);
         }
     }
 
