@@ -12,6 +12,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,7 +33,8 @@ public class MatrixStyle implements Style{
     }
     @Override
     public void drawBestPanel(Graphics2D g, Dimension bounds) {
-        g.setPaint(new GradientPaint(0, 0, new Color(25, 42, 25), 0, bounds.height, new Color(0, 0 ,0)));
+        //g.setPaint(new GradientPaint(0, 0, new Color(25, 42, 25), 0, bounds.height, new Color(0, 0 ,0)));
+        g.setPaint(new GradientPaint(0, 0, new Color(30, 60, 30), 0, bounds.height, new Color(25, 30, 25)));
         g.fillRect(0, 0, bounds.width, bounds.height);
         //g.setColor(new Color(99,173,88));
         //g.setStroke(new BasicStroke(2));

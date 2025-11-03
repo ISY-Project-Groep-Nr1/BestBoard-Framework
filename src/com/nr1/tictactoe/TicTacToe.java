@@ -22,7 +22,7 @@ public final class TicTacToe {
     private TicTacToe() {}
 
     private static TicTacToeGuiLayer guiLayer;
-    private static final LayerManager manager = new LayerManager();;
+    private static final LayerManager manager = new LayerManager();
     private static BestWindow window;
     private static String player1Name = "BestPlayer";
     private static String player2Name = "Player 2";
