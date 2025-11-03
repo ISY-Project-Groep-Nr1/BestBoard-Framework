@@ -24,7 +24,7 @@ public class UnicornStyle implements Style{
     public static final int CLOUD_DENSITY = 300000;
     public static final float CLOUD_SCALE = 0.15f;
     public static final long SEED = new Random().nextLong();
-    private final Color gridColor = Color.BLACK;
+    private final Color gridColor = Color.PINK;
 
     static {
         try {
