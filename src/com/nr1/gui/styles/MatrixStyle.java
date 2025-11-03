@@ -19,6 +19,7 @@ import java.util.HashMap;
 
 public class MatrixStyle implements Style{
     public static final String FONT_NAME = "STEELAR";
+    private final Color gridColor = Color.GREEN;
 
     static {
         try {
@@ -102,6 +103,11 @@ public class MatrixStyle implements Style{
     @Override
     public Color getBackgroundColor() {
         return new Color(4, 57, 39);
+    }
+
+    @Override
+    public Color getGridColor() {
+        return gridColor;
     }
 
     @Override

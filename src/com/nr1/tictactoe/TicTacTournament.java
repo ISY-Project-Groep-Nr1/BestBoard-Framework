@@ -8,6 +8,7 @@ import com.nr1.gui.BestWindow;
 import com.nr1.gui.styles.FlatStyle;
 import com.nr1.gui.styles.MatrixStyle;
 import com.nr1.gui.styles.UnicornStyle;
+import com.nr1.interfaces.Style;
 import com.nr1.interfaces.Tickable;
 import com.nr1.listeners.ResultListener;
 import com.nr1.servermanager.Server;
@@ -25,6 +26,7 @@ public final class TicTacTournament {
         String player1Name = args[0];
         serverManager = new ServerManager();
         serverManager.login(player1Name);
+        final Style style = new FlatStyle();
 
 
         getManager().putLayer(new SettingsLayer(new Server(serverManager)));
@@ -37,7 +39,7 @@ public final class TicTacTournament {
                     serverManager,
                     getManager(),
                     (player1, player2) -> {
-                        ticTacToeBoard = new TicTacToeBoard(100, player1, player2, serverManager);
+                        ticTacToeBoard = new TicTacToeBoard(100, player1, player2, style, serverManager);
                         System.out.println(ticTacToeBoard);
                         getManager().putLayer(ticTacToeBoard);
                     }

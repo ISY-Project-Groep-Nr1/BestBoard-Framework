@@ -7,6 +7,7 @@ public interface Style {
     void drawText(Graphics2D g, String text, Size size, int type);
     void drawCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type);
     Color getBackgroundColor();
+    Color getGridColor();
     //Dimension getButtonSize(String text, int fontType, Size fontSize, SizeType sizeType);
     Font getFont(int fontType, Size size);
     StyledButtonRenderer getButtonRenderer();
