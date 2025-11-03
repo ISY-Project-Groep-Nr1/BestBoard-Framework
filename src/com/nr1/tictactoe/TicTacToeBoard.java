@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer<TicTacToeCell>>{
-    private final Style style;
+    private final Color gridColor;
     private final ListLayer<BackgroundGrid> background;
     private final Player playerX;
     private final Player playerO;
@@ -25,11 +25,11 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     public static final int WIDTH = 3;
     public static final int HEIGHT = 3;
 
-    public TicTacToeBoard(final int cellSize, Player playerX, Player playerO, Style style, ServerManager server) {
+    public TicTacToeBoard(final int cellSize, Player playerX, Player playerO, Color gridColor, ServerManager server) {
         super(new MatrixLayer<>(true, "board", 3, 3));
-        this.style = style;
+        this.gridColor = gridColor;
         background = new ListLayer<>(true, "background");
-        background.add(new BackgroundGrid(cellSize, 3, style.getGridColor()));
+        background.add(new BackgroundGrid(cellSize, 3, gridColor));
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
                 super.wrapped.add(x, y, new TicTacToeCell(x, y, cellSize, this));
