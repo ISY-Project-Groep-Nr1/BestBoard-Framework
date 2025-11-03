@@ -73,6 +73,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
         System.out.println(player.getMark());
         //TicTacToe.checkWinner(TicTacToe.getManager(), this);
         currentPlayer = player;
+        updateTurnLabel();
         currentPlayer.makeMove(this);
     }
 
@@ -117,6 +118,14 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     public Player getPlayerO() {
         return playerO;
     }
+
+    private void updateTurnLabel() {
+        Object layer = TicTacToe.getManager().getLayer("turnlabel");
+        if (layer instanceof TurnLabel) {
+            ((TurnLabel) layer).updateTurn(currentPlayer);
+        }
+    }
+
 
 
     @Override
