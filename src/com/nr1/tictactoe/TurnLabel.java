@@ -17,7 +17,6 @@ public class TurnLabel extends ListLayer<Component> {
     private static final int BUTTON_HEIGHT = 50;
     private final BestLabel turnLabel;
 
-    // optionele styles (niet strikt noodzakelijk, maar behouden zoals jouw voorbeeld)
     private final Style flatStyle    = new FlatStyle();
     private final Style matrixStyle  = new MatrixStyle();
     private final Style unicornStyle = new UnicornStyle();
@@ -25,7 +24,6 @@ public class TurnLabel extends ListLayer<Component> {
     public TurnLabel(Style style) {
         super(true, "turnlabel");
 
-        // Frame preparer (zelfde aanpak als in jouw voorbeeld)
         super.<Function<JComponent, JComponent>>addPersistent(
                 FRAME_PREPARER_KEY, panel -> {
                     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -48,11 +46,7 @@ public class TurnLabel extends ListLayer<Component> {
         super.add(turnLabel);
     }
 
-    /**
-     * Update de label naar de huidige speler.
-     * Tekst: "Beurt: <naam> (<symbool>)"
-     * Zorgt ervoor dat update in de Swing-thread plaatsvindt.
-     */
+
     public void updateTurn(final Player current) {
         SwingUtilities.invokeLater(() -> {
             if (current == null) {
@@ -61,15 +55,12 @@ public class TurnLabel extends ListLayer<Component> {
                 String name = current.getName() == null ? "speler" : current.getName();
                 turnLabel.setText("Beurt: " + name);
             }
-            // forceer repaint / revalidate zodat BestLabel paintComponent wordt aangeroepen
             turnLabel.revalidate();
             turnLabel.repaint();
         });
     }
 
-    /**
-     * Reset the turn label (bijvoorbeeld bij einde spel / terug naar menu)
-     */
+
     public void clear() {
         SwingUtilities.invokeLater(() -> {
             turnLabel.setText("Beurt: -");
@@ -78,9 +69,7 @@ public class TurnLabel extends ListLayer<Component> {
         });
     }
 
-    /**
-     * Geef toegang tot het BestLabel als je het direct wilt bevragen.
-     */
+
     public BestLabel getLabel() {
         return turnLabel;
     }
