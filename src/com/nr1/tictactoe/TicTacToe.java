@@ -152,7 +152,7 @@ public final class TicTacToe {
         TicTacToe.playerO = playerO;
 
         guiLayer = new TicTacToeGuiLayer(manager, window.getStyle(), playerX, playerO);
-        ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, serverManager);
+        ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, window.getStyle(),serverManager);
 
         manager.putLayer(guiLayer);
         manager.putLayer(ticTacToeBoard.getBackgroundLayer());

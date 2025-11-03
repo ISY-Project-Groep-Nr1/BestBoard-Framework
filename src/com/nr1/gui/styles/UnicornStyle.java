@@ -24,6 +24,7 @@ public class UnicornStyle implements Style{
     public static final int CLOUD_DENSITY = 300000;
     public static final float CLOUD_SCALE = 0.15f;
     public static final long SEED = new Random().nextLong();
+    private final Color gridColor = Color.BLACK;
 
     static {
         try {
@@ -126,6 +127,11 @@ public class UnicornStyle implements Style{
     @Override
     public Color getBackgroundColor() {
         return new  Color(255, 255, 255);
+    }
+
+    @Override
+    public Color getGridColor() {
+        return gridColor;
     }
 
     @Override
