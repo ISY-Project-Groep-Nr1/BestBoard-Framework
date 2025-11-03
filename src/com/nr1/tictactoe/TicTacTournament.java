@@ -14,6 +14,8 @@ import com.nr1.listeners.ResultListener;
 import com.nr1.servermanager.Server;
 import com.nr1.servermanager.ServerManager;
 
+import java.awt.*;
+
 import static com.nr1.tictactoe.TicTacToe.*;
 
 public final class TicTacTournament {
@@ -26,7 +28,6 @@ public final class TicTacTournament {
         String player1Name = args[0];
         serverManager = new ServerManager();
         serverManager.login(player1Name);
-        final Style style = new FlatStyle();
 
 
         getManager().putLayer(new SettingsLayer(new Server(serverManager)));
@@ -39,7 +40,7 @@ public final class TicTacTournament {
                     serverManager,
                     getManager(),
                     (player1, player2) -> {
-                        ticTacToeBoard = new TicTacToeBoard(100, player1, player2, style, serverManager);
+                        ticTacToeBoard = new TicTacToeBoard(100, player1, player2, Color.BLACK, serverManager);
                         System.out.println(ticTacToeBoard);
                         getManager().putLayer(ticTacToeBoard);
                     }
