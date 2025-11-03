@@ -15,18 +15,18 @@ public final class BackgroundGrid implements Drawable {
 
 
     @Override
-    public void draw(Graphics g) {
-        g.setColor(Color.BLACK);
+    public void draw(Graphics graphics) {
+        graphics.setColor(Color.BLACK);
         int totalSize = cellSize * gridSize;
 
         for (int i = 0; i < (gridSize + 1); i++) {
             int x = i * cellSize;
-            g.drawLine(x, 0, x, totalSize);
+            graphics.drawLine(x, 0, x, totalSize);
         }
 
         for (int i = 0; i < (gridSize + 1); i++) {
             int y = i * cellSize;
-            g.drawLine(0, y, totalSize, y);
+            graphics.drawLine(0, y, totalSize, y);
         }
     }
 }
