@@ -6,27 +6,29 @@ import java.awt.*;
 public final class BackgroundGrid implements Drawable {
     private final int cellSize;
     private final int gridSize;
+    private final Color gridColor;
 
 
-    public BackgroundGrid(int cellSize, int gridSize) {
+    public BackgroundGrid(int cellSize, int gridSize, Color gridColor) {
         this.cellSize = cellSize;
         this.gridSize = gridSize;
+        this.gridColor = gridColor;
     }
 
 
     @Override
-    public void draw(Graphics graphics) {
-        graphics.setColor(Color.BLACK);
+    public void draw(Graphics g) {
+        g.setColor(gridColor);
         int totalSize = cellSize * gridSize;
 
         for (int i = 0; i < (gridSize + 1); i++) {
             int x = i * cellSize;
-            graphics.drawLine(x, 0, x, totalSize);
+            g.drawLine(x, 0, x, totalSize);
         }
 
         for (int i = 0; i < (gridSize + 1); i++) {
             int y = i * cellSize;
-            graphics.drawLine(0, y, totalSize, y);
+            g.drawLine(0, y, totalSize, y);
         }
     }
 }
