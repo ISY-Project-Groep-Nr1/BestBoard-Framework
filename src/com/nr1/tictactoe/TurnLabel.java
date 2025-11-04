@@ -37,7 +37,7 @@ public class TurnLabel extends ListLayer<Component> {
                 //.appendGlue()
                 .add();
 
-        turnLabel = new BestLabel("Beurt: -", style, Style.Size.MEDIUM, Font.BOLD, true)
+        turnLabel = new BestLabel("Turn: -", style, Style.Size.MEDIUM, Font.BOLD, true)
                 .setConfigurer(labelConfigurer)
                 .setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .setMaxSize(800, BUTTON_HEIGHT)
@@ -50,10 +50,10 @@ public class TurnLabel extends ListLayer<Component> {
     public void updateTurn(final Player current) {
         SwingUtilities.invokeLater(() -> {
             if (current == null) {
-                turnLabel.setText("Beurt: -");
+                turnLabel.setText("Turn: -");
             } else {
                 String name = current.getName() == null ? "speler" : current.getName();
-                turnLabel.setText("Beurt: " + name);
+                turnLabel.setText("Turn: " + name);
             }
             turnLabel.revalidate();
             turnLabel.repaint();
@@ -63,7 +63,7 @@ public class TurnLabel extends ListLayer<Component> {
 
     public void clear() {
         SwingUtilities.invokeLater(() -> {
-            turnLabel.setText("Beurt: -");
+            turnLabel.setText("Turn: -");
             turnLabel.revalidate();
             turnLabel.repaint();
         });
