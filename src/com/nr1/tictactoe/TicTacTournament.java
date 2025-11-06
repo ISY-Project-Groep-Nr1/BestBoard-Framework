@@ -52,7 +52,6 @@ public final class TicTacTournament {
                 TicTacTournament::destroy,TicTacTournament::destroy,TicTacTournament::destroy
         ));
 
-        System.out.println("test");
         MainLoop mainLoop = new MainLoop(60, getManager(), serverManager);
         mainLoop.loop();
     }
