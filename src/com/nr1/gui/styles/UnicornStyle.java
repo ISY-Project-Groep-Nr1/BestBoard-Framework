@@ -130,9 +130,10 @@ public class UnicornStyle implements Style{
     }
 
     @Override
-    public Color getGameColor() {
+    public Color getGridColor() {
         return gridColor;
     }
+
 
     @Override
     public Font getFont(int fontType, Size size) {
