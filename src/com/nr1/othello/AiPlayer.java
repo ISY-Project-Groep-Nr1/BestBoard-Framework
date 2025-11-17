@@ -28,8 +28,8 @@ public class AiPlayer extends Player {
         int[] bestMove = new int[]{-1, -1};
         int bestScore = Integer.MIN_VALUE;
 
-        for (int row = 0; row < board.getRowCount(); row++) {
-            for (int col = 0; col < board.getColumnCount(); col++) {
+        for (int row = 0; row < board.getRows(); row++) {
+            for (int col = 0; col < board.getCols(); col++) {
                 if (board.get(row, col).isEmpty()) {
                     board.get(row, col).getColor();
                     int score = miniMax(board,  false);
@@ -58,8 +58,8 @@ public class AiPlayer extends Player {
         if (isMaximizing) {
             int maxScore = Integer.MIN_VALUE;
 
-            for (int row = 0; row < board.getRowCount(); row++) {
-                for (int col = 0; col < board.getColumnCount(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+                for (int col = 0; col < board.getCols(); col++) {
                     OthelloCell cell = board.get(row, col);
                     if (cell.isEmpty()) {
                         board.get(row, col).setColor(this.color);
@@ -72,8 +72,8 @@ public class AiPlayer extends Player {
         } else {
             int minScore = Integer.MAX_VALUE;
 
-            for (int row = 0; row < board.getRowCount(); row++) {
-                for (int col = 0; col < board.getColumnCount(); col++) {
+            for (int row = 0; row < board.getRows(); row++) {
+                for (int col = 0; col < board.getCols(); col++) {
                     OthelloCell cell = board.get(row, col);
                     if (cell.isEmpty()) {
                         board.get(row, col).setColor(this.opponentColor);

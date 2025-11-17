@@ -38,8 +38,8 @@ public final class OthelloBoard {
 
 
     private void initializeStartingPosition() {
-        final int rows = board.getRowCount();
-        final int cols = board.getColumnCount();
+        final int rows = board.getRows();
+        final int cols = board.getCols();
 
         final int mid1x = rows / 2 - 1;
         final int mid2x = rows / 2;
