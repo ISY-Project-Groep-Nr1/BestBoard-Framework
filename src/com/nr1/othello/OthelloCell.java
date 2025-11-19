@@ -32,9 +32,12 @@ public final class OthelloCell implements Drawable, Clickable {
     @Override
     public final void click() {
         if (isEmpty()) {
-            System.out.println("clicked");
-            color = board.getCurrentPlayerColor();
-            board.switchPlayer();
+            AllowedMove allowedMove = board.getAllowedMoves().get(x, y);
+            if (allowedMove != null) {
+                board.makeMove(x, y);
+            } else {
+                System.out.println("invalid move: " + x + "," + y);
+            }
         }
     }
 
