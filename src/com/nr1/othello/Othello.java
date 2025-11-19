@@ -124,7 +124,7 @@ public final class Othello {
         manager.putLayer("game_gui", guiLayer);
         manager.putLayer("background", othelloBoard.getBackgroundLayer());
         manager.putLayer("board", othelloBoard.getLayer());
-        manager.putLayer("circle", othelloBoard.getAllowedMoves());
+        manager.putLayer("allowedMoves", othelloBoard.getAllowedMoves());
         window.update();
 
 
@@ -141,6 +141,7 @@ public final class Othello {
         manager.deleteLayer("game_gui");
         manager.deleteLayer("background");
         manager.deleteLayer("board");
+        manager.deleteLayer("allowedMoves");
     }
 
 
