@@ -22,21 +22,20 @@ public class FlatStyle implements Style{
     }
 
 
-
-
     @Override
-    public void drawText(Graphics2D g, String text, Size size, int type) {
-        g.setFont(new Font(FONT_NAME, type, actualSize(size)));
-        g.setColor(Color.BLACK);
-        g.drawString(text, 0, 0);
-    }
-
-    @Override
-    public void drawCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
+    public void drawText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
         g.setFont(new Font(FONT_NAME, type, actualSize(size)));
         g.setColor(Color.BLACK);
         Point drawLocation = BestWindow.calculateCenteredStringPosition(g, text, bounds);
         g.drawString(text, drawLocation.x, drawLocation.y);
+    }
+
+    @Override
+    public void drawVerticalCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
+        g.setFont(new Font(FONT_NAME, type, actualSize(size)));
+        g.setColor(Color.BLACK);
+        Point drawLocation = BestWindow.calculateCenteredStringPosition(g, text, bounds);
+        g.drawString(text, 0, drawLocation.y);
     }
 
     @Override
@@ -143,7 +142,7 @@ public class FlatStyle implements Style{
 
             g.drawRect(x, y, width, height);
             if (text != null) {
-                drawCenteredText(g, new Dimension(width, height), text, size, fontType);
+                drawText(g, new Dimension(width, height), text, size, fontType);
             }
         }
     }

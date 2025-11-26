@@ -73,7 +73,7 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent> {
         ComponentConfigurer topComponentConfigurer = ComponentConfigurer.create().swapParent(top).add();
         ComponentConfigurer bottomComponentConfigurer = ComponentConfigurer.create().swapParent(bottom).add();
 
-        elements.add(new BestLabel(message, style, Size.MEDIUM, Font.PLAIN, true)
+        elements.add(new BestLabel(message, style, Size.MEDIUM, Font.PLAIN)
                 .setConfigurer(topComponentConfigurer)
                 .setPreferredSize(350, 40)
                 .setMinSize(350, 40)
