@@ -1,21 +1,17 @@
 package com.nr1.gui.styles;
 
 import com.nr1.gui.BestWindow;
-import com.nr1.gui.ImageManager;
 import com.nr1.gui.elements.BestButton;
 import com.nr1.interfaces.Style;
 import com.nr1.interfaces.StyledButtonRenderer;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
 
 public class MatrixStyle implements Style{
@@ -42,20 +38,20 @@ public class MatrixStyle implements Style{
     }
 
 
-
-
     @Override
-    public void drawText(Graphics2D g, String text, Size size, int type) {
-        g.setFont(new Font(FONT_NAME, type, actualSize(size)));
-        g.setColor(new Color(18, 53, 36));
-        g.drawString(text, 0, 0);
+    public void drawText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
+        drawFont(g, BestWindow.calculateCenteredStringPosition(g,text,bounds), bounds, text, size, type);
     }
 
     @Override
-    public void drawCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
+    public void drawVerticalCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
+        drawFont(g, new Point(0, BestWindow.calculateCenteredStringPosition(g,text,bounds).y), bounds, text, size, type);
+
+    }
+
+    private void drawFont(Graphics2D g, Point drawLocation, Dimension bounds, String text, Size size, int type){
         Font font = new Font(FONT_NAME, type, actualSize(size));
         g.setFont(font);
-        Point drawLocation = BestWindow.calculateCenteredStringPosition(g, text, bounds);
         if (size == Size.LARGE) {
             Shape oldClip = g.getClip();
             FontRenderContext frc = g.getFontRenderContext();
@@ -210,7 +206,7 @@ public class MatrixStyle implements Style{
             g.setColor(outlineColor);
             g.draw(futuristicRectangle);
             if (text != null) {
-                drawCenteredText(g, new Dimension(width, height), text, size, fontType);
+                drawText(g, new Dimension(width, height), text, size, fontType);
             }
         }
     }

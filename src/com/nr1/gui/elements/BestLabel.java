@@ -13,15 +13,13 @@ import java.awt.*;
 
 public class BestLabel extends JLabel implements BestGuiElement<BestLabel>, Tickable{
     private final Style style;
-    private final boolean centered;
     private final Size fontSize;
     private final int fontType;
     private ComponentConfigurer configurer;
     private final boolean isAnimated;
 
-    public BestLabel(String text, Style style, Size fontSize, int fontType, boolean centered){
+    public BestLabel(String text, Style style, Size fontSize, int fontType){
         this.style = style;
-        this.centered = centered;
         this.fontSize = fontSize;
         this.fontType = fontType;
         this.isAnimated = style.isTextAnimated(fontSize);
@@ -32,17 +30,14 @@ public class BestLabel extends JLabel implements BestGuiElement<BestLabel>, Tick
 
     @Override
     public void paintComponent(Graphics g){
-        if (centered){
-            style.drawCenteredText(
-                    (Graphics2D) g.create(),
-                    getSize(),
-                    getText(),
-                    fontSize,
-                    fontType
-            );
-        } else {
-            style.drawText((Graphics2D) g.create(), getText(), fontSize, fontType);
-        }
+        style.drawText(
+                (Graphics2D) g.create(),
+                getSize(),
+                getText(),
+                fontSize,
+                fontType
+        );
+
     }
 
     public BestLabel setMinSize(int x, int y) {
@@ -57,6 +52,13 @@ public class BestLabel extends JLabel implements BestGuiElement<BestLabel>, Tick
 
     public BestLabel setPreferredSize(int x, int y) {
         setPreferredSize(new Dimension(x,y));
+        return this;
+    }
+
+    public BestLabel setStaticSize(int x, int y) {
+        setPreferredSize(new Dimension(x,y));
+        setMaximumSize(new Dimension(x,y));
+        setMinimumSize(new Dimension(x,y));
         return this;
     }
 

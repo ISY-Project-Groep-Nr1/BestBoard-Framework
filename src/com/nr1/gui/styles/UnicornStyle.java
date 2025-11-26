@@ -6,13 +6,11 @@ import com.nr1.gui.elements.BestButton;
 import com.nr1.interfaces.Style;
 import com.nr1.interfaces.StyledButtonRenderer;
 
-import javax.sound.sampled.Clip;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.RoundRectangle2D;
 import java.awt.geom.RoundRectangle2D.Float;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -72,26 +70,28 @@ public class UnicornStyle implements Style{
 
 
     @Override
-    public void drawText(Graphics2D g, String text, Size size, int type) {
-        g.setFont(new Font(FONT_NAME, type, actualSize(size)));
-        g.setColor(Color.BLACK);
-        g.drawString(text, 0, 0);
+    public void drawText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
+        if (text.isBlank()){
+            return;
+        }
+        drawFont(g, BestWindow.calculateCenteredStringPosition(g, text, bounds), bounds, text, actualSize(size),  type);
     }
 
     @Override
-    public void drawCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
-        drawFont(g, bounds, text, actualSize(size),  type);
+    public void drawVerticalCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
+        drawFont(g, new Point(0, BestWindow.calculateCenteredStringPosition(g, text, bounds).y), bounds, text, actualSize(size),  type);
     }
 
-    private void drawFont(Graphics2D g, Dimension bounds, String text, int size, int type){
+    private void drawFont(Graphics2D g, Point location, Dimension bounds, String text, int size, int type){
         setRenderingHints(g);
         final Font font = new Font(FONT_NAME, type, size);
         g.setFont(font);
-        final Point drawLocation = BestWindow.calculateCenteredStringPosition(g, text, bounds);
+
         final Shape oldClip = g.getClip();
         final FontRenderContext frc = g.getFontRenderContext();
         final TextLayout layout = new TextLayout(text, font, frc);
-        g.setClip(AffineTransform.getTranslateInstance(drawLocation.x, drawLocation.y).createTransformedShape(layout.getOutline(null)));
+
+        g.setClip(AffineTransform.getTranslateInstance(location.x, location.y).createTransformedShape(layout.getOutline(null)));
 
         if (size > 30) {
             GradientPaint paint = new GradientPaint(
@@ -108,7 +108,7 @@ public class UnicornStyle implements Style{
         GlyphVector glyphVector = font.createGlyphVector(frc, text);
         g.setColor(new Color(156, 126, 166));
         g.setStroke(new BasicStroke(4));
-        g.draw(glyphVector.getOutline(drawLocation.x, drawLocation.y));
+        g.draw(glyphVector.getOutline(location.x, location.y));
         g.setClip(oldClip);
     }
 
@@ -250,7 +250,7 @@ public class UnicornStyle implements Style{
 
             g.draw(getRoundedRectangle(x, y, width, height));
             if (text != null) {
-                drawFont(g, new Dimension(width, height), text, size, fontType);
+                drawFont(g, BestWindow.calculateCenteredStringPosition(g, text, new Dimension(width, height)), new Dimension(width, height), text, size, fontType);
             }
         }
     }

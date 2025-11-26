@@ -3,24 +3,21 @@ package com.nr1.tictactoe;
 import com.nr1.ListLayer;
 import com.nr1.SaveManager;
 import com.nr1.gui.BestWindow;
-import com.nr1.gui.elements.BestButton;
-import com.nr1.gui.elements.BestLabel;
-import com.nr1.gui.elements.BestPopUp;
-import com.nr1.gui.elements.GuiPanel;
+import com.nr1.gui.elements.*;
 import com.nr1.gui.styles.FlatStyle;
 import com.nr1.gui.styles.MatrixStyle;
 import com.nr1.gui.styles.UnicornStyle;
 import com.nr1.interfaces.BestGuiElement;
 import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
+import com.nr1.interfaces.Style.Size;
 import com.nr1.servermanager.ServerManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.util.function.Function;
 
-public class SettingsPanel  extends ListLayer<Component> {
+public class SettingsPanel extends ListLayer<Component> {
     private static final int BUTTON_WIDTH = 500;
     private static final int BUTTON_HEIGHT = 50;
     Style flatStyle      = new FlatStyle();
@@ -54,7 +51,7 @@ public class SettingsPanel  extends ListLayer<Component> {
                 .appendGlue()
                 .add();
 
-        super.add(new BestLabel("Settings", style, Style.Size.LARGE, Font.BOLD, true)
+        super.add(new BestLabel("Settings", style, Style.Size.LARGE, Font.BOLD)
                 .setConfigurer(label)
                 .setMinSize(500, 50)
                 .setMaxSize(800, 50)
@@ -63,31 +60,25 @@ public class SettingsPanel  extends ListLayer<Component> {
 
 
 
-        super.add(new BestLabel("Player 1 Name:", style, Style.Size.LARGE, Font.BOLD, true)
+        super.add(new BestLabel("Player 1 Name:", style, Style.Size.LARGE, Font.BOLD)
                 .setConfigurer(label)
                 .setMinSize(500, 50)
                 .setMaxSize(800, 50)
                 .setPreferredSize(800, 50)
         );
 
-        JTextField nameField1 = new JTextField(TicTacToe.getPlayer1Name());
-        nameField1.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        nameField1.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        nameField1.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        BestTextField nameField1 =new BestTextField(style, Size.MEDIUM, Font.PLAIN, TicTacToe.getPlayer1Name()).setConfigurer(buttons);
         super.add(nameField1);
 
-
-        super.add(new BestLabel("Player 2 Name:", style, Style.Size.LARGE, Font.BOLD, true)
+        super.add(new BestLabel("Player 2 Name:", style, Style.Size.LARGE, Font.BOLD)
                 .setConfigurer(label)
                 .setMinSize(500, 50)
                 .setMaxSize(800, 50)
                 .setPreferredSize(800, 50)
         );
 
-        JTextField nameField2 = new JTextField(TicTacToe.getPlayer2Name());
-        nameField2.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        nameField2.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        nameField2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        BestTextField nameField2 = new BestTextField(style, Size.MEDIUM, Font.PLAIN, TicTacToe.getPlayer2Name()).setConfigurer(buttons);
         super.add(nameField2);
 
 
@@ -190,21 +181,21 @@ public class SettingsPanel  extends ListLayer<Component> {
                 .add();
 
         elements.add(
-                new BestLabel("Names saved:", style, Style.Size.MEDIUM, Font.PLAIN, true)
+                new BestLabel("Names saved:", style, Style.Size.MEDIUM, Font.PLAIN)
                         .setConfigurer(topCfg)
                         .setPreferredSize(350, 40)
                         .setMinSize(350, 40)
         );
 
         elements.add(
-                new BestLabel("Player 1: " + playerName1, style, Style.Size.MEDIUM, Font.PLAIN, true)
+                new BestLabel("Player 1: " + playerName1, style, Style.Size.MEDIUM, Font.PLAIN)
                         .setConfigurer(topCfg)
                         .setPreferredSize(350, 40)
                         .setMinSize(350, 40)
         );
 
         elements.add(
-                new BestLabel("Player 2: " + playerName2, style, Style.Size.MEDIUM, Font.PLAIN, true)
+                new BestLabel("Player 2: " + playerName2, style, Style.Size.MEDIUM, Font.PLAIN)
                         .setConfigurer(topCfg)
                         .setPreferredSize(350, 40)
                         .setMinSize(350, 40)

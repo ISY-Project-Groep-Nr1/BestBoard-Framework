@@ -4,8 +4,9 @@ import java.awt.*;
 
 public interface Style {
     void drawBestPanel(Graphics2D g, Dimension bounds);
-    void drawText(Graphics2D g, String text, Size size, int type);
-    void drawCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type);
+
+    void drawText(Graphics2D g, Dimension bounds, String text, Size size, int type);
+    void drawVerticalCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type);
     Color getBackgroundColor();
     Color getGridColor();
     //Dimension getButtonSize(String text, int fontType, Size fontSize, SizeType sizeType);
