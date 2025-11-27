@@ -164,6 +164,11 @@ public final class Othello {
         );
     }
 
+    static void restart(){
+        destroyGame(manager);
+        startNewGame();
+    }
+
 
     static boolean hasPlayers() {
         return playerX != null && playerO != null;
