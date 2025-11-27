@@ -158,6 +158,7 @@ public final class OthelloBoard {
 
     public final void switchPlayer() {
         currentPlayer = (currentPlayer == player1) ? player2 : player1;
+        updateTurnLabel();
         updateAllowedMoves();
         Othello.checkWinnerAndContinue(Othello.getManager(), this);
     }
@@ -166,6 +167,7 @@ public final class OthelloBoard {
     public final Player getCurrentPlayer() {
         return currentPlayer;
     }
+
 
 
     public Color getCurrentPlayerColor() {
@@ -183,5 +185,15 @@ public final class OthelloBoard {
 
     public boolean checkDraw() {
         return CheckWinner.checkDraw(board);
+    }
+
+    private void updateTurnLabel() {
+        Object layer = Othello.getManager().getLayer("turnlabel");
+        if (layer instanceof TurnLabel) {
+            String name = currentPlayer == null ? "-" : currentPlayer.getName();
+            ((TurnLabel) layer).getLabel().setText("Turn: " + name);
+            ((TurnLabel) layer).getLabel().revalidate();
+            ((TurnLabel) layer).getLabel().repaint();
+        }
     }
 }

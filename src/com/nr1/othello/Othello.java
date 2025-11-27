@@ -1,9 +1,12 @@
 package com.nr1.othello;
 
+import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.MainLoop;
 import com.nr1.gui.BestWindow;
 import com.nr1.servermanager.ServerManager;
+import com.nr1.othello.Othello;
+import com.nr1.othello.TurnLabel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,9 +22,11 @@ public final class Othello {
     private static String player1Name = "Player 1";
     private static String player2Name = "Player 2";
     private static OthelloBoard othelloBoard;
+    static ServerManager serverManager;
 
     static void main(final String[] args) {
         manager = new LayerManager();
+        serverManager = new ServerManager();
         window = BestWindow.create(manager, "Tic tac toe");
 
         SwingUtilities.invokeLater(() -> {
@@ -31,7 +36,7 @@ public final class Othello {
             window.update();
             window.setVisible();
         });
-            MainLoop mainLoop = new MainLoop(60, manager, new ServerManager());
+            MainLoop mainLoop = new MainLoop(60, manager, serverManager);
             mainLoop.loop();
 
     }
@@ -88,24 +93,24 @@ public final class Othello {
                 () -> {
                     manager.deleteLayer("main_menu");
                     playerX = new UserPlayer(Othello.getPlayer1Name(), Color.BLACK);
-                    playerO = new ServerPlayer("Server", Color.WHITE);
+                    playerO = new ServerPlayer("Server", Color.WHITE, serverManager);
                     startNewGame();
                     },
                 () -> {
                     manager.deleteLayer("main_menu");
-                    playerX = new ServerPlayer("Server", Color.BLACK);
+                    playerX = new ServerPlayer("Server", Color.BLACK, serverManager);
                     playerO = new UserPlayer(Othello.getPlayer1Name(), Color.WHITE);
                     startNewGame();
                     },
                 () -> {
                     manager.deleteLayer("main_menu");
                     playerX = new AiPlayer("AI 1", Color.BLACK);
-                    playerO = new ServerPlayer("Server", Color.WHITE);
+                    playerO = new ServerPlayer("Server", Color.WHITE, serverManager);
                     startNewGame();
                     },
                 () -> {
                     manager.deleteLayer("main_menu");
-                    playerX = new ServerPlayer("Server", Color.BLACK);
+                    playerX = new ServerPlayer("Server", Color.BLACK, serverManager);
                     playerO = new AiPlayer("AI 1", Color.WHITE);
                     startNewGame();
                     },
@@ -119,12 +124,19 @@ public final class Othello {
 
     static void startNewGame() {
         guiLayer = new OthelloGuiLayer(manager, window.getDefaultStyle(), playerX, playerO);
-        othelloBoard = new OthelloBoard(100, playerX, playerO);
+        othelloBoard = new OthelloBoard(50, playerX, playerO);
 
         manager.putLayer("game_gui", guiLayer);
         manager.putLayer("background", othelloBoard.getBackgroundLayer());
         manager.putLayer("board", othelloBoard.getLayer());
         manager.putLayer("allowedMoves", othelloBoard.getAllowedMoves());
+        TurnLabel turnLabel = new TurnLabel(window.getStyle());
+        manager.putLayer(turnLabel);
+        // initialize label using player name (avoid type mismatch with tic-tac-toe Player)
+        String _name = othelloBoard.getCurrentPlayer() == null ? "-" : othelloBoard.getCurrentPlayer().getName();
+        turnLabel.getLabel().setText("Turn: " + _name);
+        turnLabel.getLabel().revalidate();
+        turnLabel.getLabel().repaint();
         window.update();
 
 
@@ -132,7 +144,7 @@ public final class Othello {
         if (playerX instanceof AiPlayer && playerO instanceof AiPlayer) {
             runAiGameLoop(manager); // 🔁 Volledige AI vs AI simulatie
         } else if (currentPlayer instanceof AiPlayer) {
-            currentPlayer.makeMove(manager);
+            currentPlayer.makeMove((Layer<?>) (Object) manager);
             //turnLabel.setText("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());
         }
     }
@@ -142,6 +154,7 @@ public final class Othello {
         manager.deleteLayer("background");
         manager.deleteLayer("board");
         manager.deleteLayer("allowedMoves");
+        manager.deleteLayer("turnlabel");
     }
 
 
@@ -173,7 +186,7 @@ public final class Othello {
         }
 
         if (current instanceof AiPlayer) {
-            current.makeMove(manager);
+            current.makeMove((Layer<?>) (Object) manager);
             //repaint();
             //turnLabel.setText("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());
         }
@@ -201,7 +214,7 @@ public final class Othello {
         //turnLabel.setText("Beurt: " + currentPlayer.getComponentConfigurer());
 
         if (currentPlayer instanceof AiPlayer) {
-            currentPlayer.makeMove(manager);
+            currentPlayer.makeMove((Layer<?>) (Object) manager);
             //repaint();
             checkWinnerAndContinue(manager, board);
         }

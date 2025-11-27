@@ -1,8 +1,9 @@
 package com.nr1.othello;
 
-import com.nr1.LayerManager;
+import java.awt.Color;
 
-import java.awt.*;
+import com.nr1.Layer;
+import com.nr1.LayerManager;
 
 public class UserPlayer extends Player {
     public UserPlayer(String name, Color color) {
@@ -11,7 +12,6 @@ public class UserPlayer extends Player {
 
 
     @Override
-    public void makeMove(LayerManager manager) {
-
+    public void makeMove(Layer<?> manager) {
     }
 }

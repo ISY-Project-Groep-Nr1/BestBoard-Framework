@@ -1,4 +1,4 @@
-package com.nr1.tictactoe;
+package com.nr1.othello;
 
 import com.nr1.ListLayer;
 import com.nr1.gui.elements.BestLabel;
@@ -37,7 +37,7 @@ public class TurnLabel extends ListLayer<Component> {
                 //.appendGlue()
                 .add();
 
-        turnLabel = new BestLabel("Turn: -", style, Style.Size.MEDIUM, Font.BOLD)
+        turnLabel = new BestLabel("Turn: -", style, Style.Size.MEDIUM, Font.BOLD, true)
                 .setConfigurer(labelConfigurer)
                 .setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .setMaxSize(800, BUTTON_HEIGHT)
@@ -54,19 +54,6 @@ public class TurnLabel extends ListLayer<Component> {
             } else {
                 String name = current.getName() == null ? "speler" : current.getName();
                 turnLabel.setText("Turn: " + name);
-            }
-            turnLabel.revalidate();
-            turnLabel.repaint();
-        });
-    }
-
-
-    public void updateTurn(final String playerName) {
-        SwingUtilities.invokeLater(() -> {
-            if (playerName == null) {
-                turnLabel.setText("Turn: -");
-            } else {
-                turnLabel.setText("Turn: " + playerName);
             }
             turnLabel.revalidate();
             turnLabel.repaint();
