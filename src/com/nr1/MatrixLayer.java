@@ -119,7 +119,7 @@ public class MatrixLayer<T> extends Layer<T> {
 
     @Override
     public void add(int x, int y, T element) {
-        System.out.println(x + "'" + y);
+        //System.out.println(x + "'" + y);
         mainMatrix[x][y] = element;
     }
 
