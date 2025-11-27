@@ -14,14 +14,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.function.Function;
 
-public final class OthelloGuiLayer extends ListLayer<JComponent>{
+public final class OthelloGuiLayer extends ListLayer<JComponent> {
     //private final JLabel turnLabel;
     private final Style style;
 
     public OthelloGuiLayer(LayerManager manager, Style style, Player playerX, Player playerO) {
         super(true, "gui_panel");
         this.style = style;
-        BestCanvas canvas = new BestCanvas(manager, style, 801, 801);
+        BestCanvas canvas = new BestCanvas(manager, style, 401, 401);
         super.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER_KEY, (component) -> {
             component.setLayout(new GridBagLayout());
             return component;
@@ -36,25 +36,20 @@ public final class OthelloGuiLayer extends ListLayer<JComponent>{
 
         canvas.addMouseListener(MouseManager.getMouseListener());
         super.add(canvas);
-
-
-
         //turnLabel = new JLabel("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer(), SwingConstants.CENTER);
         //turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
         //turnLabel.setForeground(Color.BLACK);
         //add(turnLabel, BorderLayout.NORTH);
-
-
-
-
     }
 
 
-
-
-
     public void showEndDialog(String message) {
-        BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getDefaultStyle(), "Game ended");
+        showEndDialog(message, "Game ended");
+    }
+
+
+    public void showEndDialog(String message, String title) {
+        BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getStyle(), title);
         ListLayer<BestGuiElement<?>> elements = new ListLayer<>(true, "dialog_main");
 
         JPanel top = new GuiPanel(style, false);
@@ -68,6 +63,9 @@ public final class OthelloGuiLayer extends ListLayer<JComponent>{
             splitPane.setDividerSize(0);
             splitPane.setOpaque(false);
             splitPane.setBackground(new Color(0, 0, 0, 0));
+
+            jComponent.setOpaque(false);
+            jComponent.setBackground(new Color(0, 0, 0, 0));
             jComponent.add(splitPane);
             return splitPane;
         }));
@@ -76,20 +74,22 @@ public final class OthelloGuiLayer extends ListLayer<JComponent>{
         ComponentConfigurer bottomComponentConfigurer = ComponentConfigurer.create().swapParent(bottom).add();
 
         elements.add(new BestLabel(message, style, Size.MEDIUM, Font.PLAIN, true)
-                             .setConfigurer(topComponentConfigurer)
-                             .setPreferredSize(350, 40)
-                             .setMinSize(350, 40)
+                .setConfigurer(topComponentConfigurer)
+                .setPreferredSize(350, 40)
+                .setMinSize(350, 40)
         );
 
-        elements.add(new BestButton("restart", style,() -> {
+        elements.add(new BestButton("restart", style, () -> {
             popUp.setVisible(false);
             popUp.dispose();
-            Othello.destroyGame(Othello.getManager());
-            Othello.startNewGame();
+            popUp.getLayerManager().deleteLayer("dialog_main");
+            Othello.restart();
         }).setConfigurer(bottomComponentConfigurer).setPreferredSize(250, 40).setMinSize(250, 40));
         elements.add(new BestButton("to main menu", style, () -> {
             popUp.setVisible(false);
             popUp.dispose();
+            popUp.getLayerManager().deleteLayer("dialog_main");
+            System.out.println(6);
             Othello.destroyGame(Othello.getManager());
             Othello.showMainMenu();
         }).setConfigurer(bottomComponentConfigurer).setPreferredSize(250, 40).setMinSize(250, 40));
@@ -97,7 +97,5 @@ public final class OthelloGuiLayer extends ListLayer<JComponent>{
         popUp.getLayerManager().putLayer(elements);
         popUp.setVisible();
     }
-
-
 
 }
