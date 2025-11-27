@@ -8,24 +8,26 @@ import java.util.List;
 public class MatrixLayer<T> extends Layer<T> {
     private final T[][] mainMatrix;
     private final int rows;
-    private final int cols;
+    private final int columns;
 
 
 
     @SuppressWarnings("unchecked")
-    public MatrixLayer(boolean active, String name, int rows, int cols) {
+    public MatrixLayer(boolean active, String name, int rows, int columns) {
         super(active, name);
         this.rows = rows;
-        this.cols = cols;
-        mainMatrix = (T[][]) new Object[rows][cols];
+        this.columns = columns;
+        mainMatrix = (T[][]) new Object[rows][columns];
     }
 
-    public int getRows() {
+
+    public int getRowCount() {
         return rows;
     }
 
-    public int getCols() {
-        return cols;
+
+    public int getColumnCount() {
+        return columns;
     }
 
 

@@ -22,7 +22,7 @@ public final class TicTacToe {
     private TicTacToe() {}
 
     private static TicTacToeGuiLayer guiLayer;
-    private static LayerManager manager;
+    private static final LayerManager manager = new LayerManager();
     private static BestWindow window;
     private static String player1Name = "BestPlayer";
     private static String player2Name = "Player 2";
@@ -33,26 +33,29 @@ public final class TicTacToe {
     volatile public static ServerManager serverManager;
 
     public static void main(final String[] args) {
-        if (args.length >= 1) {
-            player1Name = args[0];
+        try {
+            if (args.length >= 1) {
+                player1Name = args[0];
+            }
+            window = BestWindow.create(manager, "Tic tac toe");
+
+            SwingUtilities.invokeLater(() -> {
+                window.update();
+                window.setVisible();
+            });
+
+            serverManager = new ServerManager();
+            serverManager.login(player1Name);
+
+            manager.putLayer(new SettingsLayer(new Server(serverManager)));
+
+            showMainMenu();
+            MainLoop mainLoop = new MainLoop(60, manager, serverManager);
+            mainLoop.loop();
+        }catch (Exception e){
+            e.printStackTrace();
+            //main(args);
         }
-       //
-        manager = new LayerManager();
-        window = BestWindow.create(manager, "Tic tac toe");
-
-        SwingUtilities.invokeLater(() -> {
-            window.update();
-            window.setVisible();
-        });
-
-        serverManager = new ServerManager();
-        serverManager.login(player1Name);
-
-        manager.putLayer(new SettingsLayer(new Server(serverManager)));
-
-        showMainMenu();
-        MainLoop mainLoop = new MainLoop(60, manager, serverManager);
-        mainLoop.loop();
     }
 
 
@@ -149,7 +152,10 @@ public final class TicTacToe {
         TicTacToe.playerO = playerO;
 
         guiLayer = new TicTacToeGuiLayer(manager, window.getStyle(), playerX, playerO);
-        ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, serverManager);
+        ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, window.getStyle().getGridColor(),serverManager);
+        TurnLabel turnLabel = new TurnLabel(window.getStyle());
+        manager.putLayer(turnLabel);
+        turnLabel.updateTurn(ticTacToeBoard.getCurrentPlayer());
 
         manager.putLayer(guiLayer);
         manager.putLayer(ticTacToeBoard.getBackgroundLayer());
@@ -160,7 +166,6 @@ public final class TicTacToe {
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "tie!": comment, "tie!"),
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "won!": comment, "won!"),
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "lost ):": comment, "lost ):")
-
         ));
 
 
@@ -181,6 +186,7 @@ public final class TicTacToe {
         manager.deleteLayer("background");
         manager.deleteLayer("board");
         manager.deleteLayer("listener");
+        manager.deleteLayer("turnlabel");
     }
 
 

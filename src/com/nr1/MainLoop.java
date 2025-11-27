@@ -69,7 +69,8 @@ public class MainLoop {
                 }
             }
 
-            if(BestWindow.get().getCanvas() != null){
+
+            if(BestWindow.get() != null && BestWindow.get().getCanvas() != null){
                 BestWindow.get().getCanvas().refresh();
             }
 

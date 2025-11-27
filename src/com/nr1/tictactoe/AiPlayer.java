@@ -16,7 +16,7 @@ public class AiPlayer extends Player {
     @Override
     public void makeMove(Layer<?> layer) {
         try {
-            Thread.sleep(500);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
