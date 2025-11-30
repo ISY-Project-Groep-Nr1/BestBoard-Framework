@@ -11,33 +11,32 @@ public final class CheckWinner {
     }
 
     public static Color checkWinner(final MatrixLayer<OthelloCell> board) {
-        for (int i = 0; i < 3; i++) {
-            // Check rows
-            if (!board.get(i, 0).isEmpty() &&
-                    board.get(i, 0).getColor() == board.get(i, 1).getColor() &&
-                    board.get(i, 1).getColor() == board.get(i, 2).getColor()) {
-                return board.get(i, 0).getColor();
+        int blackCount = 0;
+        int whiteCount = 0;
+
+        for (int i = 0; i <board.getRowCount(); i++) {
+            for (int j = 0; j <board.getColumnCount(); j++) {
+            OthelloCell cell = board.get(i, j);
+            if (!cell.isEmpty()) {
+                if (cell.getColor() == Color.BLACK) {
+                    blackCount++;
+                } else if (cell.getColor() == Color.WHITE) {
+                    whiteCount++;
+                }
             }
-            // Check columns
-            if (!board.get(0, i).isEmpty() &&
-                    board.get(0, i).getColor() == board.get(1, i).getColor() &&
-                    board.get(1, i).getColor() == board.get(2, i).getColor()) {
-                return board.get(0, i).getColor();
             }
         }
-        // Check diagonals
-        if (!board.get(0, 0).isEmpty() &&
-                board.get(0, 0).getColor() == board.get(1, 1).getColor() &&
-                board.get(1, 1).getColor() == board.get(2, 2).getColor()) {
-            return board.get(0, 0).getColor();
+
+        if (blackCount > whiteCount) {
+            return Color.BLACK;
         }
-        if (!board.get(2, 0).isEmpty() &&
-                board.get(2, 0).getColor() == board.get(1, 1).getColor() &&
-                board.get(1, 1).getColor() == board.get(0, 2).getColor()) {
-            return board.get(2, 0).getColor();
+        if (whiteCount > blackCount) {
+            return Color.WHITE;
         }
-        return Color.GRAY;
-    }
+        //checkDraw(board);
+        return null;
+        }
+
 
     public static boolean checkDraw(final  MatrixLayer<OthelloCell> board) {
         if (checkWinner(board) != Color.GRAY) {

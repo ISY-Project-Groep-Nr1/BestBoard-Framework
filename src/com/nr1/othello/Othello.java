@@ -201,27 +201,14 @@ public final class Othello {
         timer.start();
     }
 
-    static void checkWinnerAndContinue(LayerManager manager, OthelloBoard board) {
+    static void checkWinner(LayerManager manager, OthelloBoard board) {
         final Player winner = board.checkWinnerPlayer();
         if (winner != null) {
-            guiLayer.showEndDialog("Winner: " + winner.getName());
+            if (!(board.getPlayer1() instanceof ServerPlayer || board.getPlayer2() instanceof ServerPlayer)) {
+                guiLayer.showEndDialog("Winner: " + winner.getName());
+            }
             System.out.println("winner winner chicken dinner");
             return;
-        }
-
-        if (board.checkDraw()) {
-            guiLayer.showEndDialog("Draw!");
-            System.out.println("draw draw tofu lunch");
-            return;
-        }
-
-        Player currentPlayer = board.getCurrentPlayer();
-        //turnLabel.setText("Beurt: " + currentPlayer.getComponentConfigurer());
-
-        if (currentPlayer instanceof AiPlayer) {
-            currentPlayer.makeMove((Layer<?>) (Object) manager);
-            //repaint();
-            checkWinnerAndContinue(manager, board);
         }
     }
 
