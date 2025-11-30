@@ -209,6 +209,7 @@ public final class OthelloBoard {
             currentPlayer = (currentPlayer == player1) ? player2 : player1;
             updateTurnLabel();
             updateAllowedMoves();
+            Othello.checkWinner(Othello.getManager(), this);
         }
     }
 
@@ -217,7 +218,13 @@ public final class OthelloBoard {
         return currentPlayer;
     }
 
+    public Player getPlayer1() {
+        return player1;
+    }
 
+    public Player getPlayer2() {
+        return player2;
+    }
 
     public Color getCurrentPlayerColor() {
         return currentPlayer.getColor();
