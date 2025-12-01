@@ -12,6 +12,16 @@ public class SingleLayer<T> extends Layer<T> {
         this.mainObject = null;
     }
 
+    public SingleLayer(boolean active, String name,  T mainObject) {
+        super(active, name);
+        this.mainObject = mainObject;
+    }
+
+    public SingleLayer(String name,  T mainObject) {
+        super(true, name);
+        this.mainObject = mainObject;
+    }
+
     @Override
     public T get() {
         return mainObject;

@@ -9,6 +9,8 @@ import java.awt.*;
 
 public class FlatStyle implements Style{
     public static final String FONT_NAME = "Arial";
+    private final Color gridColor = Color.BLACK;
+
     @Override
     public void drawBestPanel(Graphics2D g, Dimension bounds) {
         g.setColor(Color.WHITE);
@@ -40,6 +42,11 @@ public class FlatStyle implements Style{
     @Override
     public Color getBackgroundColor() {
         return new  Color(255, 255, 255);
+    }
+
+    @Override
+    public Color getGridColor() {
+        return gridColor;
     }
 
     @Override

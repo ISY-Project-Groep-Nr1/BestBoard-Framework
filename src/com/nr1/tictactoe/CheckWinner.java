@@ -4,10 +4,8 @@ import com.nr1.Layer;
 import com.nr1.MatrixLayer;
 
 public final class CheckWinner {
+    private CheckWinner() {}
 
-    private CheckWinner() {
-
-    }
 
     public static char checkWinner(final char[][] board) {
         for (int i = 0; i < 3; i++) {

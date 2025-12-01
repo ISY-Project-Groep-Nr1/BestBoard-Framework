@@ -3,16 +3,19 @@ package com.nr1.tictactoe;
 import com.nr1.ListLayer;
 import com.nr1.MatrixLayer;
 import com.nr1.SyncedLayer;
+import com.nr1.interfaces.Style;
 import com.nr1.servermanager.ServerManager;
 import com.nr1.SyncedLayer;
 import com.nr1.servermanager.ServerManager;
 
+import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer<TicTacToeCell>>{
+    private final Color gridColor;
     private final ListLayer<BackgroundGrid> background;
     private final Player playerX;
     private final Player playerO;
@@ -22,10 +25,11 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     public static final int WIDTH = 3;
     public static final int HEIGHT = 3;
 
-    public TicTacToeBoard(final int cellSize, Player playerX, Player playerO, ServerManager server) {
+    public TicTacToeBoard(final int cellSize, Player playerX, Player playerO, Color gridColor, ServerManager server) {
         super(new MatrixLayer<>(true, "board", 3, 3));
+        this.gridColor = gridColor;
         background = new ListLayer<>(true, "background");
-        background.add(new BackgroundGrid(cellSize, 3));
+        background.add(new BackgroundGrid(cellSize, 3, gridColor));
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
                 super.wrapped.add(x, y, new TicTacToeCell(x, y, cellSize, this));
@@ -66,8 +70,10 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     }
 
     private final void setPlayer(Player player) {
+        System.out.println(player.getMark());
         //TicTacToe.checkWinner(TicTacToe.getManager(), this);
         currentPlayer = player;
+        updateTurnLabel();
         currentPlayer.makeMove(this);
     }
 
@@ -112,6 +118,14 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
     public Player getPlayerO() {
         return playerO;
     }
+
+    private void updateTurnLabel() {
+        Object layer = TicTacToe.getManager().getLayer("turnlabel");
+        if (layer instanceof TurnLabel) {
+            ((TurnLabel) layer).updateTurn(currentPlayer);
+        }
+    }
+
 
 
     @Override
@@ -169,6 +183,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
             if (matcher.find()) {
                 String playerName = matcher.group(1);
                 int move = Integer.parseInt(matcher.group(2));
+                System.out.println(playerName);
                 int x = move % 3;
                 int y = Math.floorDiv(move, 3);
 

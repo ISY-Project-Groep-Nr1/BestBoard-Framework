@@ -1,9 +1,13 @@
 package com.nr1.othello;
 
+import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.MatrixLayer;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class AiPlayer extends Player {
     private final Color opponentColor;
@@ -16,76 +20,65 @@ public class AiPlayer extends Player {
 
 
     @Override
-    public void makeMove(LayerManager manager) {
-        @SuppressWarnings("unchecked")
-        MatrixLayer<OthelloCell> board = (MatrixLayer<OthelloCell>) manager.getLayer("board");
+    public void makeMove(Layer<?> layer) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-        bestMove(board);
+        // The layer parameter is actually a LayerManager passed from Othello
+        LayerManager manager = (LayerManager) (Object) layer;
+        Object boardLayer = manager.getLayer("board");
+
+        if (!(boardLayer instanceof OthelloBoard)) {
+            System.err.println("ERROR: OthelloBoard not found in LayerManager");
+            return;
+        }
+
+        OthelloBoard board = (OthelloBoard) boardLayer;
+
+        // Get all allowed moves
+        List<int[]> validMoves = getValidMoves(board);
+
+        if (validMoves.isEmpty()) {
+            System.out.println(getName() + " has no valid moves");
+            return;
+        }
+
+        // Pick a random valid move
+        int[] move = validMoves.get(new Random().nextInt(validMoves.size()));
+        System.out.println(getName() + " makes move at: " + move[0] + ", " + move[1]);
+        board.makeMove(move[0], move[1]);
+    }
+
+    /**
+     * Get all valid moves for this AI player
+     */
+    private List<int[]> getValidMoves(OthelloBoard board) {
+        List<int[]> moves = new ArrayList<>();
+        MatrixLayer<AllowedMove> allowedMoves = board.getAllowedMoves();
+
+        for (int x = 0; x < OthelloBoard.WIDTH; x++) {
+            for (int y = 0; y < OthelloBoard.HEIGHT; y++) {
+                if (allowedMoves.get(x, y) != null) {
+                    moves.add(new int[]{x, y});
+                }
+            }
+        }
+
+        return moves;
     }
 
 
     public void bestMove(MatrixLayer<OthelloCell> board) {
-        int[] bestMove = new int[]{-1, -1};
-        int bestScore = Integer.MIN_VALUE;
-
-        for (int row = 0; row < board.getRows(); row++) {
-            for (int col = 0; col < board.getCols(); col++) {
-                if (board.get(row, col).isEmpty()) {
-                    board.get(row, col).getColor();
-                    int score = miniMax(board,  false);
-                    board.get(row, col).getColor();
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestMove[0] = row;
-                        bestMove[1] = col;
-                    }
-                }
-            }
-        }
-
-        OthelloCell cell = board.get(bestMove[0], bestMove[1]);
-        cell.click();
+        // Deprecated: use getValidMoves instead
     }
-
 
     public int miniMax(MatrixLayer<OthelloCell> board, boolean isMaximizing) {
-        int boardValue = checkBoardValue(board);
-
-        if (boardValue == 1 || boardValue == -1 || CheckWinner.checkDraw(board)) {
-            return boardValue;
-        }
-
-        if (isMaximizing) {
-            int maxScore = Integer.MIN_VALUE;
-
-            for (int row = 0; row < board.getRows(); row++) {
-                for (int col = 0; col < board.getCols(); col++) {
-                    OthelloCell cell = board.get(row, col);
-                    if (cell.isEmpty()) {
-                        board.get(row, col).setColor(this.color);
-                        maxScore = Math.max(maxScore, miniMax(board,  false));
-                        board.get(row, col).setColor(Color.GRAY);
-                    }
-                }
-            }
-            return maxScore;
-        } else {
-            int minScore = Integer.MAX_VALUE;
-
-            for (int row = 0; row < board.getRows(); row++) {
-                for (int col = 0; col < board.getCols(); col++) {
-                    OthelloCell cell = board.get(row, col);
-                    if (cell.isEmpty()) {
-                        board.get(row, col).setColor(this.opponentColor);
-                        minScore = Math.min(minScore, miniMax(board,  true));
-                        board.get(row, col).setColor(Color.GRAY);
-                    }
-                }
-            }
-            return minScore;
-        }
+        // Deprecated: simple random strategy now used instead
+        return 0;
     }
-
 
     public int checkBoardValue(MatrixLayer<OthelloCell> board) {
         Color boardWinner = CheckWinner.checkWinner(board);
