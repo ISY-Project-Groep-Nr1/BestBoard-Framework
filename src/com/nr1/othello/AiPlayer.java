@@ -86,12 +86,12 @@ public class AiPlayer extends Player {
         int ownPieces = 0;
         int opponentPieces = 0;
 
-        for (int row = 0; row < board.getRows(); row++) {
-            for (int column = 0; column < board.getCols(); column++) {
+        for (int row = 0; row < board.getRowCount(); row++) {
+            for (int column = 0; column < board.getColumnCount(); column++) {
                 OthelloCell cell = board.get(row, column);
                 Color cellColor = cell.getColor();
 
-                if (cellColor == this.color) {
+                if (cellColor == this.getColor()) {
                     ownPieces++;
                 } else if (cellColor == this.opponentColor) {
                     opponentPieces++;
@@ -99,7 +99,7 @@ public class AiPlayer extends Player {
             }
         }
 
-        if (boardWinner == this.color) {
+        if (boardWinner == this.getColor()) {
             return 1000;
         } else if (boardWinner == this.opponentColor) {
             return -1000;
