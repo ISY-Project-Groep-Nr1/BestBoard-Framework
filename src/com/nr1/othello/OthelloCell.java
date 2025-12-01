@@ -10,10 +10,11 @@ public final class OthelloCell implements Drawable, Clickable {
     private Color color = Color.GRAY;
     private final OthelloBoard board;
     private final int x, y;
+    private static final int LABEL_OFFSET = 25;
 
 
     public OthelloCell(final int x, final int y, final int size, final OthelloBoard board) {
-        this.hitbox = new Rectangle(x * size, y * size, size, size);
+        this.hitbox = new Rectangle(x * size + LABEL_OFFSET, y * size + LABEL_OFFSET, size, size);
         this.x = x;
         this.y = y;
         this.board = board;
