@@ -90,12 +90,28 @@ public class AiPlayer extends Player {
     public int checkBoardValue(MatrixLayer<OthelloCell> board) {
         Color boardWinner = CheckWinner.checkWinner(board);
 
-        if (boardWinner == this.color) {
-            return 1;
-        } else if (boardWinner == this.opponentColor) {
-            return -1;
-        } else {
-            return 0;
+        int ownPieces = 0;
+        int opponentPieces = 0;
+
+        for (int row = 0; row < board.getRows(); row++) {
+            for (int column = 0; column < board.getCols(); column++) {
+                OthelloCell cell = board.get(row, column);
+                Color cellColor = cell.getColor();
+
+                if (cellColor == this.color) {
+                    ownPieces++;
+                } else if (cellColor == this.opponentColor) {
+                    opponentPieces++;
+                }
+            }
         }
+
+        if (boardWinner == this.color) {
+            return 1000;
+        } else if (boardWinner == this.opponentColor) {
+            return -1000;
+        }
+
+        return ownPieces - opponentPieces;
     }
 }
