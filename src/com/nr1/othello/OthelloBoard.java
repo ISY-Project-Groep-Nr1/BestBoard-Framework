@@ -53,8 +53,8 @@ public final class OthelloBoard {
         board.get(mid1x, mid2y).setColor(color1);
         board.get(mid2x, mid1y).setColor(color1);
 
-        /**
-         * board.get(0, 0).setColor(color2);
+
+        board.get(0, 0).setColor(color2);
         board.get(0, 1).setColor(color2);
         board.get(0, 2).setColor(color2);
         board.get(0, 3).setColor(color2);
@@ -86,7 +86,7 @@ public final class OthelloBoard {
         board.get(5, 0).setColor(color2);
         board.get(6, 0).setColor(color2);
         board.get(7, 0).setColor(color2);
-         */
+
 
         
     }
@@ -209,7 +209,10 @@ public final class OthelloBoard {
             currentPlayer = (currentPlayer == player1) ? player2 : player1;
             updateTurnLabel();
             updateAllowedMoves();
-            Othello.checkWinner(Othello.getManager(), this);
+            if (!hasAllowedMoves()) {
+                Othello.checkWinner(Othello.getManager(), this);
+            }
+
         }
     }
 
