@@ -8,6 +8,7 @@ public final class AllowedMove implements Drawable {
     private final int cellSize;
     private final int x;
     private final int y;
+    private static final int LABEL_OFFSET = 25;
 
 
     public AllowedMove(int cellSize, int x, int y) {
@@ -30,8 +31,8 @@ public final class AllowedMove implements Drawable {
         g2.setColor(new Color(0, 180, 0, 160));
         int radius = Math.max(4, cellSize / 8);
 
-        int cx = x * cellSize + cellSize / 2;
-        int cy = y * cellSize + cellSize / 2;
+        int cx = x * cellSize + cellSize / 2 + LABEL_OFFSET;
+        int cy = y * cellSize + cellSize / 2 + LABEL_OFFSET;
         g2.fillOval(cx - radius, cy - radius, radius * 2, radius * 2);
 
         g2.dispose();

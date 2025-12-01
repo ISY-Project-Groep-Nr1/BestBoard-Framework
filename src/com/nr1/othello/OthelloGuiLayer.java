@@ -21,7 +21,7 @@ public final class OthelloGuiLayer extends ListLayer<JComponent> {
     public OthelloGuiLayer(LayerManager manager, Style style, Player playerX, Player playerO) {
         super(true, "gui_panel");
         this.style = style;
-        BestCanvas canvas = new BestCanvas(manager, style, 401, 401);
+        BestCanvas canvas = new BestCanvas(manager, style, 450, 450);
         super.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER_KEY, (component) -> {
             component.setLayout(new GridBagLayout());
             return component;
