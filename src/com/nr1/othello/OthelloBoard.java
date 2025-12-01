@@ -275,6 +275,36 @@ public final class OthelloBoard {
         return CheckWinner.checkDraw(board);
     }
 
+
+    public OthelloBoard copyBoard() {
+        OthelloBoard boardCopy = new OthelloBoard(this.cellSize, this.player1, this.player2);
+
+        for (int row = 0; row < WIDTH; row++) {
+            for (int column = 0; column < HEIGHT; column++) {
+                OthelloCell originalCell = board.get(row, column);
+                OthelloCell copiedCell = new OthelloCell(row, column, this.cellSize, boardCopy);
+                copiedCell.setColor(originalCell.getColor());
+                boardCopy.getLayer().add(row, column, copiedCell);
+            }
+        }
+
+        for (int row = 0; row < WIDTH; row++) {
+            for (int column = 0; column < HEIGHT; column++) {
+                AllowedMove allowedMove = allowedMoves.get(row, column);
+
+                if (allowedMove != null) {
+                    AllowedMove copiedMove = new AllowedMove(this.cellSize, row, column);
+                    boardCopy.getAllowedMoves().add(row, column, copiedMove);
+                }
+            }
+        }
+
+        boardCopy.currentPlayer = this.currentPlayer;
+        boardCopy.updateAllowedMoves();
+
+        return boardCopy;
+    }
+
     private void updateTurnLabel() {
         Object layer = Othello.getManager().getLayer("turnlabel");
         if (layer instanceof TurnLabel) {
