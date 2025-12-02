@@ -2,9 +2,7 @@ package com.nr1;
 
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -24,24 +22,26 @@ public class SaveManager {
 
     public SaveManager(String saveLocation) throws NoSuchAlgorithmException {
         this.saveLocation = saveLocation;
-        this.createSaveFile();
+//        this.createSaveFile();
+        System.out.println(KEY);
+        System.out.println(I_V);
     }
 
-    public boolean createSaveFile() {
-        try {
-            File myObj = new File(saveLocation);
-            if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
-                return true;
-            } else {
-                System.out.println("File already exists.");
-            }
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-        return false;
-    }
+//    public boolean createSaveFile() {
+//        try {
+//            File myObj = new File(saveLocation);
+//            if (myObj.createNewFile()) {
+//                System.out.println("File created: " + myObj.getName());
+//                return true;
+//            } else {
+//                System.out.println("File already exists.");
+//            }
+//        } catch (IOException e) {
+//            System.out.println("An error occurred.");
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
 
 
 
@@ -121,5 +121,29 @@ public class SaveManager {
         char[][] test = {{'a','b','c'},{'1','2','3'},{'!','@','#'}};
         SaveManager saveManager = new SaveManager();
         saveManager.save(test, "wow");
+    }
+
+    public static boolean saveHostname(String hostname) {
+        try {
+            FileWriter myWriter = new FileWriter("hostname.txt");
+            myWriter.write(hostname);
+            myWriter.close();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public static String getHostname() {
+        try {
+            String hostname;
+            FileReader myReader = new FileReader("hostname.txt");
+            hostname = myReader.readAllAsString();
+            myReader.close();
+            return hostname;
+        } catch (IOException e) {
+            System.out.println("WARNING: Couldn't read hostname.txt");
+            return "127.0.0.1";
+        }
     }
 }
