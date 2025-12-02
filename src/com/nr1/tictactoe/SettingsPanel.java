@@ -1,6 +1,7 @@
 package com.nr1.tictactoe;
 
 import com.nr1.ListLayer;
+import com.nr1.SaveManager;
 import com.nr1.gui.BestWindow;
 import com.nr1.gui.elements.BestButton;
 import com.nr1.gui.elements.BestLabel;
@@ -90,9 +91,24 @@ public class SettingsPanel  extends ListLayer<Component> {
         super.add(nameField2);
 
 
+        super.add(new BestLabel("Hostname:", style, Style.Size.LARGE, Font.BOLD, true)
+                .setConfigurer(label)
+                .setMinSize(500, 50)
+                .setMaxSize(800, 50)
+                .setPreferredSize(800, 50)
+        );
+
+        JTextField hostnameField = new JTextField(serverManager.getHostname());
+        hostnameField.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        hostnameField.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        hostnameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        super.add(hostnameField);
+
+
         Runnable onSave = () -> {
             String newName1 = nameField1.getText().trim();
             String newName2 = nameField2.getText().trim();
+            String hostname = hostnameField.getText().trim();
 
             if (!newName1.isEmpty()) {
                 //System.out.println(newName1);
@@ -104,8 +120,11 @@ public class SettingsPanel  extends ListLayer<Component> {
             if (!newName2.isEmpty()) {
                 TicTacToe.setPlayer2Name(newName2);
             }
+            if (!hostname.isEmpty()) {
+                SaveManager.saveHostname(hostname);
+            }
 
-            showSettingsSavedDialog(style, newName1, newName2);
+            showSettingsSavedDialog(style, newName1, newName2, hostname);
 
 //            JOptionPane.showMessageDialog(
 //                    null,
@@ -129,7 +148,7 @@ public class SettingsPanel  extends ListLayer<Component> {
     }
 
 
-    private void showSettingsSavedDialog(Style style, String playerName1, String playerName2) {
+    private void showSettingsSavedDialog(Style style, String playerName1, String playerName2, String hostname) {
         BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getStyle(), "Settings saved");
         ListLayer<BestGuiElement<?>> elements = new ListLayer<>(true, "settings_confirmation");
 
@@ -190,6 +209,30 @@ public class SettingsPanel  extends ListLayer<Component> {
                         .setPreferredSize(350, 40)
                         .setMinSize(350, 40)
         );
+
+        // Add an empty line between the names and the hostname
+        elements.add(
+                new BestLabel(" ", style, Style.Size.MEDIUM, Font.PLAIN, true)
+                        .setConfigurer(topCfg)
+                        .setPreferredSize(350, 40)
+                        .setMinSize(350, 40)
+        );
+
+        elements.add(
+                new BestLabel("Hostname: " + hostname, style, Style.Size.MEDIUM, Font.PLAIN, true)
+                        .setConfigurer(topCfg)
+                        .setPreferredSize(350, 40)
+                        .setMinSize(350, 40)
+        );
+
+        elements.add(
+                new BestLabel("(Restart to apply hostname.)", style, Style.Size.MEDIUM, Font.PLAIN, true)
+                        .setConfigurer(topCfg)
+                        .setPreferredSize(350, 40)
+                        .setMinSize(350, 40)
+        );
+
+        //"(Restart to apply hostname.)"
 
         elements.add(
                 new BestButton("OK", style, () -> {
