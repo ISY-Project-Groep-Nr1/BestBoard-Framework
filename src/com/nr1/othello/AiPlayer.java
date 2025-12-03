@@ -86,6 +86,19 @@ public class AiPlayer extends Player {
         int ownPieces = 0;
         int opponentPieces = 0;
 
+        int value = 0;
+
+        final int[][] stabilityMatrix = {
+                {20, -10, 4, 3, 3, 4, -10, 20},
+                {-10, -20, -2, -2, -2, -2, -20, -10},
+                {4, -2, 0, 0, 0, 0, -2, 4},
+                {3, -2, 0, 1, 1, 0, -2, 3},
+                {3, -2, 0, 1, 1, 0, -2, 3},
+                {4, -2, 0, 0, 0, 0, -2, 4},
+                {-10, -20, -2, -2, -2, -2, -20, -10},
+                {20, -10, 4, 3, 3, 4, -10, 20},
+        };
+
         for (int row = 0; row < board.getRowCount(); row++) {
             for (int column = 0; column < board.getColumnCount(); column++) {
                 OthelloCell cell = board.get(row, column);
@@ -93,8 +106,10 @@ public class AiPlayer extends Player {
 
                 if (cellColor == this.getColor()) {
                     ownPieces++;
+                    value += stabilityMatrix[row][column];
                 } else if (cellColor == this.opponentColor) {
                     opponentPieces++;
+                    value -= stabilityMatrix[row][column];
                 }
             }
         }
@@ -105,6 +120,6 @@ public class AiPlayer extends Player {
             return -1000;
         }
 
-        return ownPieces - opponentPieces;
+        return (ownPieces - opponentPieces) + value;
     }
 }
