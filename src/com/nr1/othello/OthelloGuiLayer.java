@@ -15,7 +15,7 @@ import java.awt.*;
 import java.util.function.Function;
 
 public final class OthelloGuiLayer extends ListLayer<JComponent> {
-    //private final JLabel turnLabel;
+    // private final JLabel turnLabel;
     private final Style style;
 
     public OthelloGuiLayer(LayerManager manager, Style style, Player playerX, Player playerO) {
@@ -35,18 +35,19 @@ public final class OthelloGuiLayer extends ListLayer<JComponent> {
         });
 
         canvas.addMouseListener(MouseManager.getMouseListener());
+        canvas.addMouseMotionListener(MouseManager.getMouseMotionListener());
         super.add(canvas);
-        //turnLabel = new JLabel("Beurt: " + ticTacToeBoard.getCurrentPlayer().getComponentConfigurer(), SwingConstants.CENTER);
-        //turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        //turnLabel.setForeground(Color.BLACK);
-        //add(turnLabel, BorderLayout.NORTH);
+        // turnLabel = new JLabel("Beurt: " +
+        // ticTacToeBoard.getCurrentPlayer().getComponentConfigurer(),
+        // SwingConstants.CENTER);
+        // turnLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        // turnLabel.setForeground(Color.BLACK);
+        // add(turnLabel, BorderLayout.NORTH);
     }
-
 
     public void showEndDialog(String message) {
         showEndDialog(message, "Game ended");
     }
-
 
     public void showEndDialog(String message, String title) {
         BestPopUp popUp = new BestPopUp(BestWindow.get(), BestWindow.get().getStyle(), title);
@@ -76,8 +77,7 @@ public final class OthelloGuiLayer extends ListLayer<JComponent> {
         elements.add(new BestLabel(message, style, Size.MEDIUM, Font.PLAIN, true)
                 .setConfigurer(topComponentConfigurer)
                 .setPreferredSize(350, 40)
-                .setMinSize(350, 40)
-        );
+                .setMinSize(350, 40));
 
         elements.add(new BestButton("restart", style, () -> {
             popUp.setVisible(false);
