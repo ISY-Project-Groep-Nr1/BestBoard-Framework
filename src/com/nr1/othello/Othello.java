@@ -205,12 +205,18 @@ public final class Othello {
 
     static void checkWinner(LayerManager manager, OthelloBoard board) {
         final Player winner = board.checkWinnerPlayer();
+        final boolean draw = board.checkDraw();
+
         if (winner != null) {
             if (!(board.getPlayer1() instanceof ServerPlayer || board.getPlayer2() instanceof ServerPlayer)) {
                 guiLayer.showEndDialog("Winner: " + winner.getName());
             }
             System.out.println("winner winner chicken dinner");
-            return;
+        } else if (draw) {
+            if (!(board.getPlayer1() instanceof ServerPlayer || board.getPlayer2() instanceof ServerPlayer)) {
+                guiLayer.showEndDialog("Draw!");
+            }
+            System.out.println("draw!");
         }
     }
 
