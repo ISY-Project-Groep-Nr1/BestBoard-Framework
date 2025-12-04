@@ -2,6 +2,7 @@ package com.nr1.othello;
 
 import com.nr1.ListLayer;
 import com.nr1.MatrixLayer;
+import com.nr1.MouseManager;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ public final class OthelloBoard {
         updateAllowedMoves();
     }
 
-
     private void initializeStartingPosition() {
 
         final int mid1x = HEIGHT / 2 - 1;
@@ -52,7 +52,6 @@ public final class OthelloBoard {
         board.get(mid2x, mid2y).setColor(color2);
         board.get(mid1x, mid2y).setColor(color1);
         board.get(mid2x, mid1y).setColor(color1);
-
 
         board.get(0, 0).setColor(color2);
         board.get(0, 1).setColor(color2);
@@ -87,10 +86,7 @@ public final class OthelloBoard {
         board.get(6, 0).setColor(color2);
         board.get(7, 0).setColor(color2);
 
-
-        
     }
-
 
     public final void updateAllowedMoves() {
         allowedMoves.deleteAll();
@@ -100,7 +96,8 @@ public final class OthelloBoard {
         for (int x = 0; x < HEIGHT; x++) {
             for (int y = 0; y < WIDTH; y++) {
                 final OthelloCell cell = board.get(x, y);
-                if (!cell.isEmpty()) continue;
+                if (!cell.isEmpty())
+                    continue;
 
                 List<Point> flips = getFlippable(x, y, myColor);
                 if (!flips.isEmpty()) {
@@ -111,28 +108,30 @@ public final class OthelloBoard {
 
     }
 
-
     public boolean hasAllowedMoves() {
         return !allowedMoves.getOfType(AllowedMove.class).isEmpty();
     }
 
-   
     private List<Point> getFlippable(final int x, final int y, final Color myColor) {
         final List<Point> toFlip = new ArrayList<>();
         final Color opponentColor = (myColor == Color.BLACK) ? Color.WHITE : Color.BLACK;
 
         for (int directionX = -1; directionX <= 1; directionX++) {
             for (int directionY = -1; directionY <= 1; directionY++) {
-                if (directionX == 0 && directionY == 0) continue;
+                if (directionX == 0 && directionY == 0)
+                    continue;
 
                 int newX = x + directionX;
                 int newY = y + directionY;
                 final List<Point> candidates = new ArrayList<>();
 
-                if (newX < 0 || newX >= HEIGHT || newY < 0 || newY >= WIDTH) continue;
+                if (newX < 0 || newX >= HEIGHT || newY < 0 || newY >= WIDTH)
+                    continue;
                 OthelloCell neighbour = board.get(newX, newY);
-                if (neighbour == null || neighbour.isEmpty()) continue;
-                if (neighbour.getColor() != opponentColor) continue;
+                if (neighbour == null || neighbour.isEmpty())
+                    continue;
+                if (neighbour.getColor() != opponentColor)
+                    continue;
 
                 candidates.add(new Point(newX, newY));
                 newX += directionX;
@@ -158,11 +157,44 @@ public final class OthelloBoard {
         return toFlip;
     }
 
+    public void updateHighlights() {
+        // Clear all highlights first
+        for (int x = 0; x < HEIGHT; x++) {
+            for (int y = 0; y < WIDTH; y++) {
+                board.get(x, y).setHighlighted(false);
+            }
+        }
+
+        // Get mouse position
+        int mouseX = MouseManager.getMouseX();
+        int mouseY = MouseManager.getMouseY();
+
+        // Check if mouse is over an allowed move
+        for (int x = 0; x < HEIGHT; x++) {
+            for (int y = 0; y < WIDTH; y++) {
+                AllowedMove move = allowedMoves.get(x, y);
+                if (move != null) {
+                    // Calculate the cell bounds
+                    int cellX = x * cellSize + 25; // LABEL_OFFSET
+                    int cellY = y * cellSize + 25;
+
+                    if (mouseX >= cellX && mouseX < cellX + cellSize &&
+                            mouseY >= cellY && mouseY < cellY + cellSize) {
+                        // Mouse is over this allowed move, highlight the flippables
+                        List<Point> flippables = getFlippable(x, y, currentPlayer.getColor());
+                        for (Point p : flippables) {
+                            board.get(p.x, p.y).setHighlighted(true);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     public final ListLayer<BackgroundGrid> getBackgroundLayer() {
         return background;
     }
-
 
     public final MatrixLayer<OthelloCell> getLayer() {
         return board;
@@ -171,7 +203,6 @@ public final class OthelloBoard {
     public final MatrixLayer<AllowedMove> getAllowedMoves() {
         return allowedMoves;
     }
-
 
     public final boolean makeMove(final int x, final int y) {
         final OthelloCell cell = board.get(x, y);
@@ -198,7 +229,6 @@ public final class OthelloBoard {
         return true;
     }
 
-
     public final void switchPlayer() {
         currentPlayer = (currentPlayer == player1) ? player2 : player1;
         updateTurnLabel();
@@ -216,7 +246,6 @@ public final class OthelloBoard {
         }
     }
 
-
     public final Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -233,14 +262,14 @@ public final class OthelloBoard {
         return currentPlayer.getColor();
     }
 
-
     public final Player checkWinnerPlayer() {
         Color winnerColor = CheckWinner.checkWinner(board);
-        if (winnerColor == Color.BLACK) return player1;
-        if (winnerColor == Color.WHITE) return player2;
+        if (winnerColor == Color.BLACK)
+            return player1;
+        if (winnerColor == Color.WHITE)
+            return player2;
         return null;
     }
-
 
     public boolean checkDraw() {
         return CheckWinner.checkDraw(board);
