@@ -27,30 +27,26 @@ public final class CheckWinner {
             }
         }
 
+        System.out.println("black count: " + blackCount);
+        System.out.println("white count: " + whiteCount);
+
         if (blackCount > whiteCount) {
             return Color.BLACK;
         }
         if (whiteCount > blackCount) {
             return Color.WHITE;
         }
-        //checkDraw(board);
+        if (whiteCount == blackCount) {
+            return Color.GRAY;
+        }
         return null;
         }
 
 
-    public static boolean checkDraw(final  MatrixLayer<OthelloCell> board) {
-        if (checkWinner(board) != Color.GRAY) {
-            return false;
-        }
-
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                if (board.get(x, y).isEmpty()) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
+//    public static boolean checkDraw(final  MatrixLayer<OthelloCell> board) {
+//        if (checkWinner(board) == Color.GRAY) {
+//            return true;
+//        }
+//        return false;
+//    }
 }
