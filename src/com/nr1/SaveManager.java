@@ -5,6 +5,7 @@ import java.io.*;
 
 public class SaveManager {
     private String saveLocation;
+    private static final String STANDARD_HOSTNAME = "172.201.112.199";
 
 
     public SaveManager() {
@@ -49,27 +50,39 @@ public class SaveManager {
         saveManager.save(test, "wow");
     }
 
-    public static boolean saveHostname(String hostname) {
-        try {
-            FileWriter myWriter = new FileWriter("hostname.txt");
-            myWriter.write(hostname);
-            myWriter.close();
-            return true;
-        } catch (IOException e) {
-            return false;
+
+    public static boolean saveSettings(String hostname, String name1, String name2) {
+        if (hostname.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {
+            System.out.println(hostname);
+            try {
+                FileWriter myWriter = new FileWriter("settings.txt");
+                myWriter.write(hostname + ";" + name1 + ";" + name2 + ';');
+                myWriter.close();
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
         }
+        return false;
     }
 
     public static String getHostname() {
         try {
             String hostname;
-            FileReader myReader = new FileReader("hostname.txt");
+            FileReader myReader = new FileReader("settings.txt");
             hostname = myReader.readAllAsString();
             myReader.close();
-            return hostname;
+            int i = 0;
+            for (char character : hostname.toCharArray()) {
+                if (character != ';') i++;
+                else break;
+            }
+            System.out.println(hostname.substring(0,i));
+            if (hostname.substring(0,i).matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) return hostname.substring(0,i);
+            else return STANDARD_HOSTNAME;
         } catch (IOException e) {
             System.out.println("WARNING: Couldn't read hostname.txt");
-            return "127.0.0.1";
+            return STANDARD_HOSTNAME;
         }
     }
 }

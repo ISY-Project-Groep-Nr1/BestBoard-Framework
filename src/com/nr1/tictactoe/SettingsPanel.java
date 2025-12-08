@@ -121,7 +121,7 @@ public class SettingsPanel  extends ListLayer<Component> {
                 TicTacToe.setPlayer2Name(newName2);
             }
             if (!hostname.isEmpty()) {
-                SaveManager.saveHostname(hostname);
+                SaveManager.saveSettings(hostname, TicTacToe.getPlayer1Name(), TicTacToe.getPlayer2Name());
             }
 
             showSettingsSavedDialog(style, newName1, newName2, hostname);
