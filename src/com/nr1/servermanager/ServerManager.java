@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 public class ServerManager{
 
     private static final String HOSTNAME = SaveManager.getHostname();
-    //private static final String HOSTNAME = "127.0.0.1";
+    //private static String HOSTNAME = "172.201.112.199";
 
     private static final int PORT = 7789;
 
