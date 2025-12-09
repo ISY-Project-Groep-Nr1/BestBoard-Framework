@@ -82,7 +82,7 @@ public class SettingsPanel extends ListLayer<Component> {
         super.add(nameField2);
 
 
-        super.add(new BestLabel("Hostname:", style, Style.Size.LARGE, Font.BOLD, true)
+        super.add(new BestLabel("Hostname:", style, Style.Size.LARGE, Font.BOLD)
                 .setConfigurer(label)
                 .setMinSize(500, 50)
                 .setMaxSize(800, 50)
@@ -203,21 +203,21 @@ public class SettingsPanel extends ListLayer<Component> {
 
         // Add an empty line between the names and the hostname
         elements.add(
-                new BestLabel(" ", style, Style.Size.MEDIUM, Font.PLAIN, true)
+                new BestLabel(" ", style, Style.Size.MEDIUM, Font.PLAIN)
                         .setConfigurer(topCfg)
                         .setPreferredSize(350, 40)
                         .setMinSize(350, 40)
         );
 
         elements.add(
-                new BestLabel("Hostname: " + hostname, style, Style.Size.MEDIUM, Font.PLAIN, true)
+                new BestLabel("Hostname: " + hostname, style, Style.Size.MEDIUM, Font.PLAIN)
                         .setConfigurer(topCfg)
                         .setPreferredSize(350, 40)
                         .setMinSize(350, 40)
         );
 
         elements.add(
-                new BestLabel("(Restart to apply hostname.)", style, Style.Size.MEDIUM, Font.PLAIN, true)
+                new BestLabel("(Restart to apply hostname.)", style, Style.Size.MEDIUM, Font.PLAIN)
                         .setConfigurer(topCfg)
                         .setPreferredSize(350, 40)
                         .setMinSize(350, 40)
