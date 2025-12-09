@@ -53,38 +53,39 @@ public final class OthelloBoard {
         board.get(mid1x, mid2y).setColor(color1);
         board.get(mid2x, mid1y).setColor(color1);
 
-//        board.get(0, 0).setColor(color2);
-//        board.get(0, 1).setColor(color2);
-//        board.get(0, 2).setColor(color2);
-//        board.get(0, 3).setColor(color2);
-//        board.get(0, 4).setColor(color2);
-//        board.get(0, 5).setColor(color2);
-//        board.get(0, 6).setColor(color2);
-//        board.get(0, 7).setColor(color2);
-//
-//        board.get(1, 7).setColor(color2);
-//        board.get(2, 7).setColor(color2);
-//        board.get(3, 7).setColor(color2);
-//        board.get(4, 7).setColor(color2);
-//        board.get(5, 7).setColor(color2);
-//        board.get(6, 7).setColor(color2);
-//        board.get(7, 7).setColor(color2);
-//
-//        board.get(7, 0).setColor(color2);
-//        board.get(7, 1).setColor(color2);
-//        board.get(7, 2).setColor(color2);
-//        board.get(7, 3).setColor(color2);
-//        board.get(7, 4).setColor(color2);
-//        board.get(7, 5).setColor(color2);
-//        board.get(7, 6).setColor(color2);
-//
-//        board.get(1, 0).setColor(color2);
-//        board.get(2, 0).setColor(color2);
-//        board.get(3, 0).setColor(color2);
-//        board.get(4, 0).setColor(color2);
-//        board.get(5, 0).setColor(color2);
-//        board.get(6, 0).setColor(color2);
-//        board.get(7, 0).setColor(color2);
+        // board.get(0, 0).setColor(color2);
+        // board.get(0, 1).setColor(color2);
+        // board.get(0, 2).setColor(color2);
+        // board.get(0, 3).setColor(color2);
+        // board.get(0, 4).setColor(color2);
+        // board.get(0, 5).setColor(color2);
+        // board.get(0, 6).setColor(color2);
+        // board.get(0, 7).setColor(color2);
+        //
+        // board.get(1, 7).setColor(color2);
+        // board.get(2, 7).setColor(color2);
+        // board.get(3, 7).setColor(color2);
+        // board.get(4, 7).setColor(color2);
+        // board.get(5, 7).setColor(color2);
+        // board.get(6, 7).setColor(color2);
+        // board.get(7, 7).setColor(color2);
+        //
+        // board.get(7, 0).setColor(color2);
+        // board.get(7, 1).setColor(color2);
+        // board.get(7, 2).setColor(color2);
+        // board.get(7, 3).setColor(color2);
+        // board.get(7, 4).setColor(color2);
+        // board.get(7, 5).setColor(color2);
+        // board.get(7, 6).setColor(color2);
+        //
+        // board.get(1, 0).setColor(color2);
+        // board.get(2, 0).setColor(color2);
+        // board.get(3, 0).setColor(color2);
+        // board.get(4, 0).setColor(color2);
+        // board.get(5, 0).setColor(color2);
+        // board.get(6, 0).setColor(color2);
+        // board.get(7, 0).setColor(color2);
+
     }
 
     public final void updateAllowedMoves() {
@@ -278,6 +279,15 @@ public final class OthelloBoard {
         return false;
     }
 
+    private void updateTurnLabel() {
+        Object layer = Othello.getManager().getLayer("turnlabel");
+        if (layer instanceof TurnLabel) {
+            String name = currentPlayer == null ? "-" : currentPlayer.getName();
+            ((TurnLabel) layer).getLabel().setText("Turn: " + name);
+            ((TurnLabel) layer).getLabel().revalidate();
+            ((TurnLabel) layer).getLabel().repaint();
+        }
+    }
 
     public OthelloBoard copyBoard() {
         OthelloBoard boardCopy = new OthelloBoard(this.cellSize, this.player1, this.player2);
@@ -306,15 +316,5 @@ public final class OthelloBoard {
         boardCopy.updateAllowedMoves();
 
         return boardCopy;
-    }
-
-    private void updateTurnLabel() {
-        Object layer = Othello.getManager().getLayer("turnlabel");
-        if (layer instanceof TurnLabel) {
-            String name = currentPlayer == null ? "-" : currentPlayer.getName();
-            ((TurnLabel) layer).getLabel().setText("Turn: " + name);
-            ((TurnLabel) layer).getLabel().revalidate();
-            ((TurnLabel) layer).getLabel().repaint();
-        }
     }
 }
