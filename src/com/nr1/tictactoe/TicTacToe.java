@@ -192,30 +192,7 @@ public final class TicTacToe {
 
     static void openSettings() {
         refreshSettingsScreen();
-//        SettingsPanel settingsPanel = new SettingsPanel(BestWindow.get().getStyle(),
-//                () -> {
-//            BestWindow.get().setStyle(new FlatStyle());
-//            window.update();
-//                },
-//                () -> {
-//            BestWindow.get().setStyle(new MatrixStyle());
-//                    window.update();
-//            BestWindow.get().getFrame().revalidate();
-//            BestWindow.get().getFrame().repaint();
-//
-//                },
-//                () -> {
-//            BestWindow.get().setStyle(new UnicornStyle());
-//            window.update();
-//            },
-//                () -> {
-//            manager.deleteLayer("settings");
-//            TicTacToe.showMainMenu();
-//                }
-//
-//        );
         manager.deleteLayer("main_menu");
-//        manager.putLayer("settings", settingsPanel);
         window.update();
     }
 

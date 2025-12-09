@@ -5,9 +5,14 @@ import com.nr1.LayerManager;
 import com.nr1.ListLayer;
 import com.nr1.MainLoop;
 import com.nr1.gui.BestWindow;
+import com.nr1.gui.styles.FlatStyle;
+import com.nr1.gui.styles.MatrixStyle;
+import com.nr1.gui.styles.UnicornStyle;
 import com.nr1.servermanager.ServerManager;
 import com.nr1.othello.Othello;
 import com.nr1.othello.TurnLabel;
+import com.nr1.tictactoe.SettingsPanel;
+import com.nr1.tictactoe.TicTacToe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +34,7 @@ public final class Othello {
     public static void main(final String[] args) {
         manager = new LayerManager();
         serverManager = new ServerManager();
-        window = BestWindow.create(manager, "Tic tac toe");
+        window = BestWindow.create(manager, "Othello");
 
         SwingUtilities.invokeLater(() -> {
             // frame.setJMenuBar(MenuBar.createMenuBar(frame));
@@ -111,7 +116,8 @@ public final class Othello {
                     playerO = new AiPlayer("AI 1", Color.WHITE);
                     startNewGame();
                 },
-                Othello::openSettings);
+                Othello::openSettings
+        );
         manager.putLayer("main_menu", menu);
         window.update();
 
@@ -161,10 +167,41 @@ public final class Othello {
     }
 
     static void openSettings() {
-        SettingsPanel settingsPanel = new SettingsPanel(
-                e -> {
-                });
+        refreshSettingsScreen();
+        manager.deleteLayer("main_menu");
+        window.update();
     }
+
+    static void refreshSettingsScreen() {
+        manager.deleteLayer("settings");
+
+        com.nr1.tictactoe.SettingsPanel newSettings = new SettingsPanel(
+                BestWindow.get().getStyle(),
+                serverManager,
+                () -> {
+                    BestWindow.get().setStyle(new FlatStyle());
+                    refreshSettingsScreen();
+                },
+                () -> {
+                    BestWindow.get().setStyle(new MatrixStyle());
+                    refreshSettingsScreen();
+                },
+                () -> {
+                    BestWindow.get().setStyle(new UnicornStyle());
+                    refreshSettingsScreen();
+                },
+                () -> {
+                    manager.deleteLayer("settings");
+                    Othello.showMainMenu();
+                }
+        );
+
+        manager.putLayer("settings", newSettings);
+        window.update();
+        BestWindow.get().getFrame().revalidate();
+        BestWindow.get().getFrame().repaint();
+    }
+
 
     static void restart() {
         destroyGame(manager);
