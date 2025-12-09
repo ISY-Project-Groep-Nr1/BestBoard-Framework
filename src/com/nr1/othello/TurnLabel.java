@@ -37,7 +37,7 @@ public class TurnLabel extends ListLayer<Component> {
                 //.appendGlue()
                 .add();
 
-        turnLabel = new BestLabel("Turn: -", style, Style.Size.MEDIUM, Font.BOLD, true)
+        turnLabel = new BestLabel("Turn: -", style, Style.Size.MEDIUM, Font.BOLD)
                 .setConfigurer(labelConfigurer)
                 .setMinSize(BUTTON_WIDTH, BUTTON_HEIGHT)
                 .setMaxSize(800, BUTTON_HEIGHT)
