@@ -13,7 +13,7 @@ public class ServerPlayer extends Player{
     private final ServerManager serverManager;
     private String playerName = "";
 
-    public ServerPlayer(String name, char mark, ServerManager manager) {
+    public ServerPlayer(String name, State mark, ServerManager manager) {
         super(name, mark);
         this.serverManager = manager;
     }

@@ -114,8 +114,19 @@ public class MatrixStyle implements Style{
     }
 
     @Override
+    public Font getFont(int fontType, int size) {
+        return new Font(FONT_NAME, fontType, size);
+
+    }
+
+    @Override
     public StyledButtonRenderer getButtonRenderer() {
         return new ButtonRenderer();
+    }
+
+    @Override
+    public Color getOutlineColor() {
+        return new Color(18, 53, 36);
     }
 
     @Override

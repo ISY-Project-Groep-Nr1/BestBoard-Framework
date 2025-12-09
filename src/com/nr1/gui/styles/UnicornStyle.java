@@ -79,6 +79,9 @@ public class UnicornStyle implements Style{
 
     @Override
     public void drawVerticalCenteredText(Graphics2D g, Dimension bounds, String text, Size size, int type) {
+        if(text.isBlank()){
+            return;
+        }
         drawFont(g, new Point(0, BestWindow.calculateCenteredStringPosition(g, text, bounds).y), bounds, text, actualSize(size),  type);
     }
 
@@ -141,8 +144,18 @@ public class UnicornStyle implements Style{
     }
 
     @Override
+    public Font getFont(int fontType, int size) {
+        return new Font(FONT_NAME, fontType, size);
+    }
+
+    @Override
     public StyledButtonRenderer getButtonRenderer() {
         return new ButtonRenderer();
+    }
+
+    @Override
+    public Color getOutlineColor() {
+        return gridColor;
     }
 
     @Override

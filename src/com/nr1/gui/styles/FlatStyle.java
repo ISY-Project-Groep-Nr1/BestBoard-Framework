@@ -53,9 +53,20 @@ public class FlatStyle implements Style{
         return new Font(FONT_NAME, fontType, actualSize(size));
     }
 
+
+    @Override
+    public Font getFont(int fontType, int size) {
+        return new Font(FONT_NAME, fontType, size);
+    }
+
     @Override
     public StyledButtonRenderer getButtonRenderer() {
         return new ButtonRenderer();
+    }
+
+    @Override
+    public Color getOutlineColor() {
+        return Color.BLACK;
     }
 
     @Override

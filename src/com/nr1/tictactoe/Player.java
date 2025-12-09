@@ -5,30 +5,38 @@ import com.nr1.Layer;
 public abstract class Player {
     protected String name;
     protected boolean isActive;
-    private char mark;
+    private State playerNumber;
 
 
-    public Player(String name, char mark) {
+    public Player(String name, State playerNumber) {
+        if (playerNumber == State.EMPTY) {
+            throw new IllegalArgumentException("player cannot be empty");
+        }
         this.name = name;
-        this.mark = mark;
+        this.playerNumber = playerNumber;
         this.isActive = true;
     }
+
     public abstract void makeMove(Layer<?> manager);
+
     public String getName() {
         return name;
     }
+
     public boolean isActive() {
         return isActive;
     }
+
     public void setActive(boolean active) {
         this.isActive = active;
     }
-    public char getMark() {
-        return mark;
+
+    public State getId() {
+        return playerNumber;
     }
 
-    public void setMark(char mark) {
-        this.mark = mark;
+    public void setId(State state) {
+        this.playerNumber = state;
     }
 }
 

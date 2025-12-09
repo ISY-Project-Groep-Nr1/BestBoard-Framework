@@ -1,22 +1,17 @@
 package com.nr1.tictactoe;
 
-import com.nr1.Layer;
 import com.nr1.LayerManager;
 import com.nr1.ListLayer;
 import com.nr1.MainLoop;
-import com.nr1.SyncedLayer;
 import com.nr1.gui.BestWindow;
-import com.nr1.listeners.ResultListener;
 import com.nr1.listeners.ResultListener;
 import com.nr1.gui.styles.FlatStyle;
 import com.nr1.gui.styles.MatrixStyle;
 import com.nr1.gui.styles.UnicornStyle;
-import com.nr1.servermanager.GameHandler;
 import com.nr1.servermanager.Server;
 import com.nr1.servermanager.ServerManager;
 
 import javax.swing.*;
-import java.awt.*;
 
 public final class TicTacToe {
     private TicTacToe() {}
@@ -85,32 +80,32 @@ public final class TicTacToe {
                 () -> {
                     manager.deleteLayer("main_menu");
                     startNewGame(
-                            new UserPlayer(TicTacToe.getPlayer1Name(), 'X'),
-                            new UserPlayer(TicTacToe.getPlayer2Name(), 'O')
+                            new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1),
+                            new UserPlayer(TicTacToe.getPlayer2Name(), State.PLAYER_2)
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
                     startNewGame(
-                            new UserPlayer(TicTacToe.getPlayer1Name(), 'X'),
-                            new AiPlayer("Computer", 'O')
+                            new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1),
+                            new AiPlayer("Computer", State.PLAYER_2)
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
                     startNewGame(
-                            new AiPlayer("Computer", 'X'),
-                            new UserPlayer(TicTacToe.getPlayer1Name(), 'O')
+                            new AiPlayer("Computer", State.PLAYER_1),
+                            new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_2)
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
 
                     startNewGame(
-                            new AiPlayer("AI 1", 'X'),
-                            new AiPlayer("AI 2", 'O')
+                            new AiPlayer("AI 1", State.PLAYER_1),
+                            new AiPlayer("AI 2", State.PLAYER_2)
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
                     BestWindow.get().update();
-                    Player self = new UserPlayer(TicTacToe.getPlayer1Name(), 'X');
+                    Player self = new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1);
                     new ServerGameStarter(
                             self,
                             serverManager,
@@ -121,7 +116,7 @@ public final class TicTacToe {
                 () -> {
                     manager.deleteLayer("main_menu");
                     BestWindow.get().update();
-                    Player ai = new AiPlayer(TicTacToe.getPlayer1Name(), 'X');
+                    Player ai = new AiPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1);
                     new ServerGameStarter(
                             ai,
                             serverManager,
@@ -152,16 +147,16 @@ public final class TicTacToe {
         TicTacToe.playerO = playerO;
 
         guiLayer = new TicTacToeGuiLayer(manager, window.getStyle(), playerX, playerO);
-        ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, window.getStyle().getGridColor(),serverManager);
+        ticTacToeBoard = new TicTacToeBoard(100, playerX, playerO, serverManager, window.getStyle().getTicTacToeRenderer());
         TurnLabel turnLabel = new TurnLabel(window.getStyle());
         manager.putLayer(turnLabel);
         turnLabel.updateTurn(ticTacToeBoard.getCurrentPlayer());
 
         manager.putLayer(guiLayer);
-        manager.putLayer(ticTacToeBoard.getBackgroundLayer());
         manager.putLayer(ticTacToeBoard);
         ListLayer<Object> listenerLayer = new ListLayer<>(true, "listener");
         manager.putLayer(listenerLayer);
+
         listenerLayer.add(new ResultListener(
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "tie!": comment, "tie!"),
                 (comment) -> guiLayer.showEndDialog(comment.isEmpty() ? "won!": comment, "won!"),

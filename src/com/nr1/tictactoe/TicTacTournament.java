@@ -1,20 +1,11 @@
 package com.nr1.tictactoe;
 
-import com.nr1.LayerManager;
-import com.nr1.ListLayer;
 import com.nr1.MainLoop;
 import com.nr1.SingleLayer;
-import com.nr1.gui.BestWindow;
-import com.nr1.gui.styles.FlatStyle;
-import com.nr1.gui.styles.MatrixStyle;
-import com.nr1.gui.styles.UnicornStyle;
-import com.nr1.interfaces.Style;
 import com.nr1.interfaces.Tickable;
 import com.nr1.listeners.ResultListener;
 import com.nr1.servermanager.Server;
 import com.nr1.servermanager.ServerManager;
-
-import java.awt.*;
 
 import static com.nr1.tictactoe.TicTacToe.*;
 
@@ -40,7 +31,7 @@ public final class TicTacTournament {
                     serverManager,
                     getManager(),
                     (player1, player2) -> {
-                        ticTacToeBoard = new TicTacToeBoard(100, player1, player2, Color.BLACK, serverManager);
+                        ticTacToeBoard = new TicTacToeBoard(100, player1, player2, serverManager);
                         System.out.println(ticTacToeBoard);
                         getManager().putLayer(ticTacToeBoard);
                     }

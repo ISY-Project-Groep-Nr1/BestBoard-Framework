@@ -41,6 +41,10 @@ public class BestCanvas extends JPanel implements BestGuiElement<BestCanvas>{
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g.create();
         for (Layer<?> layer : drawables.getAllActive()) {
+            if (layer instanceof Drawable drawable) {
+                drawable.draw(g);
+            }
+
             for (Object layerElement : layer.getOfType(Drawable.class)) {
                 Drawable drawable = (Drawable) layerElement;
                 drawable.draw(g2d);
