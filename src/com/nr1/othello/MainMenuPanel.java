@@ -50,7 +50,7 @@ public class MainMenuPanel extends ListLayer<Component> {
                 .appendGlue()
                 .add();
 
-        super.add(new BestLabel("Othello", style, Size.LARGE, Font.BOLD, true)
+        super.add(new BestLabel("Othello", style, Size.LARGE, Font.BOLD)
                           .setConfigurer(label)
                           .setMinSize(500, 50)
                           .setMaxSize(800, 50)

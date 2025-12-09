@@ -42,7 +42,7 @@ public final class BackgroundGrid implements Drawable {
             int tx = i * cellSize + labelOffset;
             int ty = 0;
             Graphics2D gLabel = (Graphics2D) g2d.create(tx, ty, cellSize, labelOffset);
-            style.drawCenteredText(gLabel, new Dimension(cellSize, labelOffset), String.valueOf(letter), Style.Size.SMALL, Font.PLAIN);
+            style.drawText(gLabel, new Dimension(cellSize, labelOffset), String.valueOf(letter), Style.Size.SMALL, Font.PLAIN);
             gLabel.dispose();
         }
 
@@ -51,7 +51,7 @@ public final class BackgroundGrid implements Drawable {
             int tx = 0;
             int ty = i * cellSize + labelOffset;
             Graphics2D gLabel = (Graphics2D) g2d.create(tx, ty, labelOffset, cellSize);
-            style.drawCenteredText(gLabel, new Dimension(labelOffset, cellSize), number, Style.Size.SMALL, Font.PLAIN);
+            style.drawText(gLabel, new Dimension(labelOffset, cellSize), number, Style.Size.SMALL, Font.PLAIN);
             gLabel.dispose();
         }
     }
