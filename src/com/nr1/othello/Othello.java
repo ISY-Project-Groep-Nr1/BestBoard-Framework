@@ -9,10 +9,7 @@ import com.nr1.gui.styles.FlatStyle;
 import com.nr1.gui.styles.MatrixStyle;
 import com.nr1.gui.styles.UnicornStyle;
 import com.nr1.servermanager.ServerManager;
-import com.nr1.othello.Othello;
-import com.nr1.othello.TurnLabel;
 import com.nr1.tictactoe.SettingsPanel;
-import com.nr1.tictactoe.TicTacToe;
 
 import javax.swing.*;
 import java.awt.*;
