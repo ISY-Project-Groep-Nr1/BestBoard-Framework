@@ -22,30 +22,35 @@ public final class Othello {
     }
 
     private static OthelloGuiLayer guiLayer;
-    private static LayerManager manager;
+    private static LayerManager manager = new LayerManager();
     private static BestWindow window;
     private static Player playerX;
     private static Player playerO;
     private static String player1Name = "Player 1";
     private static String player2Name = "Player 2";
-    private static OthelloBoard othelloBoard;
+    public static OthelloBoard othelloBoard;
     static ServerManager serverManager;
 
     public static void main(final String[] args) {
-        manager = new LayerManager();
-        serverManager = new ServerManager();
-        window = BestWindow.create(manager, "Othello");
+        try {
+            if (args.length >= 1) {
+                player1Name = args[0];
+            }
+            serverManager = new ServerManager();
+            window = BestWindow.create(manager, "Othello");
 
-        SwingUtilities.invokeLater(() -> {
-            // frame.setJMenuBar(MenuBar.createMenuBar(frame));
-            showMainMenu();
+            SwingUtilities.invokeLater(() -> {
+                // frame.setJMenuBar(MenuBar.createMenuBar(frame));
+                showMainMenu();
 
-            window.update();
-            window.setVisible();
-        });
-        MainLoop mainLoop = new MainLoop(60, manager, serverManager);
-        mainLoop.loop();
-
+                window.update();
+                window.setVisible();
+            });
+            MainLoop mainLoop = new MainLoop(60, manager, serverManager);
+            mainLoop.loop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static String getPlayer1Name() {
@@ -125,7 +130,7 @@ public final class Othello {
 
     static void startNewGame() {
         guiLayer = new OthelloGuiLayer(manager, window.getDefaultStyle(), playerX, playerO);
-        othelloBoard = new OthelloBoard(50, playerX, playerO);
+        othelloBoard = new OthelloBoard(50, playerX, playerO, serverManager);
 
         manager.putLayer("game_gui", guiLayer);
         manager.putLayer("background", othelloBoard.getBackgroundLayer());

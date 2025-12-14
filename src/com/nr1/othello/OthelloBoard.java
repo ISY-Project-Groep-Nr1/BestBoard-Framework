@@ -3,23 +3,29 @@ package com.nr1.othello;
 import com.nr1.ListLayer;
 import com.nr1.MatrixLayer;
 import com.nr1.MouseManager;
+import com.nr1.SyncedLayer;
+import com.nr1.servermanager.ServerManager;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public final class OthelloBoard {
+public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<OthelloCell>> {
     private final MatrixLayer<OthelloCell> board;
     private final ListLayer<BackgroundGrid> background;
     private final Player player1;
     private final Player player2;
     private Player currentPlayer;
+    private final ServerManager serverManager;
     private final MatrixLayer<AllowedMove> allowedMoves;
     private final int cellSize;
     public static final int WIDTH = 8;
     public static final int HEIGHT = 8;
 
-    public OthelloBoard(final int cellSize, Player player1, Player player2) {
+    public OthelloBoard(final int cellSize, Player player1, Player player2, ServerManager server) {
+        super(new MatrixLayer<>(true, "board", 8, 8));
         this.cellSize = cellSize;
         background = new ListLayer<>(true, "background");
         board = new MatrixLayer<>(true, "board", WIDTH, HEIGHT);
@@ -33,6 +39,7 @@ public final class OthelloBoard {
         this.player1 = player1;
         this.player2 = player2;
         this.currentPlayer = player1;
+        this.serverManager = server;
 
         initializeStartingPosition();
         updateAllowedMoves();
@@ -288,9 +295,95 @@ public final class OthelloBoard {
             ((TurnLabel) layer).getLabel().repaint();
         }
     }
+    private final void setPlayer(Player player) {
+        System.out.println(player.getColor());
+        currentPlayer = player;
+        updateTurnLabel();
+        currentPlayer.makeMove(this);
+    }
+
+    @Override
+    public void translateOut(MatrixLayer<OthelloCell> layer, String method, Object... parameters) {
+        if (serverManager == null || !serverManager.isLoggedIn()) {
+            return;
+        }
+        if (method.equals("add") && parameters.length == 3) {
+            if (currentPlayer instanceof ServerPlayer) {
+                return;
+            }
+            System.out.println();
+            serverManager.move((int)parameters[0] + (int) parameters[1] * 8);
+        }
+    }
+
+    private Player getSelf(){
+        if (!(player2 instanceof ServerPlayer)) {
+            return player2;
+        } else if (!(player1 instanceof ServerPlayer)) {
+            return player1;
+        } else {
+            throw new IllegalStateException("server request without a server!");
+        }
+    }
+
+    private Player getServerPlayer(){
+        if ((player2 instanceof ServerPlayer)) {
+            return player2;
+        } else if ((player1 instanceof ServerPlayer)) {
+            return player1;
+        } else {
+            throw new IllegalStateException("server request without a server!");
+        }
+    }
+
+    private Player getPlayerForName(String playerName){
+        if (getSelf().name.equals(playerName)) {
+            return getSelf();
+        } else {
+            getServerPlayer().name = playerName;
+            return getServerPlayer();
+        }
+    }
+
+    private static final Pattern PATTERN = Pattern.compile(
+            "\\{PLAYER: \"(.*?)\", MOVE: \"(.*?)\", DETAILS: \"(.*?)\"\\}"
+    );
+
+    @Override
+    public boolean onEvent(String command) {
+        if (serverManager == null) {
+            return false;
+        }
+        if (command.startsWith("SVR GAME MOVE")) {
+            Matcher matcher = PATTERN.matcher(command);
+            if (matcher.find()) {
+                String playerName = matcher.group(1);
+                int move = Integer.parseInt(matcher.group(2));
+                System.out.println(playerName);
+                int x = move % 8;
+                int y = Math.floorDiv(move, 8);
+
+                Player player = getPlayerForName(playerName);
+                if (!getPlayerForName(playerName).equals(getServerPlayer())) {
+                    return false;
+                }
+
+                final OthelloCell cell = super.get(x, y);
+                System.out.println("[SVR] Opponent moved, cell: " + move + " color: " + player.getColor());
+                System.out.println("placed at: " + x + " " + y);
+                if (cell.isEmpty()) {
+                    wrapped.add(x, y, new OthelloCell(x, y, cellSize, this, player.getColor()));
+                    Othello.checkWinner(Othello.getManager(), this);
+                }
+            }
+        } else if (command.startsWith("SVR GAME YOURTURN")) {
+            setPlayer(getSelf());
+        }
+        return false;
+    }
 
     public OthelloBoard copyBoard() {
-        OthelloBoard boardCopy = new OthelloBoard(this.cellSize, this.player1, this.player2);
+        OthelloBoard boardCopy = new OthelloBoard(this.cellSize, this.player1, this.player2, null);
 
         for (int row = 0; row < WIDTH; row++) {
             for (int column = 0; column < HEIGHT; column++) {

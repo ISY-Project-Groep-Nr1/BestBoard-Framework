@@ -7,7 +7,7 @@ import java.awt.*;
 
 public final class OthelloCell implements Drawable, Clickable {
     private final Rectangle hitbox;
-    private Color color = Color.GRAY;
+    private Color color;
     private final OthelloBoard board;
     private final int x, y;
     private boolean highlighted = false;
@@ -18,6 +18,15 @@ public final class OthelloCell implements Drawable, Clickable {
         this.x = x;
         this.y = y;
         this.board = board;
+        color = Color.GRAY;
+    }
+
+    public OthelloCell(final int x, final int y, final int size, final OthelloBoard board, final Color color) {
+        this.hitbox = new Rectangle(x * size, y * size, size, size);
+        this.x = x;
+        this.y = y;
+        this.board = board;
+        this.color = color;
     }
 
     @Override
