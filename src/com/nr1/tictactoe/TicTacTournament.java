@@ -27,11 +27,11 @@ public final class TicTacTournament {
                 return;
             finished = false;
             new ServerGameStarter(
-                    new AiPlayer(player1Name, ' '),
+                    new AiPlayer(player1Name, State.EMPTY, null),
                     serverManager,
                     getManager(),
                     (player1, player2) -> {
-                        ticTacToeBoard = new TicTacToeBoard(100, player1, player2, serverManager);
+                        ticTacToeBoard = new TicTacToeBoard(100, player1, player2, serverManager, null);
                         System.out.println(ticTacToeBoard);
                         getManager().putLayer(ticTacToeBoard);
                     }

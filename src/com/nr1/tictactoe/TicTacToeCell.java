@@ -1,30 +1,30 @@
 package com.nr1.tictactoe;
 
 import com.nr1.interfaces.Clickable;
+import com.nr1.interfaces.Drawable;
 
 import java.awt.*;
 
-public final class TicTacToeCell implements Clickable {
+public final class TicTacToeCell implements Clickable, Drawable{
     private final Rectangle hitbox;
     private final TicTacToeBoard board;
     private final int x, y;
-    private final State state;
+    private final Player player;
 
     public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board) {
         this.hitbox = new Rectangle(x * size, y * size, size, size);
         this.x = x;
         this.y = y;
         this.board = board;
-        state = State.EMPTY;
+        player = null;
     }
 
-    public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board, State state) {
+    public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board, Player player) {
         this.hitbox = new Rectangle(x * size, y * size, size, size);
         this.x = x;
         this.y = y;
         this.board = board;
-        this.state = state;
-
+        this.player = player;
     }
 
 
@@ -44,13 +44,19 @@ public final class TicTacToeCell implements Clickable {
 
 
     public final State getState() {
-        return state;
+        return player != null? player.getId() : null;
     }
 
 
     public final boolean isEmpty() {
-        return state == State.EMPTY;
+        return player == null;
     }
 
-
+    @Override
+    public void draw(Graphics g) {
+        if (player == null) {
+            return;
+        }
+        player.draw(g);
+    }
 }

@@ -1,13 +1,16 @@
 package com.nr1.tictactoe;
 
 import com.nr1.Layer;
+import com.nr1.interfaces.PlayerRenderer;
+
+import java.awt.*;
 
 
 public class AiPlayer extends Player {
     private State opponentState;
 
-    public AiPlayer(String name, State state) {
-        super(name, state);
+    public AiPlayer(String name, State state, PlayerRenderer renderer) {
+        super(name, state, renderer);
         System.out.println(state);
         this.opponentState = state == State.PLAYER_1 ? State.PLAYER_2 : State.PLAYER_1;
     }
@@ -108,8 +111,7 @@ public class AiPlayer extends Player {
         }
     }
 
-    @Override
-    public void setState(char mark) {
+    public void setState(State mark) {
         opponentState = mark == State.PLAYER_1 ? State.PLAYER_2 : State.PLAYER_1;
         super.setId(mark);
     }

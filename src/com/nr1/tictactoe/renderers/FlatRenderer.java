@@ -3,9 +3,13 @@ package com.nr1.tictactoe.renderers;
 import java.awt.*;
 
 public class FlatRenderer extends TicTacToeRenderer{
+    private final Color color;
+
+    public FlatRenderer(Color color) { this.color = color; }
+
     @Override
     public void drawBackgroundGrid(Graphics2D graphics, int cellSize, int gridSize) {
-        graphics.setColor(Color.BLACK);
+        graphics.setColor(color);
         int totalSize = cellSize * gridSize;
 
         for (int i = 0; i < (gridSize + 1); i++) {

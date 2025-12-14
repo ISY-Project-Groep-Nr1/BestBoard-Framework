@@ -5,6 +5,8 @@ import com.nr1.gui.ImageManager;
 import com.nr1.gui.elements.BestButton;
 import com.nr1.interfaces.Style;
 import com.nr1.interfaces.StyledButtonRenderer;
+import com.nr1.tictactoe.renderers.FlatRenderer;
+import com.nr1.tictactoe.renderers.TicTacToeRenderer;
 
 import java.awt.*;
 import java.awt.font.FontRenderContext;
@@ -166,6 +168,11 @@ public class UnicornStyle implements Style{
     @Override
     public boolean propagateRepaints() {
         return false;
+    }
+
+    @Override
+    public TicTacToeRenderer getTicTacToeRenderer() {
+        return new FlatRenderer(Color.pink);
     }
 
     private int actualSize(Size size) {

@@ -4,6 +4,9 @@ import com.nr1.LayerManager;
 import com.nr1.ListLayer;
 import com.nr1.MainLoop;
 import com.nr1.gui.BestWindow;
+import com.nr1.gui.CellRendererFactory;
+import com.nr1.interfaces.Drawable;
+import com.nr1.interfaces.PlayerRenderer;
 import com.nr1.listeners.ResultListener;
 import com.nr1.gui.styles.FlatStyle;
 import com.nr1.gui.styles.MatrixStyle;
@@ -23,7 +26,6 @@ public final class TicTacToe {
     private static String player2Name = "Player 2";
     private static Player playerX;
     private static Player playerO;
-
     public static TicTacToeBoard ticTacToeBoard;
     volatile public static ServerManager serverManager;
 
@@ -75,37 +77,41 @@ public final class TicTacToe {
 
 
     static void showMainMenu() {
+        CellRendererFactory factory = new CellRendererFactory(BestWindow.get().getStyle(), 100);
+        PlayerRenderer player1Renderer = factory.createCharacterPlayerRenderer('X');
+        PlayerRenderer player2Renderer = factory.createCharacterPlayerRenderer('Y');
+
         MainMenuPanel menu = new MainMenuPanel(
                 BestWindow.get().getStyle(),
                 () -> {
                     manager.deleteLayer("main_menu");
                     startNewGame(
-                            new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1),
-                            new UserPlayer(TicTacToe.getPlayer2Name(), State.PLAYER_2)
+                            new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1, player1Renderer),
+                            new UserPlayer(TicTacToe.getPlayer2Name(), State.PLAYER_2, player2Renderer)
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
                     startNewGame(
-                            new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1),
-                            new AiPlayer("Computer", State.PLAYER_2)
+                            new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1, player1Renderer),
+                            new AiPlayer("Computer", State.PLAYER_2, player2Renderer)
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
                     startNewGame(
-                            new AiPlayer("Computer", State.PLAYER_1),
-                            new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_2)
+                            new AiPlayer("Computer", State.PLAYER_1, player1Renderer),
+                            new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_2, player2Renderer)
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
 
                     startNewGame(
-                            new AiPlayer("AI 1", State.PLAYER_1),
-                            new AiPlayer("AI 2", State.PLAYER_2)
+                            new AiPlayer("AI 1", State.PLAYER_1, player1Renderer),
+                            new AiPlayer("AI 2", State.PLAYER_2, player2Renderer)
                     ); },
                 () -> {
                     manager.deleteLayer("main_menu");
                     BestWindow.get().update();
-                    Player self = new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1);
+                    Player self = new UserPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1, player1Renderer);
                     new ServerGameStarter(
                             self,
                             serverManager,
@@ -116,7 +122,7 @@ public final class TicTacToe {
                 () -> {
                     manager.deleteLayer("main_menu");
                     BestWindow.get().update();
-                    Player ai = new AiPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1);
+                    Player ai = new AiPlayer(TicTacToe.getPlayer1Name(), State.PLAYER_1, player1Renderer);
                     new ServerGameStarter(
                             ai,
                             serverManager,

@@ -50,7 +50,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
             return;
         }
         if (cell.isEmpty()) {
-            add(x, y, new TicTacToeCell(x, y, cellSize, this, player.getId()));
+            add(x, y, new TicTacToeCell(x, y, cellSize, this, player));
             TicTacToe.checkWinner(TicTacToe.getManager(), this);
             setPlayer(getOpposite(player));
         } else {
@@ -60,7 +60,13 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
 
     @Override
     public void draw(Graphics g) {
-
+        renderer.drawBackgroundGrid((Graphics2D) g, cellSize, 3);
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                TicTacToeCell cell = get(x, y);
+                cell.draw(g);
+            }
+        }
     }
 
 
@@ -201,7 +207,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
                 System.out.println("[SVR] Opponent moved, cell: " + move + " mark: " + player.getId());
                 System.out.println("placed at: " + x + " " + y);
                 if (cell.isEmpty()) {
-                    wrapped.add(x, y, new TicTacToeCell(x, y, cellSize, this, player.getId()));
+                    wrapped.add(x, y, new TicTacToeCell(x, y, cellSize, this, player));
                     TicTacToe.checkWinner(TicTacToe.getManager(), this);
                 }
                 //makeMove(player, move % 3, move / 3);
