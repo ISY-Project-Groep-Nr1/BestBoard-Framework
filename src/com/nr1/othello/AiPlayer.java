@@ -7,7 +7,6 @@ import com.nr1.MatrixLayer;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class AiPlayer extends Player {
     private final Color opponentColor;
@@ -46,10 +45,12 @@ public class AiPlayer extends Player {
             return;
         }
 
-        // Pick a random valid move
-        int[] move = validMoves.get(new Random().nextInt(validMoves.size()));
-        System.out.println(getName() + " makes move at: " + move[0] + ", " + move[1]);
-        board.makeMove(move[0], move[1]);
+        int[] bestMove = bestMove(board); // Verwacht een OthelloBoard
+        if (bestMove[0] == -1) {
+            board.makeMove(3, 2);
+        } else {
+            board.makeMove(bestMove[0], bestMove[1]);
+        }
     }
 
     /**
@@ -71,17 +72,69 @@ public class AiPlayer extends Player {
     }
 
 
-    public void bestMove(MatrixLayer<OthelloCell> board) {
-        // Deprecated: use getValidMoves instead
+    public int[] bestMove(OthelloBoard board) {
+        System.out.println("Deciding best move...");
+        int[] bestMove = {-1, -1};
+        int bestScore = Integer.MIN_VALUE;
+
+        for (int[] move : getValidMoves(board)) {
+            OthelloBoard copiedBoard = board.copyBoard();
+            copiedBoard.makeMove(move[0], move[1]);
+            int score = miniMax(copiedBoard, false, 4, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = move;
+            }
+        }
+
+        System.out.println("Best move:" + bestMove[0] + " " + bestMove[1]);
+        return bestMove;
     }
 
-    public int miniMax(MatrixLayer<OthelloCell> board, boolean isMaximizing) {
-        // Deprecated: simple random strategy now used instead
-        return 0;
+    public int miniMax(OthelloBoard board, boolean isMaximizing, int depth, int alpha, int beta) {
+        int boardValue = checkBoardValue(board);
+
+        if (boardValue == 1000 ||
+                boardValue == -1000 ||
+                CheckWinner.checkWinner(board.getLayer()) == Color.GRAY ||
+                depth == 0
+        ) {
+            return boardValue;
+        }
+
+        board.updateAllowedMoves();
+
+        if (isMaximizing) {
+            int currentAlpha = Integer.MIN_VALUE;
+
+            for (int[] move : getValidMoves(board)) {
+                OthelloBoard copiedBoard = board.copyBoard();
+                copiedBoard.makeMove(move[0], move[1]);
+                currentAlpha = miniMax(copiedBoard, false, depth - 1, alpha, beta);
+                alpha = Math.max(currentAlpha, alpha);
+                if (alpha >= beta) {
+                    return alpha;
+                }
+            }
+            return currentAlpha;
+        } else {
+            int currentBeta = Integer.MAX_VALUE;
+
+            for (int[] move : getValidMoves(board)) {
+                OthelloBoard copiedBoard = board.copyBoard();
+                copiedBoard.makeMove(move[0], move[1]);
+                currentBeta = miniMax(copiedBoard, true, depth - 1, alpha, beta);
+                beta = Math.min(currentBeta, beta);
+                if (beta <= alpha) {
+                    return alpha;
+                }
+            }
+            return currentBeta;
+        }
     }
 
-    public int checkBoardValue(MatrixLayer<OthelloCell> board) {
-        Color boardWinner = CheckWinner.checkWinner(board);
+    public int checkBoardValue(OthelloBoard board) {
+        Color boardWinner = CheckWinner.checkWinner(board.getLayer());
 
         int ownPieces = 0;
         int opponentPieces = 0;
@@ -89,19 +142,21 @@ public class AiPlayer extends Player {
         int value = 0;
 
         final int[][] stabilityMatrix = {
-                {20, -10, 4, 3, 3, 4, -10, 20},
-                {-10, -20, -2, -2, -2, -2, -20, -10},
-                {4, -2, 0, 0, 0, 0, -2, 4},
-                {3, -2, 0, 1, 1, 0, -2, 3},
-                {3, -2, 0, 1, 1, 0, -2, 3},
-                {4, -2, 0, 0, 0, 0, -2, 4},
-                {-10, -20, -2, -2, -2, -2, -20, -10},
-                {20, -10, 4, 3, 3, 4, -10, 20},
+                {1000, -50, 5, 3, 3, 5, -50, 1000},
+                {-50, -20, -2, -2, -2, -2, -20, -50},
+                {5, -2, 1, 1, 1, 1, -2, 5},
+                {3, -2, 1, 2, 2, 1, -2, 3},
+                {3, -2, 1, 2, 2, 1, -2, 3},
+                {5, -2, 1, 1, 1, 1, -2, 5},
+                {-50, -20, -2, -2, -2, -2, -20, -50},
+                {1000, -50, 5, 3, 3, 5, -50, 1000}
         };
 
-        for (int row = 0; row < board.getRowCount(); row++) {
-            for (int column = 0; column < board.getColumnCount(); column++) {
-                OthelloCell cell = board.get(row, column);
+        int emptyCells = 0;
+
+        for (int row = 0; row < board.getLayer().getRowCount(); row++) {
+            for (int column = 0; column < board.getLayer().getColumnCount(); column++) {
+                OthelloCell cell = board.getLayer().get(row, column);
                 Color cellColor = cell.getColor();
 
                 if (cellColor == this.getColor()) {
@@ -110,8 +165,14 @@ public class AiPlayer extends Player {
                 } else if (cellColor == this.opponentColor) {
                     opponentPieces++;
                     value -= stabilityMatrix[row][column];
+                } else {
+                    emptyCells++;
                 }
             }
+        }
+
+        if (emptyCells < 10) {
+            value += 5 * (ownPieces - opponentPieces);
         }
 
         if (boardWinner == this.getColor()) {

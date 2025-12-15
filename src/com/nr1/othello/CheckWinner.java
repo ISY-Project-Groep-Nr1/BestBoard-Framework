@@ -36,7 +36,7 @@ public final class CheckWinner {
         if (whiteCount > blackCount) {
             return Color.WHITE;
         }
-        if (whiteCount == blackCount) {
+        if (whiteCount > 2 && whiteCount == blackCount) {
             return Color.GRAY;
         }
         return null;
