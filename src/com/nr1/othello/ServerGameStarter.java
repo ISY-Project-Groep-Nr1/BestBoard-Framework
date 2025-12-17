@@ -23,6 +23,7 @@ public class ServerGameStarter extends ListLayer<ServerListener> {
         this.selfPlayer = selfPlayer;
         this.serverManager = serverManager;
         add(new MatchListener((starter, opponent) -> {
+            manager.deleteLayer("server_game_starter");
             if (starter.equals(selfPlayer.name)) {
                 selfPlayer.setColor(Color.BLACK);
                 onStart.accept(selfPlayer, new ServerPlayer(opponent, Color.WHITE, serverManager));
@@ -30,7 +31,7 @@ public class ServerGameStarter extends ListLayer<ServerListener> {
                 selfPlayer.setColor(Color.WHITE);
                 onStart.accept(new ServerPlayer(opponent, Color.BLACK, serverManager), selfPlayer);
             }
-        }, "othello"));
+        }, "reversi"));
         manager.putLayer(this);
     }
 
