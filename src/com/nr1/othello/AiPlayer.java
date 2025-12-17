@@ -7,13 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AiPlayer extends Player {
-    private final int myColor;
-    private final int opponentColor;
-
     public AiPlayer(String name, Color color) {
         super(name, color);
-        this.myColor = (color == Color.BLACK) ? 1 : -1;
-        this.opponentColor = -this.myColor;
+    }
+
+    private int myColor() {
+        return getColor() == Color.BLACK ? 1 : -1;
+    }
+
+    private int opponentColor() {
+        return -myColor();
     }
 
 
@@ -48,12 +51,12 @@ public class AiPlayer extends Player {
 
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
-                if (isValidMove(board, row, column, this.myColor)) {
+                if (isValidMove(board, row, column, this.myColor())) {
                     int[][] copiedBoard = copyBoard(board);
 
-                    move(copiedBoard, row, column, this.myColor);
+                    move(copiedBoard, row, column, this.myColor());
 
-                    int score = miniMax(copiedBoard, false, opponentColor, 8, Integer.MIN_VALUE,
+                    int score = miniMax(copiedBoard, false, this.opponentColor(), 8, Integer.MIN_VALUE,
                             Integer.MAX_VALUE);
 
                     if (score > bestScore) {
@@ -143,10 +146,10 @@ public class AiPlayer extends Player {
 
         for (int row = 0; row < board.length; row++) {
             for (int column = 0; column < board[row].length; column++) {
-                if (board[row][column] == this.myColor) {
+                if (board[row][column] == this.myColor()) {
                     ownPieces++;
                     value += stabilityMatrix[row][column];
-                } else if (board[row][column] == this.opponentColor) {
+                } else if (board[row][column] == this.opponentColor()) {
                     opponentPieces++;
                     value -= stabilityMatrix[row][column];
                 } else {
@@ -209,7 +212,6 @@ public class AiPlayer extends Player {
 
     private List<Point> getFlippable(int[][] board, final int x, final int y, final int myColor) {
         final List<Point> toFlip = new ArrayList<>();
-        final int opponentColor = (myColor == 1) ? -1 : 1;
 
         for (int directionX = -1; directionX <= 1; directionX++) {
             for (int directionY = -1; directionY <= 1; directionY++) {
@@ -225,7 +227,7 @@ public class AiPlayer extends Player {
                 int neighbour = board[newX][newY];
                 if (neighbour == 0)
                     continue;
-                if (neighbour != opponentColor)
+                if (neighbour != opponentColor())
                     continue;
 
                 candidates.add(new Point(newX, newY));

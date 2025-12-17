@@ -50,13 +50,10 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
         final int mid1y = WIDTH / 2 - 1;
         final int mid2y = WIDTH / 2;
 
-        final Color color1 = player1.getColor();
-        final Color color2 = player2.getColor();
-
-        super.get(mid1x, mid1y).setColor(color2);
-        super.get(mid2x, mid2y).setColor(color2);
-        super.get(mid1x, mid2y).setColor(color1);
-        super.get(mid2x, mid1y).setColor(color1);
+        super.get(mid1x, mid1y).setColor(Color.BLACK);
+        super.get(mid2x, mid2y).setColor(Color.BLACK);
+        super.get(mid1x, mid2y).setColor(Color.WHITE);
+        super.get(mid2x, mid1y).setColor(Color.WHITE);
 
         // board.get(0, 0).setColor(color2);
         // board.get(0, 1).setColor(color2);

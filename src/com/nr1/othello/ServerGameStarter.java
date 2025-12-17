@@ -24,11 +24,11 @@ public class ServerGameStarter extends ListLayer<ServerListener> {
         this.serverManager = serverManager;
         add(new MatchListener((starter, opponent) -> {
             if (starter.equals(selfPlayer.name)) {
-                selfPlayer.setColor(Color.BLACK);
-                onStart.accept(selfPlayer, new ServerPlayer(opponent, Color.WHITE, serverManager));
-            } else {
                 selfPlayer.setColor(Color.WHITE);
-                onStart.accept(new ServerPlayer(opponent, Color.BLACK, serverManager), selfPlayer);
+                onStart.accept(selfPlayer, new ServerPlayer(opponent, Color.BLACK, serverManager));
+            } else {
+                selfPlayer.setColor(Color.BLACK);
+                onStart.accept(new ServerPlayer(opponent, Color.WHITE, serverManager), selfPlayer);
             }
         }, "othello"));
         manager.putLayer(this);
