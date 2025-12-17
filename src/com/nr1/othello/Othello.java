@@ -131,7 +131,7 @@ public final class Othello {
 
         manager.putLayer("game_gui", guiLayer);
         manager.putLayer("background", othelloBoard.getBackgroundLayer());
-        manager.putLayer("board", othelloBoard.getLayer());
+        manager.putLayer("board", othelloBoard);
         manager.putLayer("allowedMoves", othelloBoard.getAllowedMoves());
 
         // Add the board updater layer for highlighting
@@ -153,7 +153,7 @@ public final class Othello {
         if (playerX instanceof AiPlayer && playerO instanceof AiPlayer) {
             runAiGameLoop(manager); // 🔁 Volledige AI vs AI simulatie
         } else if (currentPlayer instanceof AiPlayer) {
-            currentPlayer.makeMove((Layer<?>) (Object) manager);
+            currentPlayer.makeMove(manager.getLayer("board"));
             // turnLabel.setText("Beurt: " +
             // ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());
         }
@@ -217,21 +217,23 @@ public final class Othello {
     private static void runAiGameLoop(LayerManager manager) {
         Player current = othelloBoard.getCurrentPlayer();
 
-        Player winner = othelloBoard.checkWinnerPlayer();
-        if (winner != null) {
-            System.out.println("winner winner chicken dinner");
-            guiLayer.showEndDialog("Winner: " + winner.getName());
-            return;
-        }
+        if (othelloBoard.isGameOver()) {
+            Player winner = othelloBoard.checkWinnerPlayer();
+            if (winner != null) {
+                System.out.println("winner winner chicken dinner");
+                guiLayer.showEndDialog("Winner: " + winner.getName());
+                return;
+            }
 
-        if (othelloBoard.checkDraw()) {
-            System.out.println("draw draw tofu lunch");
-            guiLayer.showEndDialog("Draw!");
-            return;
+            if (othelloBoard.checkDraw()) {
+                System.out.println("draw draw tofu lunch");
+                guiLayer.showEndDialog("Draw!");
+                return;
+            }
         }
 
         if (current instanceof AiPlayer) {
-            current.makeMove((Layer<?>) (Object) manager);
+            current.makeMove(manager.getLayer("board"));
             // repaint();
             // turnLabel.setText("Beurt: " +
             // ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());

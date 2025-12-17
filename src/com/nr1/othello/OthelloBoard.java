@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<OthelloCell>> {
-    private final MatrixLayer<OthelloCell> board;
     private final ListLayer<BackgroundGrid> background;
     private final Player player1;
     private final Player player2;
@@ -28,12 +27,11 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
         super(new MatrixLayer<>(true, "board", 8, 8));
         this.cellSize = cellSize;
         background = new ListLayer<>(true, "background");
-        board = new MatrixLayer<>(true, "board", WIDTH, HEIGHT);
         background.add(new BackgroundGrid(cellSize, WIDTH));
         allowedMoves = new MatrixLayer<>(true, "allowedMoves", WIDTH, HEIGHT);
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
-                board.add(x, y, new OthelloCell(x, y, cellSize, this));
+                super.wrapped.add(x, y, new OthelloCell(x, y, cellSize, this));
             }
         }
         this.player1 = player1;
@@ -55,10 +53,10 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
         final Color color1 = player1.getColor();
         final Color color2 = player2.getColor();
 
-        board.get(mid1x, mid1y).setColor(color2);
-        board.get(mid2x, mid2y).setColor(color2);
-        board.get(mid1x, mid2y).setColor(color1);
-        board.get(mid2x, mid1y).setColor(color1);
+        super.get(mid1x, mid1y).setColor(color2);
+        super.get(mid2x, mid2y).setColor(color2);
+        super.get(mid1x, mid2y).setColor(color1);
+        super.get(mid2x, mid1y).setColor(color1);
 
         // board.get(0, 0).setColor(color2);
         // board.get(0, 1).setColor(color2);
@@ -102,7 +100,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
 
         for (int x = 0; x < HEIGHT; x++) {
             for (int y = 0; y < WIDTH; y++) {
-                final OthelloCell cell = board.get(x, y);
+                final OthelloCell cell = super.get(x, y);
                 if (!cell.isEmpty())
                     continue;
 
@@ -117,6 +115,22 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
 
     public boolean hasAllowedMoves() {
         return !allowedMoves.getOfType(AllowedMove.class).isEmpty();
+    }
+
+    public boolean isGameOver() {
+        return !hasAnyValidMove(Color.BLACK) && !hasAnyValidMove(Color.WHITE);
+    }
+
+    private boolean hasAnyValidMove(Color color) {
+        Player savedPlayer = currentPlayer;
+        currentPlayer = (color == player1.getColor()) ? player1 : player2;
+        updateAllowedMoves();
+
+        boolean hasValidMove = hasAllowedMoves();
+        currentPlayer = savedPlayer;
+        updateAllowedMoves();
+
+        return hasValidMove;
     }
 
     private List<Point> getFlippable(final int x, final int y, final Color myColor) {
@@ -134,7 +148,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
 
                 if (newX < 0 || newX >= HEIGHT || newY < 0 || newY >= WIDTH)
                     continue;
-                OthelloCell neighbour = board.get(newX, newY);
+                OthelloCell neighbour = super.get(newX, newY);
                 if (neighbour == null || neighbour.isEmpty())
                     continue;
                 if (neighbour.getColor() != opponentColor)
@@ -145,7 +159,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
                 newY += directionY;
 
                 while (newX >= 0 && newX < HEIGHT && newY >= 0 && newY < WIDTH) {
-                    OthelloCell c = board.get(newX, newY);
+                    OthelloCell c = super.get(newX, newY);
                     if (c == null || c.isEmpty()) {
                         candidates.clear();
                         break;
@@ -168,7 +182,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
         // Clear all highlights first
         for (int x = 0; x < HEIGHT; x++) {
             for (int y = 0; y < WIDTH; y++) {
-                board.get(x, y).setHighlighted(false);
+                super.get(x, y).setHighlighted(false);
             }
         }
 
@@ -190,7 +204,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
                         // Mouse is over this allowed move, highlight the flippables
                         List<Point> flippables = getFlippable(x, y, currentPlayer.getColor());
                         for (Point p : flippables) {
-                            board.get(p.x, p.y).setHighlighted(true);
+                            super.get(p.x, p.y).setHighlighted(true);
                         }
                         break;
                     }
@@ -204,7 +218,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
     }
 
     public final MatrixLayer<OthelloCell> getLayer() {
-        return board;
+        return super.wrapped;
     }
 
     public final MatrixLayer<AllowedMove> getAllowedMoves() {
@@ -212,7 +226,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
     }
 
     public final boolean makeMove(final int x, final int y) {
-        final OthelloCell cell = board.get(x, y);
+        final OthelloCell cell = super.get(x, y);
         if (!cell.isEmpty()) {
             return false;
         }
@@ -226,7 +240,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
 
         cell.setColor(myColor);
         for (Point p : toFlip) {
-            OthelloCell c = board.get(p.x, p.y);
+            OthelloCell c = super.get(p.x, p.y);
             if (c != null) {
                 c.setColor(myColor);
             }
@@ -270,7 +284,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
     }
 
     public final Player checkWinnerPlayer() {
-        Color winnerColor = CheckWinner.checkWinner(board);
+        Color winnerColor = CheckWinner.checkWinner(this.asMatrix());
         if (winnerColor == Color.BLACK)
             return player1;
         if (winnerColor == Color.WHITE)
@@ -279,7 +293,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
     }
 
     public boolean checkDraw() {
-        Color color = CheckWinner.checkWinner(board);
+        Color color = CheckWinner.checkWinner(this.asMatrix());
         if (color == Color.GRAY) {
             return true;
         }
@@ -382,32 +396,22 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
         return false;
     }
 
-    public OthelloBoard copyBoard() {
-        OthelloBoard boardCopy = new OthelloBoard(this.cellSize, this.player1, this.player2, null);
+    public int[][] asMatrix() {
+        int[][] matrix = new int[8][8];
 
-        for (int row = 0; row < WIDTH; row++) {
-            for (int column = 0; column < HEIGHT; column++) {
-                OthelloCell originalCell = board.get(row, column);
-                OthelloCell copiedCell = new OthelloCell(row, column, this.cellSize, boardCopy);
-                copiedCell.setColor(originalCell.getColor());
-                boardCopy.getLayer().add(row, column, copiedCell);
-            }
-        }
-
-        for (int row = 0; row < WIDTH; row++) {
-            for (int column = 0; column < HEIGHT; column++) {
-                AllowedMove allowedMove = allowedMoves.get(row, column);
-
-                if (allowedMove != null) {
-                    AllowedMove copiedMove = new AllowedMove(this.cellSize, row, column);
-                    boardCopy.getAllowedMoves().add(row, column, copiedMove);
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                Color color = super.get(row, column).getColor();
+                if (color == Color.BLACK) {
+                    matrix[row][column] = 1;
+                } else if (color == Color.WHITE) {
+                    matrix[row][column] = -1;
+                } else {
+                    matrix[row][column] = 0;
                 }
             }
         }
 
-        boardCopy.currentPlayer = this.currentPlayer;
-        boardCopy.updateAllowedMoves();
-
-        return boardCopy;
+        return matrix;
     }
 }

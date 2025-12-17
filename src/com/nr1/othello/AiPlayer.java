@@ -1,51 +1,38 @@
 package com.nr1.othello;
 
 import com.nr1.Layer;
-import com.nr1.LayerManager;
-import com.nr1.MatrixLayer;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AiPlayer extends Player {
-    private final Color opponentColor;
-
+    private final int myColor;
+    private final int opponentColor;
 
     public AiPlayer(String name, Color color) {
         super(name, color);
-        this.opponentColor = color == Color.BLACK ? Color.WHITE : Color.BLACK;
+        this.myColor = (color == Color.BLACK) ? 1 : -1;
+        this.opponentColor = -this.myColor;
     }
 
 
     @Override
     public void makeMove(Layer<?> layer) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
+        System.out.println("[AI] Starting move..");
+
         // The layer parameter is actually a LayerManager passed from Othello
-        LayerManager manager = (LayerManager) (Object) layer;
-        Object boardLayer = manager.getLayer("board");
+        OthelloBoard board = (OthelloBoard) layer;
 
-        if (!(boardLayer instanceof OthelloBoard)) {
-            System.err.println("ERROR: OthelloBoard not found in LayerManager");
-            return;
-        }
+        int[][] matrix = board.asMatrix();
 
-        OthelloBoard board = (OthelloBoard) boardLayer;
-
-        // Get all allowed moves
-        List<int[]> validMoves = getValidMoves(board);
-
-        if (validMoves.isEmpty()) {
-            System.out.println(getName() + " has no valid moves");
-            return;
-        }
-
-        int[] bestMove = bestMove(board); // Verwacht een OthelloBoard
+        int[] bestMove = bestMove(matrix);
         if (bestMove[0] == -1) {
             board.makeMove(3, 2);
         } else {
@@ -53,37 +40,28 @@ public class AiPlayer extends Player {
         }
     }
 
-    /**
-     * Get all valid moves for this AI player
-     */
-    private List<int[]> getValidMoves(OthelloBoard board) {
-        List<int[]> moves = new ArrayList<>();
-        MatrixLayer<AllowedMove> allowedMoves = board.getAllowedMoves();
 
-        for (int x = 0; x < OthelloBoard.WIDTH; x++) {
-            for (int y = 0; y < OthelloBoard.HEIGHT; y++) {
-                if (allowedMoves.get(x, y) != null) {
-                    moves.add(new int[]{x, y});
-                }
-            }
-        }
-
-        return moves;
-    }
-
-
-    public int[] bestMove(OthelloBoard board) {
+    private int[] bestMove(int[][] board) {
         System.out.println("Deciding best move...");
         int[] bestMove = {-1, -1};
         int bestScore = Integer.MIN_VALUE;
 
-        for (int[] move : getValidMoves(board)) {
-            OthelloBoard copiedBoard = board.copyBoard();
-            copiedBoard.makeMove(move[0], move[1]);
-            int score = miniMax(copiedBoard, false, 4, Integer.MIN_VALUE, Integer.MAX_VALUE);
-            if (score > bestScore) {
-                bestScore = score;
-                bestMove = move;
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                if (isValidMove(board, row, column, this.myColor)) {
+                    int[][] copiedBoard = copyBoard(board);
+
+                    move(copiedBoard, row, column, this.myColor);
+
+                    int score = miniMax(copiedBoard, false, opponentColor, 8, Integer.MIN_VALUE,
+                            Integer.MAX_VALUE);
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove[0] = row;
+                        bestMove[1] = column;
+                    }
+                }
             }
         }
 
@@ -91,50 +69,59 @@ public class AiPlayer extends Player {
         return bestMove;
     }
 
-    public int miniMax(OthelloBoard board, boolean isMaximizing, int depth, int alpha, int beta) {
+    private int miniMax(int[][] board, boolean isMaximizing, int color, int depth, int alpha, int beta) {
         int boardValue = checkBoardValue(board);
 
         if (boardValue == 1000 ||
                 boardValue == -1000 ||
-                CheckWinner.checkWinner(board.getLayer()) == Color.GRAY ||
+                isGameOver(board) ||
                 depth == 0
         ) {
             return boardValue;
         }
 
-        board.updateAllowedMoves();
-
         if (isMaximizing) {
             int currentAlpha = Integer.MIN_VALUE;
 
-            for (int[] move : getValidMoves(board)) {
-                OthelloBoard copiedBoard = board.copyBoard();
-                copiedBoard.makeMove(move[0], move[1]);
-                currentAlpha = miniMax(copiedBoard, false, depth - 1, alpha, beta);
-                alpha = Math.max(currentAlpha, alpha);
-                if (alpha >= beta) {
-                    return alpha;
+            for (int row = 0; row < 8; row++) {
+                for (int column = 0; column < 8; column++) {
+                    if (isValidMove(board, row, column, color)) {
+                        int[][] copiedBoard = copyBoard(board);
+                        move(copiedBoard, row, column, color);
+                        currentAlpha = miniMax(copiedBoard, false, -color, depth - 1, alpha, beta);
+                        alpha = Math.max(currentAlpha, alpha);
+                        if (alpha >= beta) {
+                            return alpha;
+                        }
+                    }
                 }
             }
             return currentAlpha;
         } else {
             int currentBeta = Integer.MAX_VALUE;
 
-            for (int[] move : getValidMoves(board)) {
-                OthelloBoard copiedBoard = board.copyBoard();
-                copiedBoard.makeMove(move[0], move[1]);
-                currentBeta = miniMax(copiedBoard, true, depth - 1, alpha, beta);
-                beta = Math.min(currentBeta, beta);
-                if (beta <= alpha) {
-                    return alpha;
+            for (int row = 0; row < 8; row++) {
+                for (int column = 0; column < 8; column++) {
+                    if (isValidMove(board, row, column, color)) {
+                        int[][] copiedBoard = copyBoard(board);
+                        move(copiedBoard, row, column, color);
+                        currentBeta = miniMax(copiedBoard, true, -color, depth - 1, alpha, beta);
+                        beta = Math.min(currentBeta, beta);
+                        if (beta <= alpha) {
+                            return alpha;
+                        }
+                    }
                 }
             }
             return currentBeta;
         }
     }
 
-    public int checkBoardValue(OthelloBoard board) {
-        Color boardWinner = CheckWinner.checkWinner(board.getLayer());
+    private int checkBoardValue(int[][] board) {
+        Color boardWinner = null;
+        if (isGameOver(board)) {
+            boardWinner = CheckWinner.checkWinner(board);
+        }
 
         int ownPieces = 0;
         int opponentPieces = 0;
@@ -154,15 +141,12 @@ public class AiPlayer extends Player {
 
         int emptyCells = 0;
 
-        for (int row = 0; row < board.getLayer().getRowCount(); row++) {
-            for (int column = 0; column < board.getLayer().getColumnCount(); column++) {
-                OthelloCell cell = board.getLayer().get(row, column);
-                Color cellColor = cell.getColor();
-
-                if (cellColor == this.getColor()) {
+        for (int row = 0; row < board.length; row++) {
+            for (int column = 0; column < board[row].length; column++) {
+                if (board[row][column] == this.myColor) {
                     ownPieces++;
                     value += stabilityMatrix[row][column];
-                } else if (cellColor == this.opponentColor) {
+                } else if (board[row][column] == this.opponentColor) {
                     opponentPieces++;
                     value -= stabilityMatrix[row][column];
                 } else {
@@ -175,12 +159,96 @@ public class AiPlayer extends Player {
             value += 5 * (ownPieces - opponentPieces);
         }
 
-        if (boardWinner == this.getColor()) {
-            return 1000;
-        } else if (boardWinner == this.opponentColor) {
+        if (boardWinner != null) {
+            if (boardWinner == this.getColor()) {
+                return 1000;
+            } else if (boardWinner == Color.GRAY) {
+                return 0;
+            }
             return -1000;
         }
 
         return (ownPieces - opponentPieces) + value;
+    }
+
+    private void move(int[][] board, int row, int column, int color) {
+        board[row][column] = color;
+        for (Point point : getFlippable(board, row, column, color)) {
+            board[point.x][point.y] = color;
+        }
+    }
+
+    private int[][] copyBoard(int[][] board) {
+        int[][] copy = new int[8][8];
+        for (int row = 0; row < 8; row++) {
+            System.arraycopy(board[row], 0, copy[row], 0, 8);
+        }
+        return copy;
+    }
+
+    private boolean isValidMove(int[][] board, int row, int column, int color) {
+        if (board[row][column] != 0) {
+            return false;
+        }
+        return !getFlippable(board, row, column, color).isEmpty();
+    }
+
+    private boolean hasAnyValidMove(int[][] board, int color) {
+        for (int row = 0; row < board.length; row++) {
+            for (int column = 0; column < board[row].length; column++) {
+                if (isValidMove(board, row, column, color))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isGameOver(int[][] board) {
+        return !hasAnyValidMove(board, 1) && !hasAnyValidMove(board, -1);
+    }
+
+    private List<Point> getFlippable(int[][] board, final int x, final int y, final int myColor) {
+        final List<Point> toFlip = new ArrayList<>();
+        final int opponentColor = (myColor == 1) ? -1 : 1;
+
+        for (int directionX = -1; directionX <= 1; directionX++) {
+            for (int directionY = -1; directionY <= 1; directionY++) {
+                if (directionX == 0 && directionY == 0)
+                    continue;
+
+                int newX = x + directionX;
+                int newY = y + directionY;
+                final List<Point> candidates = new ArrayList<>();
+
+                if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
+                    continue;
+                int neighbour = board[newX][newY];
+                if (neighbour == 0)
+                    continue;
+                if (neighbour != opponentColor)
+                    continue;
+
+                candidates.add(new Point(newX, newY));
+                newX += directionX;
+                newY += directionY;
+
+                while (newX >= 0 && newX < 8 && newY >= 0 && newY < 8) {
+                    int c = board[newX][newY];
+                    if (c == 0) {
+                        candidates.clear();
+                        break;
+                    }
+                    if (c == myColor) {
+                        toFlip.addAll(candidates);
+                        break;
+                    }
+                    candidates.add(new Point(newX, newY));
+                    newX += directionX;
+                    newY += directionY;
+                }
+            }
+        }
+
+        return toFlip;
     }
 }

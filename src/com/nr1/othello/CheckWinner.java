@@ -10,17 +10,16 @@ public final class CheckWinner {
 
     }
 
-    public static Color checkWinner(final MatrixLayer<OthelloCell> board) {
+    public static Color checkWinner(final int[][] board) {
         int blackCount = 0;
         int whiteCount = 0;
 
-        for (int i = 0; i <board.getRowCount(); i++) {
-            for (int j = 0; j <board.getColumnCount(); j++) {
-            OthelloCell cell = board.get(i, j);
-            if (!cell.isEmpty()) {
-                if (cell.getColor() == Color.BLACK) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+            if (board[i][j] != 0) {
+                if (board[i][j] == 1) {
                     blackCount++;
-                } else if (cell.getColor() == Color.WHITE) {
+                } else if (board[i][j] == -1) {
                     whiteCount++;
                 }
             }
@@ -36,17 +35,9 @@ public final class CheckWinner {
         if (whiteCount > blackCount) {
             return Color.WHITE;
         }
-        if (whiteCount > 2 && whiteCount == blackCount) {
+        if (whiteCount == blackCount) {
             return Color.GRAY;
         }
         return null;
-        }
-
-
-//    public static boolean checkDraw(final  MatrixLayer<OthelloCell> board) {
-//        if (checkWinner(board) == Color.GRAY) {
-//            return true;
-//        }
-//        return false;
-//    }
+    }
 }
