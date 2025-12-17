@@ -265,6 +265,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
             }
 
         }
+        currentPlayer.makeMove(this);
     }
 
     public final Player getCurrentPlayer() {
