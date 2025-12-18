@@ -25,11 +25,11 @@ public class ServerGameStarter extends ListLayer<ServerListener> {
         add(new MatchListener((starter, opponent) -> {
             manager.deleteLayer("server_game_starter");
             if (starter.equals(selfPlayer.name)) {
-                selfPlayer.setColor(Color.BLACK);
-                onStart.accept(selfPlayer, new ServerPlayer(opponent, Color.WHITE, serverManager));
-            } else {
                 selfPlayer.setColor(Color.WHITE);
-                onStart.accept(new ServerPlayer(opponent, Color.BLACK, serverManager), selfPlayer);
+                onStart.accept(selfPlayer, new ServerPlayer(opponent, Color.BLACK, serverManager));
+            } else {
+                selfPlayer.setColor(Color.BLACK);
+                onStart.accept(new ServerPlayer(opponent, Color.WHITE, serverManager), selfPlayer);
             }
         }, "reversi"));
         manager.putLayer(this);
