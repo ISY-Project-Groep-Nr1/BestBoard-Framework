@@ -6,10 +6,6 @@ import java.awt.*;
 
 public final class CheckWinner {
 
-    private CheckWinner() {
-
-    }
-
     public static Color checkWinner(final int[][] board) {
         int blackCount = 0;
         int whiteCount = 0;

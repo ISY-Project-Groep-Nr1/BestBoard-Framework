@@ -176,29 +176,24 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
     }
 
     public void updateHighlights() {
-        // Clear all highlights first
         for (int x = 0; x < HEIGHT; x++) {
             for (int y = 0; y < WIDTH; y++) {
                 super.get(x, y).setHighlighted(false);
             }
         }
 
-        // Get mouse position
         int mouseX = MouseManager.getMouseX();
         int mouseY = MouseManager.getMouseY();
 
-        // Check if mouse is over an allowed move
         for (int x = 0; x < HEIGHT; x++) {
             for (int y = 0; y < WIDTH; y++) {
                 AllowedMove move = allowedMoves.get(x, y);
                 if (move != null) {
-                    // Calculate the cell bounds
                     int cellX = x * cellSize + 25; // LABEL_OFFSET
                     int cellY = y * cellSize + 25;
 
                     if (mouseX >= cellX && mouseX < cellX + cellSize &&
                             mouseY >= cellY && mouseY < cellY + cellSize) {
-                        // Mouse is over this allowed move, highlight the flippables
                         List<Point> flippables = getFlippable(x, y, currentPlayer.getColor());
                         for (Point p : flippables) {
                             super.get(p.x, p.y).setHighlighted(true);
