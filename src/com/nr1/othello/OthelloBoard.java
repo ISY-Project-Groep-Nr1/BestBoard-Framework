@@ -259,10 +259,13 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
             updateAllowedMoves();
             if (!hasAllowedMoves()) {
                 Othello.checkWinner(Othello.getManager(), this);
+                return;
             }
-
         }
-        currentPlayer.makeMove(this);
+
+        if (currentPlayer instanceof AiPlayer && !isGameOver()) {
+            currentPlayer.makeMove(this);
+        }
     }
 
     public final Player getCurrentPlayer() {

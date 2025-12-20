@@ -56,7 +56,7 @@ public class AiPlayer extends Player {
 
                     move(copiedBoard, row, column, this.myColor());
 
-                    int score = miniMax(copiedBoard, false, this.opponentColor(), 8, Integer.MIN_VALUE,
+                    int score = miniMax(copiedBoard, false, this.opponentColor(), 6, Integer.MIN_VALUE,
                             Integer.MAX_VALUE);
 
                     if (score > bestScore) {
@@ -94,7 +94,7 @@ public class AiPlayer extends Player {
                         currentAlpha = miniMax(copiedBoard, false, -color, depth - 1, alpha, beta);
                         alpha = Math.max(currentAlpha, alpha);
                         if (alpha >= beta) {
-                            return alpha;
+                            return beta;
                         }
                     }
                 }
