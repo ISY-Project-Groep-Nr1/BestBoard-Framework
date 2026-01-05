@@ -147,6 +147,11 @@ public final class Othello {
         turnLabel.getLabel().setText("Turn: " + _name);
         turnLabel.getLabel().revalidate();
         turnLabel.getLabel().repaint();
+
+        ScoreLabel scoreLabel = new ScoreLabel(window.getStyle(), playerX.getName(), playerO.getName());
+        manager.putLayer(scoreLabel);
+        updateScoreLabel();
+
         window.update();
 
         Player currentPlayer = othelloBoard.getCurrentPlayer();
@@ -159,12 +164,22 @@ public final class Othello {
         }
     }
 
+    static void updateScoreLabel() {
+        Object layer = manager.getLayer("scorelabel");
+        if (layer instanceof ScoreLabel) {
+            int score1 = othelloBoard.getScore(playerX.getColor());
+            int score2 = othelloBoard.getScore(playerO.getColor());
+            ((ScoreLabel) layer).updateScores(playerX.getName(), score1, playerO.getName(), score2);
+        }
+    }
+
     static void destroyGame(LayerManager manager) {
         manager.deleteLayer("game_gui");
         manager.deleteLayer("background");
         manager.deleteLayer("board");
         manager.deleteLayer("allowedMoves");
         manager.deleteLayer("turnlabel");
+        manager.deleteLayer("scorelabel");
         manager.deleteLayer("board_updater");
     }
 

@@ -245,12 +245,14 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
     public final void switchPlayer() {
         currentPlayer = (currentPlayer == player1) ? player2 : player1;
         updateTurnLabel();
+        Othello.updateScoreLabel();
         updateAllowedMoves();
         System.out.println("Switched to " + currentPlayer.getName());
         if (!hasAllowedMoves()) {
             System.out.println("No moves for " + currentPlayer.getName());
             currentPlayer = (currentPlayer == player1) ? player2 : player1;
             updateTurnLabel();
+            Othello.updateScoreLabel();
             updateAllowedMoves();
             if (!hasAllowedMoves()) {
                 Othello.checkWinner(Othello.getManager(), this);
@@ -409,5 +411,17 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
         }
 
         return matrix;
+    }
+
+    public int getScore(Color color) {
+        int count = 0;
+        for (int x = 0; x < HEIGHT; x++) {
+            for (int y = 0; y < WIDTH; y++) {
+                if (super.get(x, y).getColor() == color) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 }
