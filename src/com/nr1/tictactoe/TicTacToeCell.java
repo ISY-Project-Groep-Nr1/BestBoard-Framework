@@ -9,6 +9,7 @@ public final class TicTacToeCell implements Clickable, Drawable{
     private final Rectangle hitbox;
     private final TicTacToeBoard board;
     private final int x, y;
+    private final int size;
     private final Player player;
 
     public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board) {
@@ -16,6 +17,7 @@ public final class TicTacToeCell implements Clickable, Drawable{
         this.x = x;
         this.y = y;
         this.board = board;
+        this.size = size;
         player = null;
     }
 
@@ -25,6 +27,7 @@ public final class TicTacToeCell implements Clickable, Drawable{
         this.y = y;
         this.board = board;
         this.player = player;
+        this.size = size;
     }
 
 
@@ -57,6 +60,6 @@ public final class TicTacToeCell implements Clickable, Drawable{
         if (player == null) {
             return;
         }
-        player.draw(g);
+        player.draw(g.create(x*size, y*size, size, size));
     }
 }

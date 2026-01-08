@@ -13,9 +13,9 @@ public abstract class Player implements Drawable{
     private final PlayerRenderer renderer;
 
     public Player(String name, State playerNumber, PlayerRenderer renderer) {
-        if (playerNumber == State.EMPTY) {
-            throw new IllegalArgumentException("player cannot be empty");
-        }
+        //if (playerNumber == State.EMPTY) {
+        //    throw new IllegalArgumentException("player cannot be empty");
+        //}
         this.name = name;
         this.playerNumber = playerNumber;
         this.renderer = renderer;
