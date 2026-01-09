@@ -3,8 +3,6 @@ package com.nr1.tictactoe;
 import com.nr1.Layer;
 import com.nr1.interfaces.PlayerRenderer;
 
-import java.awt.*;
-
 
 public class AiPlayer extends Player {
     private State opponentState;
@@ -23,16 +21,18 @@ public class AiPlayer extends Player {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("AI state: " + getState());
+        System.out.println("Opponent: " + opponentState);
 
         TicTacToeBoard board = (TicTacToeBoard) layer;
         State[][] clone = board.asMatrix();
 
-        System.out.println("run " + getId());
+        System.out.println("run " + getState());
         System.out.println("----");
         System.out.println("----");
-        System.out.println(super.getId() + "" + this.opponentState);
+        System.out.println(super.getState() + "" + this.opponentState);
 
-        int[] bestMove = bestMove(clone, super.getId(), this.opponentState);
+        int[] bestMove = bestMove(clone, super.getState(), this.opponentState);
         if (bestMove[0] == -1) {
             board.makeMove(this, 0, 0);
         } else {
@@ -43,7 +43,12 @@ public class AiPlayer extends Player {
     private int[] bestMove(State[][] board, State state, State opponentState) {
         int[] bestMove = {-1, -1};
         int bestScore = Integer.MIN_VALUE;
-
+        for (State[] states : board) {
+            for (State value : states) {
+                System.out.print(value);
+            }
+            System.out.println();
+        }
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 if (board[row][col] == State.EMPTY) {

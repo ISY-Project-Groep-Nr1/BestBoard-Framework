@@ -78,7 +78,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
 
 
     private final void setPlayer(Player player) {
-        System.out.println(player.getId());
+        System.out.println(player.getState());
         //TicTacToe.checkWinner(TicTacToe.getManager(), this);
         currentPlayer = player;
         updateTurnLabel();
@@ -204,7 +204,7 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
 
                 final TicTacToeCell cell = super.get(x, y);
                 //setPlayer(player);
-                System.out.println("[SVR] Opponent moved, cell: " + move + " mark: " + player.getId());
+                System.out.println("[SVR] Opponent moved, cell: " + move + " mark: " + player.getState());
                 System.out.println("placed at: " + x + " " + y);
                 if (cell.isEmpty()) {
                     wrapped.add(x, y, new TicTacToeCell(x, y, cellSize, this, player));

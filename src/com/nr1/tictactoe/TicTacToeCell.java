@@ -47,7 +47,7 @@ public final class TicTacToeCell implements Clickable, Drawable{
 
 
     public final State getState() {
-        return player != null? player.getId() : null;
+        return player != null? player.getState() : State.EMPTY;
     }
 
 

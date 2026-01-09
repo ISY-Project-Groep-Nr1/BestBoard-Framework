@@ -36,7 +36,7 @@ public abstract class Player implements Drawable{
         this.isActive = active;
     }
 
-    public State getId() {
+    public State getState() {
         return playerNumber;
     }
 
