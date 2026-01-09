@@ -2,49 +2,39 @@ package com.nr1.tictactoe;
 
 import com.nr1.interfaces.Clickable;
 import com.nr1.interfaces.Drawable;
+
 import java.awt.*;
 
-import static com.nr1.tictactoe.TicTacToe.ticTacToeBoard;
-
-public final class TicTacToeCell implements Drawable, Clickable {
+public final class TicTacToeCell implements Clickable, Drawable{
     private final Rectangle hitbox;
-    private final char mark;
     private final TicTacToeBoard board;
     private final int x, y;
-
+    private final int size;
+    private final Player player;
 
     public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board) {
         this.hitbox = new Rectangle(x * size, y * size, size, size);
         this.x = x;
         this.y = y;
         this.board = board;
-        mark = ' ';
+        this.size = size;
+        player = null;
     }
 
-    public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board, char mark) {
+    public TicTacToeCell(final int x, final int y, final int size, final TicTacToeBoard board, Player player) {
         this.hitbox = new Rectangle(x * size, y * size, size, size);
         this.x = x;
         this.y = y;
         this.board = board;
-        this.mark = mark;
+        this.player = player;
+        this.size = size;
     }
 
 
     @Override
-    public final void draw(final Graphics g) {
-        if (mark != ' ') {
-            g.setColor(Color.BLACK);
-            g.setFont(new Font("Arial", Font.BOLD, 48));
-            g.drawString(String.valueOf(mark), hitbox.x + hitbox.width / 3, hitbox.y + 2 * hitbox.height / 3);
-        }
-    }
-
-
-    @Override
-    public final void click() {
+    public void click() {
         if (TicTacToe.ticTacToeBoard.getCurrentPlayer() instanceof UserPlayer) {
-            if (ticTacToeBoard.get(x, y).getMark() == ' ')
-                TicTacToe.ticTacToeBoard.makeMove(TicTacToe.ticTacToeBoard.getCurrentPlayer(), x, y);
+            TicTacToe.ticTacToeBoard.makeMove(TicTacToe.ticTacToeBoard.getCurrentPlayer(), x, y);
         }
     }
 
@@ -56,12 +46,20 @@ public final class TicTacToeCell implements Drawable, Clickable {
     }
 
 
-    public final char getMark() {
-        return mark;
+    public final State getState() {
+        return player != null? player.getState() : State.EMPTY;
     }
 
 
     public final boolean isEmpty() {
-        return mark == ' ';
+        return player == null;
+    }
+
+    @Override
+    public void draw(Graphics g) {
+        if (player == null) {
+            return;
+        }
+        player.draw(g.create(x*size, y*size, size, size));
     }
 }

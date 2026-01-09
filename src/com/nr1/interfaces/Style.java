@@ -1,5 +1,7 @@
 package com.nr1.interfaces;
 
+import com.nr1.tictactoe.renderers.TicTacToeRenderer;
+
 import java.awt.*;
 
 public interface Style {
@@ -11,11 +13,17 @@ public interface Style {
     Color getGridColor();
     //Dimension getButtonSize(String text, int fontType, Size fontSize, SizeType sizeType);
     Font getFont(int fontType, Size size);
+
+    Font getFont(int fontType, int size);
+
     StyledButtonRenderer getButtonRenderer();
+    Color getOutlineColor();
 
     boolean isTextAnimated(Size size);
 
     boolean propagateRepaints();
+
+    TicTacToeRenderer getTicTacToeRenderer();
 
     enum Size {
         SMALL, MEDIUM, LARGE;

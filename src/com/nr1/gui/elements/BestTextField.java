@@ -19,7 +19,8 @@ public class BestTextField extends JTextField implements BestGuiElement<BestText
         this.style = style;
         this.fontSize = fontSize;
         this.fontType = fontType;
-        this.setText(text);
+        super.setText(text);
+        super.setFont(style.getFont(fontType, fontSize));
 
     }
 
@@ -31,11 +32,11 @@ public class BestTextField extends JTextField implements BestGuiElement<BestText
 
         Graphics2D graphics2D = (Graphics2D) g.create();
         style.drawBestPanel(graphics2D, getBounds().getSize());
-        graphics2D.setColor(getBackground());
+        graphics2D.setColor(style.getOutlineColor());
         graphics2D.setStroke(new BasicStroke(3));
         graphics2D.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
-        style.drawText(graphics2D, getBounds().getSize(), getText(), fontSize, fontType);
-        getCaret().paint(g.create());
+        style.drawVerticalCenteredText(graphics2D, getBounds().getSize(), getText(), fontSize, fontType);
+        super.getCaret().paint(g.create());
     }
 
 

@@ -4,6 +4,8 @@ import com.nr1.gui.BestWindow;
 import com.nr1.gui.elements.BestButton;
 import com.nr1.interfaces.Style;
 import com.nr1.interfaces.StyledButtonRenderer;
+import com.nr1.tictactoe.renderers.FlatRenderer;
+import com.nr1.tictactoe.renderers.TicTacToeRenderer;
 
 import java.awt.*;
 
@@ -53,9 +55,20 @@ public class FlatStyle implements Style{
         return new Font(FONT_NAME, fontType, actualSize(size));
     }
 
+
+    @Override
+    public Font getFont(int fontType, int size) {
+        return new Font(FONT_NAME, fontType, size);
+    }
+
     @Override
     public StyledButtonRenderer getButtonRenderer() {
         return new ButtonRenderer();
+    }
+
+    @Override
+    public Color getOutlineColor() {
+        return Color.BLACK;
     }
 
     @Override
@@ -66,6 +79,11 @@ public class FlatStyle implements Style{
     @Override
     public boolean propagateRepaints() {
         return false;
+    }
+
+    @Override
+    public TicTacToeRenderer getTicTacToeRenderer() {
+        return new FlatRenderer(Color.BLACK);
     }
 
     private int actualSize(Size size) {

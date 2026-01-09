@@ -1,34 +1,25 @@
 package com.nr1.tictactoe;
 
 import com.nr1.interfaces.Drawable;
+import com.nr1.tictactoe.renderers.TicTacToeRenderer;
+
 import java.awt.*;
 
 public final class BackgroundGrid implements Drawable {
     private final int cellSize;
     private final int gridSize;
-    private final Color gridColor;
+    private final TicTacToeRenderer renderer;
 
-
-    public BackgroundGrid(int cellSize, int gridSize, Color gridColor) {
+    public BackgroundGrid(int cellSize, int gridSize, TicTacToeRenderer renderer) {
         this.cellSize = cellSize;
         this.gridSize = gridSize;
-        this.gridColor = gridColor;
+        this.renderer = renderer;
     }
 
 
     @Override
     public void draw(Graphics graphics) {
-        graphics.setColor(gridColor);
-        int totalSize = cellSize * gridSize;
+        renderer.drawBackgroundGrid((Graphics2D) graphics, cellSize, gridSize);
 
-        for (int i = 0; i < (gridSize + 1); i++) {
-            int x = i * cellSize;
-            graphics.drawLine(x, 0, x, totalSize);
-        }
-
-        for (int i = 0; i < (gridSize + 1); i++) {
-            int y = i * cellSize;
-            graphics.drawLine(0, y, totalSize, y);
-        }
     }
 }

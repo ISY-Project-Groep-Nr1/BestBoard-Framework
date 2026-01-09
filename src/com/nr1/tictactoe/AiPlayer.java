@@ -1,15 +1,16 @@
 package com.nr1.tictactoe;
 
 import com.nr1.Layer;
+import com.nr1.interfaces.PlayerRenderer;
 
 
 public class AiPlayer extends Player {
-    private char opponentMark;
+    private State opponentState;
 
-    public AiPlayer(String name, char mark) {
-        super(name, mark);
-        System.out.println(mark);
-        this.opponentMark = mark == 'X' ? 'O' : 'X';
+    public AiPlayer(String name, State state, PlayerRenderer renderer) {
+        super(name, state, renderer);
+        System.out.println(state);
+        this.opponentState = state == State.PLAYER_1 ? State.PLAYER_2 : State.PLAYER_1;
     }
 
 
@@ -20,22 +21,18 @@ public class AiPlayer extends Player {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("AI state: " + getState());
+        System.out.println("Opponent: " + opponentState);
 
         TicTacToeBoard board = (TicTacToeBoard) layer;
-        char[][] clone = board.asMatrix();
+        State[][] clone = board.asMatrix();
 
-        System.out.println("run " + getMark());
+        System.out.println("run " + getState());
         System.out.println("----");
-        for (int x = 0; x < clone.length; x++) {
-            for (int y = 0; y < clone[x].length; y++) {
-                System.out.print(clone[y][x]);
-            }
-            System.out.println( );
-        }
         System.out.println("----");
-        System.out.println(super.getMark() + "" + this.opponentMark);
+        System.out.println(super.getState() + "" + this.opponentState);
 
-        int[] bestMove = bestMove(clone, super.getMark(), this.opponentMark);
+        int[] bestMove = bestMove(clone, super.getState(), this.opponentState);
         if (bestMove[0] == -1) {
             board.makeMove(this, 0, 0);
         } else {
@@ -43,16 +40,21 @@ public class AiPlayer extends Player {
     }
 
 
-    private int[] bestMove(char[][] board, char mark, char opponentMark) {
+    private int[] bestMove(State[][] board, State state, State opponentState) {
         int[] bestMove = {-1, -1};
         int bestScore = Integer.MIN_VALUE;
-
+        for (State[] states : board) {
+            for (State value : states) {
+                System.out.print(value);
+            }
+            System.out.println();
+        }
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
-                if (board[row][col] == ' ') {
-                    board[row][col] = mark;
-                    int score = miniMax(board, false, mark, opponentMark);
-                    board[row][col] = ' ';
+                if (board[row][col] == State.EMPTY) {
+                    board[row][col] = state;
+                    int score = miniMax(board, false, state, opponentState);
+                    board[row][col] = State.EMPTY;
                     if (score > bestScore) {
                         bestScore = score;
                         bestMove[0] = row;
@@ -65,8 +67,8 @@ public class AiPlayer extends Player {
         return bestMove;
     }
 
-    private int miniMax(char[][] board, boolean isMaximizing, char mark, char opponentMark) {
-        int boardValue = checkBoardValue(board, mark, opponentMark);
+    private int miniMax(State[][] board, boolean isMaximizing, State state, State opponentState) {
+        int boardValue = checkBoardValue(board, state, opponentState);
 
         if (boardValue == 1 || boardValue == -1 || CheckWinner.checkDraw(board)) {
             return boardValue;
@@ -76,10 +78,10 @@ public class AiPlayer extends Player {
             int maxScore = Integer.MIN_VALUE;
             for (int row = 0; row < 3; row++) {
                 for (int col = 0; col < 3; col++) {
-                    if (board[row][col] == ' ') {
-                        board[row][col] = mark;
-                        int score = miniMax(board, false, mark, opponentMark);
-                        board[row][col] = ' ';
+                    if (board[row][col] == State.EMPTY) {
+                        board[row][col] = state;
+                        int score = miniMax(board, false, state, opponentState);
+                        board[row][col] = State.EMPTY;
                         maxScore = Math.max(maxScore, score);
                     }
                 }
@@ -89,10 +91,10 @@ public class AiPlayer extends Player {
             int minScore = Integer.MAX_VALUE;
             for (int row = 0; row < 3; row++) {
                 for (int col = 0; col < 3; col++) {
-                    if (board[row][col] == ' ') {
-                        board[row][col] = opponentMark;
-                        int score = miniMax(board, true, mark, opponentMark);
-                        board[row][col] = ' ';
+                    if (board[row][col] == State.EMPTY) {
+                        board[row][col] = opponentState;
+                        int score = miniMax(board, true, state, opponentState);
+                        board[row][col] = State.EMPTY;
                         minScore = Math.min(minScore, score);
                     }
                 }
@@ -102,21 +104,20 @@ public class AiPlayer extends Player {
     }
 
 
-    private int checkBoardValue(char[][] board, char mark, char opponentMark) {
-        char boardWinner = CheckWinner.checkWinner(board);
+    private int checkBoardValue(State[][] board, State state, State opponentState) {
+        State boardWinner = CheckWinner.checkWinner(board);
 
-        if (boardWinner == mark) {
+        if (boardWinner == state) {
             return 1;
-        } else if (boardWinner == opponentMark) {
+        } else if (boardWinner == opponentState) {
             return -1;
         } else {
             return 0;
         }
     }
 
-    @Override
-    public void setMark(char mark) {
-        opponentMark = mark == 'X' ? 'O' : 'X';
-        super.setMark(mark);
+    public void setState(State mark) {
+        opponentState = mark == State.PLAYER_1 ? State.PLAYER_2 : State.PLAYER_1;
+        super.setId(mark);
     }
 }
