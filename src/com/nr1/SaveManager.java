@@ -12,14 +12,10 @@ public class SaveManager {
         this.saveLocation = "save.txt";
     }
 
-    public SaveManager(String saveLocation) {
-        this.saveLocation = saveLocation;
-    }
 
-
-    public boolean save(char[][] currentBoard, String activePlayer) {
+    public boolean save(char[] currentBoard, String activePlayer, int boardHeight, int boardWidth) {
         try {
-            String data = generateSaveData(currentBoard, activePlayer);
+            String data = generateSaveData(currentBoard, activePlayer, boardHeight, boardWidth);
 
             FileWriter myWriter = new FileWriter("save.txt");
             myWriter.write(data);
@@ -33,23 +29,20 @@ public class SaveManager {
         return false;
     }
 
-    private String generateSaveData(char[][] currentBoard, String activePlayer) {
+    public boolean save(char[] currentBoard, String activePlayer, int size) {
+        return save(currentBoard, activePlayer, size, size);
+    }
+
+    private String generateSaveData(char[] currentBoard, String activePlayer, int boardHeight, int boardWidth) {
         StringBuilder plainText = new StringBuilder();
-        plainText.append(currentBoard.length + ":" + currentBoard[0].length + ";");
-        for (char[] line : currentBoard) {
-            for (char point : line) {
-                plainText.append(point);
-            }
+        plainText.append(boardHeight + ":" + boardWidth + ";");
+        for (char symbol : currentBoard) {
+            plainText.append(symbol);
         }
+        plainText.append(";");
+        plainText.append(activePlayer);
         return plainText.toString();
     }
-
-    static void main() {
-        char[][] test = {{'a','b','c'},{'1','2','3'},{'!','@','#'}};
-        SaveManager saveManager = new SaveManager();
-        saveManager.save(test, "wow");
-    }
-
 
     public static boolean saveSettings(String hostname, String name1, String name2) {
         if (hostname.matches("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}")) {

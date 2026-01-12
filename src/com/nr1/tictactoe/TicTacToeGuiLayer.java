@@ -22,6 +22,11 @@ public final class TicTacToeGuiLayer extends ListLayer<JComponent> {
         super(true, "gui_panel");
         this.style = style;
         BestCanvas canvas = new BestCanvas(manager, style, 301, 301);
+        super.add(new BestButton("Exit", style, () -> {
+            TicTacToe.saveTicTacToe(TicTacToe.ticTacToeBoard);
+            TicTacToe.destroyGame(TicTacToe.getManager());
+            TicTacToe.showMainMenu();
+        }));
         super.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER_KEY, (component) -> {
             component.setLayout(new GridBagLayout());
             return component;

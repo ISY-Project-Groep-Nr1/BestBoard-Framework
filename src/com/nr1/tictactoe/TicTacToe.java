@@ -3,6 +3,7 @@ package com.nr1.tictactoe;
 import com.nr1.LayerManager;
 import com.nr1.ListLayer;
 import com.nr1.MainLoop;
+import com.nr1.SaveManager;
 import com.nr1.gui.BestWindow;
 import com.nr1.gui.CellRendererFactory;
 import com.nr1.interfaces.Drawable;
@@ -15,6 +16,7 @@ import com.nr1.servermanager.Server;
 import com.nr1.servermanager.ServerManager;
 
 import javax.swing.*;
+import java.util.List;
 
 public final class TicTacToe {
     private TicTacToe() {}
@@ -27,6 +29,7 @@ public final class TicTacToe {
     private static Player playerX;
     private static Player playerO;
     public static TicTacToeBoard ticTacToeBoard;
+    public static SaveManager saveManager = new SaveManager();
     volatile public static ServerManager serverManager;
 
     public static void main(final String[] args) {
@@ -253,5 +256,17 @@ public final class TicTacToe {
 
     public static LayerManager getManager() {
         return manager;
+    }
+
+    public static void saveTicTacToe(TicTacToeBoard board) {
+        char[] currentBoard = new char[9];
+        int i = 0;
+        for (TicTacToeCell cell : board.getAll()) {
+            if (cell.getState() == State.EMPTY) currentBoard[i] = 'E';
+            else if (cell.getState() == State.PLAYER_1) currentBoard[i] = 'X';
+            else currentBoard[i] = 'O';
+            i++;
+        }
+        saveManager.save(currentBoard, board.getCurrentPlayer().getName(), 3);
     }
 }
