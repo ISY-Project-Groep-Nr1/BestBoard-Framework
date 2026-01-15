@@ -13,10 +13,13 @@ public class AiPlayer extends Player {
         private final int[][] board;
         private final boolean isMaximizing;
         private final int color;
-        private int alpha;
-        private int beta;
+        private final int alpha;
+        private final int beta;
         private final int x;
         private final int y;
+        private final int boardValue = -1;
+        private int count = -1;
+        final HashSet<Node> children = new HashSet<>();
 
         private Node(int[][] board, boolean isMaximizing, int color, int alpha, int beta, int x, int y) {
             this.board = board;
@@ -28,6 +31,22 @@ public class AiPlayer extends Player {
             this.y = y;
         }
 
+
+        public int getCount(){
+            if (count != -1) {
+                return count;
+            }
+            int count = 0;
+            for (int[] ints : board) {
+                for (int anInt : ints) {
+                    if (anInt != 0) {
+                        count += 1;
+                    }
+                }
+            }
+            this.count = count;
+            return count;
+        }
 
         public int[][] board() {
             return board;
@@ -73,13 +92,13 @@ public class AiPlayer extends Player {
 
         @Override
         public int hashCode() {
-            return Objects.hash(board, isMaximizing, color, alpha, beta, x, y);
+            return Objects.hash(Arrays.deepHashCode(board), isMaximizing, color, alpha, beta, x, y);
         }
 
         @Override
         public String toString() {
             return "Node[" +
-                    "board=" + board + ", " +
+                    "board=" + Arrays.deepToString(board) + ", " +
                     "isMaximizing=" + isMaximizing + ", " +
                     "color=" + color + ", " +
                     "alpha=" + alpha + ", " +
@@ -118,38 +137,37 @@ public class AiPlayer extends Player {
             board.makeMove(bestMove[0], bestMove[1]);
         }
     }
-    private Set<Node> nodes = null;
-    private int depth = 0;
     private int[] bestMove(int[][] board) {
         System.out.println("Deciding best move...");
         int[] bestMove = {-1, -1};
         int bestScore = Integer.MIN_VALUE;
-        long maxTotalTime = 4_000_000_000L;
+        long maxTotalTime = 9_000_000_000L;
         long startTime = System.nanoTime();
-        if (nodes == null) {
-            nodes = Collections.synchronizedSet(new HashSet<>(8 * 8));
-            for (int row = 0; row < 8; row++) {
-                for (int column = 0; column < 8; column++) {
-                    if (isValidMove(board, row, column, this.myColor())) {
-                        int[][] copiedBoard = copyBoard(board);
-
-                        move(copiedBoard, row, column, this.myColor());
-
-                        nodes.add(new Node(copiedBoard, false, this.opponentColor(), Integer.MIN_VALUE, Integer.MAX_VALUE, row, column));
-                    }
+        int hash = Arrays.deepHashCode(board);
+        System.out.println(hash);
+        Set<Node> nodes = Collections.synchronizedSet(new HashSet<>(8 * 8));
+        for (int row = 0; row < 8; row++) {
+            for (int column = 0; column < 8; column++) {
+                if (isValidMove(board, row, column, this.myColor())) {
+                    int[][] copiedBoard = copyBoard(board);
+                    move(copiedBoard, row, column, this.myColor());
+                    nodes.add(new Node(copiedBoard, false, this.opponentColor(), Integer.MIN_VALUE, Integer.MAX_VALUE, row, column));
                 }
             }
         }
+
         final Wrapper<Set<Node>> newNodes = new Wrapper<>(Collections.synchronizedSet(new HashSet<>()));
+        int depth = 0;
         TAG:
         while(true){
-            System.out.println("entering depth" + depth + " with " + nodes.size() + " nodes");
+            depth += 1;
+            final int depthValue = depth;
             int chunkCount = Math.min(nodes.size(), 32);
             int chunkSize = nodes.size() / chunkCount;
             List<Node> nodeList = new ArrayList<>(nodes);
             AtomicInteger count = new AtomicInteger();
             List<Thread> threads = new ArrayList<>(chunkCount);
-
+            int boardCount = getCount(board);
             for (int i = 0; i < nodes.size(); i += chunkSize) {
                 // Check timeout before submitting/processing a new chunk
                 if (System.nanoTime() - startTime > maxTotalTime) {
@@ -165,12 +183,18 @@ public class AiPlayer extends Player {
                        //System.out.println(1);
                         NODE:
                         for (Node node : chunk) {
+                            count.incrementAndGet();
                             if (System.nanoTime() - startTime > maxTotalTime) return;
-                            if (!isSubBoard(board, node.board)) {
+                            if (!node.children.isEmpty()){
+                                localResults.addAll(node.children);
                                 continue;
                             }
-                            count.incrementAndGet();
-                            HashSet<Node> results = miniMax(node.board, node.isMaximizing, node.color, node.alpha, node.beta, node.x, node.y);
+                            if(node.getCount() < boardCount){
+                                continue;
+                            }
+
+                            HashSet<Node> results = miniMax(depthValue, node.board, node.isMaximizing, node.color, node.alpha, node.beta, node.x, node.y);
+                            node.children.addAll(results);
                            localResults.addAll(results);
                         }
                        newNodes.getValue().addAll(localResults);
@@ -189,8 +213,8 @@ public class AiPlayer extends Player {
                     throw new RuntimeException(e);
                 }
             }
+
             System.out.println("finished depth " + depth + " with " + count.get() + " nodes");
-            depth += 1;
             nodes = newNodes.getValue();
             newNodes.setValue(Collections.synchronizedSet(new HashSet<>()));
         }
@@ -206,7 +230,7 @@ public class AiPlayer extends Player {
         return bestMove;
     }
 
-    private HashSet<Node> miniMax(int[][] board, boolean isMaximizing, int color, int alpha, int beta, int x, int y) {
+    private HashSet<Node> miniMax(int depth, int[][] board, boolean isMaximizing, int color, int alpha, int beta, int x, int y) {
         HashSet<Node> nodes = new HashSet<>();
         if (isMaximizing) {
             //int currentAlpha = Integer.MIN_VALUE;
@@ -328,6 +352,19 @@ public class AiPlayer extends Player {
         return !getFlippable(board, row, column, color).isEmpty();
     }
 
+
+    private int getCount(int[][] board){
+        int count = 0;
+        for (int[] ints : board) {
+            for (int anInt : ints) {
+                if (anInt != 0){
+                    count += 1;
+                }
+            }
+        }
+        return count;
+    }
+
     private boolean hasAnyValidMove(int[][] board, int color) {
         for (int row = 0; row < board.length; row++) {
             for (int column = 0; column < board[row].length; column++) {
@@ -390,7 +427,7 @@ public class AiPlayer extends Player {
     private boolean isSubBoard(int[][] old, int[][] last){
         for (int x = 0; x < old.length; x++) {
             for (int y = 0; y < old[x].length; y++) {
-                if (old[x][y] != 0 && last[x][y] == 0){
+                if (old[x][y] != 0 && old[x][y] == last[x][y]){
                     return false;
                 }
             }
