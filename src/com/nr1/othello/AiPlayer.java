@@ -1,15 +1,97 @@
 package com.nr1.othello;
 
 import com.nr1.Layer;
+import com.nr1.Wrapper;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class AiPlayer extends Player {
+    private static final class Node {
+        private final int[][] board;
+        private final boolean isMaximizing;
+        private final int color;
+        private int alpha;
+        private int beta;
+        private final int x;
+        private final int y;
+
+        private Node(int[][] board, boolean isMaximizing, int color, int alpha, int beta, int x, int y) {
+            this.board = board;
+            this.isMaximizing = isMaximizing;
+            this.color = color;
+            this.alpha = alpha;
+            this.beta = beta;
+            this.x = x;
+            this.y = y;
+        }
+
+
+        public int[][] board() {
+            return board;
+        }
+
+        public boolean isMaximizing() {
+            return isMaximizing;
+        }
+
+        public int color() {
+            return color;
+        }
+
+        public int alpha() {
+            return alpha;
+        }
+
+        public int beta() {
+            return beta;
+        }
+
+        public int x() {
+            return x;
+        }
+
+        public int y() {
+            return y;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == this) return true;
+            if (obj == null || obj.getClass() != this.getClass()) return false;
+            var that = (Node) obj;
+            return Arrays.deepEquals(this.board, that.board) &&
+                    this.isMaximizing == that.isMaximizing &&
+                    this.color == that.color &&
+                    this.alpha == that.alpha &&
+                    this.beta == that.beta &&
+                    this.x == that.x &&
+                    this.y == that.y;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(board, isMaximizing, color, alpha, beta, x, y);
+        }
+
+        @Override
+        public String toString() {
+            return "Node[" +
+                    "board=" + board + ", " +
+                    "isMaximizing=" + isMaximizing + ", " +
+                    "color=" + color + ", " +
+                    "alpha=" + alpha + ", " +
+                    "beta=" + beta + ", " +
+                    "x=" + x + ", " +
+                    "y=" + y + ']';
+        }
+    }
     public AiPlayer(String name, Color color) {
         super(name, color);
     }
+    private final int DEPTH = 70;
 
     private int myColor() {
         return getColor() == Color.BLACK ? 1 : -1;
@@ -22,12 +104,6 @@ public class AiPlayer extends Player {
 
     @Override
     public void makeMove(Layer<?> layer) {
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
         System.out.println("[AI] Starting move..");
 
         // The layer parameter is actually a LayerManager passed from Othello
@@ -42,49 +118,98 @@ public class AiPlayer extends Player {
             board.makeMove(bestMove[0], bestMove[1]);
         }
     }
-
-
+    private Set<Node> nodes = null;
+    private int depth = 0;
     private int[] bestMove(int[][] board) {
         System.out.println("Deciding best move...");
         int[] bestMove = {-1, -1};
         int bestScore = Integer.MIN_VALUE;
+        long maxTotalTime = 4_000_000_000L;
+        long startTime = System.nanoTime();
+        if (nodes == null) {
+            nodes = Collections.synchronizedSet(new HashSet<>(8 * 8));
+            for (int row = 0; row < 8; row++) {
+                for (int column = 0; column < 8; column++) {
+                    if (isValidMove(board, row, column, this.myColor())) {
+                        int[][] copiedBoard = copyBoard(board);
 
-        for (int row = 0; row < 8; row++) {
-            for (int column = 0; column < 8; column++) {
-                if (isValidMove(board, row, column, this.myColor())) {
-                    int[][] copiedBoard = copyBoard(board);
+                        move(copiedBoard, row, column, this.myColor());
 
-                    move(copiedBoard, row, column, this.myColor());
-
-                    int score = miniMax(copiedBoard, false, this.opponentColor(), 6, Integer.MIN_VALUE,
-                            Integer.MAX_VALUE);
-
-                    if (score > bestScore) {
-                        bestScore = score;
-                        bestMove[0] = row;
-                        bestMove[1] = column;
+                        nodes.add(new Node(copiedBoard, false, this.opponentColor(), Integer.MIN_VALUE, Integer.MAX_VALUE, row, column));
                     }
                 }
             }
         }
+        final Wrapper<Set<Node>> newNodes = new Wrapper<>(Collections.synchronizedSet(new HashSet<>()));
+        TAG:
+        while(true){
+            System.out.println("entering depth" + depth + " with " + nodes.size() + " nodes");
+            int chunkCount = Math.min(nodes.size(), 32);
+            int chunkSize = nodes.size() / chunkCount;
+            List<Node> nodeList = new ArrayList<>(nodes);
+            AtomicInteger count = new AtomicInteger();
+            List<Thread> threads = new ArrayList<>(chunkCount);
 
+            for (int i = 0; i < nodes.size(); i += chunkSize) {
+                // Check timeout before submitting/processing a new chunk
+                if (System.nanoTime() - startTime > maxTotalTime) {
+                    System.out.println("Cancelled: Timeout reached before processing all chunks.");
+                    break TAG;
+                }
+                int end = Math.min(i + chunkSize, nodes.size());
+                final List<Node> chunk = nodeList.subList(i, end);
+
+
+                Thread thread = new Thread(() -> {
+                    HashSet<Node> localResults = new HashSet<>();
+                       //System.out.println(1);
+                        NODE:
+                        for (Node node : chunk) {
+                            if (System.nanoTime() - startTime > maxTotalTime) return;
+                            if (!isSubBoard(board, node.board)) {
+                                continue;
+                            }
+                            count.incrementAndGet();
+                            HashSet<Node> results = miniMax(node.board, node.isMaximizing, node.color, node.alpha, node.beta, node.x, node.y);
+                           localResults.addAll(results);
+                        }
+                       newNodes.getValue().addAll(localResults);
+                });
+                thread.start();
+                threads.add(thread);
+            }
+            for (Thread thread : threads) {
+                try {
+                    if (System.nanoTime() - startTime > maxTotalTime) {
+                        System.out.println("Cancelled: Timeout reached before processing all chunks.");
+                        break TAG;
+                    }
+                    thread.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            System.out.println("finished depth " + depth + " with " + count.get() + " nodes");
+            depth += 1;
+            nodes = newNodes.getValue();
+            newNodes.setValue(Collections.synchronizedSet(new HashSet<>()));
+        }
+        for (Node node : nodes) {
+            int score = checkBoardValue(node.board);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestMove = new int[]{node.x, node.y};
+            }
+        }
         System.out.println("Best move:" + bestMove[0] + " " + bestMove[1]);
         return bestMove;
     }
 
-    private int miniMax(int[][] board, boolean isMaximizing, int color, int depth, int alpha, int beta) {
-        int boardValue = checkBoardValue(board);
-
-        if (boardValue == 1000 ||
-                boardValue == -1000 ||
-                isGameOver(board) ||
-                depth == 0
-        ) {
-            return boardValue;
-        }
-
+    private HashSet<Node> miniMax(int[][] board, boolean isMaximizing, int color, int alpha, int beta, int x, int y) {
+        HashSet<Node> nodes = new HashSet<>();
         if (isMaximizing) {
-            int currentAlpha = Integer.MIN_VALUE;
+            //int currentAlpha = Integer.MIN_VALUE;
             boolean hasMove = false;
 
             for (int row = 0; row < 8; row++) {
@@ -93,20 +218,18 @@ public class AiPlayer extends Player {
                         hasMove = true;
                         int[][] copiedBoard = copyBoard(board);
                         move(copiedBoard, row, column, color);
-                        currentAlpha = miniMax(copiedBoard, false, -color, depth - 1, alpha, beta);
-                        alpha = Math.max(currentAlpha, alpha);
-                        if (alpha >= beta) {
-                            return beta;
-                        }
+                        Node response = new Node(copiedBoard, false, -color, alpha, beta, x, y);
+                        nodes.add(response);
                     }
                 }
             }
 
-            if (!hasMove) return miniMax(board, true, -color, depth - 1, alpha, beta);
+            if (!hasMove){
+                nodes.add(new Node(board, true, -color, alpha, beta, x, y));
+                return nodes;
+            }
 
-            return currentAlpha;
         } else {
-            int currentBeta = Integer.MAX_VALUE;
             boolean hasMove = false;
 
             for (int row = 0; row < 8; row++) {
@@ -115,19 +238,18 @@ public class AiPlayer extends Player {
                         hasMove = true;
                         int[][] copiedBoard = copyBoard(board);
                         move(copiedBoard, row, column, color);
-                        currentBeta = miniMax(copiedBoard, true, -color, depth - 1, alpha, beta);
-                        beta = Math.min(currentBeta, beta);
-                        if (beta <= alpha) {
-                            return alpha;
-                        }
+                        nodes.add(new Node(copiedBoard, true, -color, alpha, beta, x, y));
                     }
                 }
             }
 
-            if (!hasMove) return miniMax(board, true, -color, depth - 1, alpha, beta);
+            if (!hasMove){
+                nodes.add(new Node(board, true, -color, alpha, beta, x, y));
+                return nodes;
+            }
 
-            return currentBeta;
         }
+        return nodes;
     }
 
     private int checkBoardValue(int[][] board) {
@@ -262,5 +384,17 @@ public class AiPlayer extends Player {
         }
 
         return toFlip;
+    }
+
+
+    private boolean isSubBoard(int[][] old, int[][] last){
+        for (int x = 0; x < old.length; x++) {
+            for (int y = 0; y < old[x].length; y++) {
+                if (old[x][y] != 0 && last[x][y] == 0){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

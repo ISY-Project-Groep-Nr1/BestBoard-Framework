@@ -22,9 +22,6 @@ public final class CheckWinner {
             }
         }
 
-        System.out.println("black count: " + blackCount);
-        System.out.println("white count: " + whiteCount);
-
         if (blackCount > whiteCount) {
             return Color.BLACK;
         }
