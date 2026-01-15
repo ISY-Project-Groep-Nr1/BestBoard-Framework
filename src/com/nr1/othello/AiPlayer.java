@@ -78,7 +78,7 @@ public class AiPlayer extends Player {
                     "y=" + y + ']';
         }
     }
-    private final int BANDWITH = 10_000;
+    private final int BANDWITH = 1000_000;
 
     public AiPlayer(String name, Color color) {
         super(name, color);
@@ -103,6 +103,7 @@ public class AiPlayer extends Player {
         int[][] matrix = board.asMatrix();
 
         int[] bestMove = bestMove(matrix);
+        System.out.println("CHOICE CHOICE CHOICE");
         if (bestMove[0] == -1) {
             board.makeMove(3, 2);
         } else {
@@ -175,7 +176,11 @@ public class AiPlayer extends Player {
         }
 
         for (Node node : nodes) {
-            int score = checkBoardValue(node.board);
+            if (!isValidMove(board, node.x, node.y, node.color)){
+                continue;
+            }
+            int score = node.value;
+
 
             if (score > bestScore) {
                 bestScore = score;
@@ -323,26 +328,27 @@ public class AiPlayer extends Player {
     }
 
     private boolean hasFlippable(int[][] board, final int x, final int y, final int myColor){
-        for (int directionX = -1; directionX <= 1; directionX++) {
-            for (int directionY = -1; directionY <= 1; directionY++) {
-                if (directionX == 0 && directionY == 0)
-                    continue;
-//
-                int newX = x + directionX;
-                int newY = y + directionY;
-//
-                if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
-                    continue;
-                int neighbour = board[newX][newY];
-                if (neighbour == 0)
-                    continue;
-                if (neighbour != opponentColor())
-                    continue;
-//
-                return true;
-            }
-        }
-        return false;
+        return !getFlippable(board, x, y, myColor).isEmpty();
+        //for (int directionX = -1; directionX <= 1; directionX++) {
+        //    for (int directionY = -1; directionY <= 1; directionY++) {
+        //        if (directionX == 0 && directionY == 0)
+        //            continue;
+////
+        //        int newX = x + directionX;
+        //        int newY = y + direct ionY;
+////
+        //        if (newX < 0 || newX >= 8 || newY < 0 || newY >= 8)
+        //            continue;
+        //        int neighbour = board[newX][newY];
+        //        if (neighbour == 0)
+        //            continue;
+        //        if (neighbour != -myColor)
+        //            continue;
+////
+        //        return true;
+        //    }
+        //}
+        //return false;
     }
 
     private List<int[]> getFlippable(int[][] board, final int x, final int y, final int myColor) {

@@ -20,7 +20,7 @@ public class CappedConcurrentSet<T> {
     public void add(T item) {
         int value = valueGetter.applyAsInt(item);
         if (set.size() >= capacity && highest.get() > value) {
-            System.out.println(value);
+            System.out.println("we are full");
             return;
         }
 
