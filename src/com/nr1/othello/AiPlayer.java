@@ -6,6 +6,7 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AiPlayer extends Player {
@@ -23,7 +24,7 @@ public class AiPlayer extends Player {
             this.color = color;
             this.x = x;
             this.y = y;
-            this.value = AiPlayer.this.checkBoardValue(board);
+            this.value = AiPlayer.this.checkBoardValue(board, color);
         }
 
 
@@ -78,7 +79,7 @@ public class AiPlayer extends Player {
                     "y=" + y + ']';
         }
     }
-    private final int BANDWITH = 1000_000;
+    public final int BAND_WITH = 500_000;
 
     public AiPlayer(String name, Color color) {
         super(name, color);
@@ -105,6 +106,7 @@ public class AiPlayer extends Player {
         int[] bestMove = bestMove(matrix);
         System.out.println("CHOICE CHOICE CHOICE");
         if (bestMove[0] == -1) {
+            System.out.println("NOPE");
             board.makeMove(3, 2);
         } else {
             board.makeMove(bestMove[0], bestMove[1]);
@@ -114,7 +116,6 @@ public class AiPlayer extends Player {
 
     private int[] bestMove(int[][] board) {
         System.out.println("Deciding best move...");
-        int[] bestMove = {-1, -1};
         int bestScore = Integer.MIN_VALUE;
         long maxTotalTime = 9_000_000_000L;
         long startTime = System.nanoTime();
@@ -122,16 +123,17 @@ public class AiPlayer extends Player {
         for (int row = 0; row < 8; row++) {
             for (int column = 0; column < 8; column++) {
                 if (isValidMove(board, row, column, this.myColor())) {
+                    System.out.println(row + ", " + column + " = ");
                     int[][] copiedBoard = copyBoard(board);
                     move(copiedBoard, row, column, this.myColor());
-                    nodes.add(new Node(copiedBoard, false, this.opponentColor(), row, column));
+                    nodes.add(new Node(copiedBoard, false, opponentColor(), row, column));
                 }
             }
         }
 
         TAG:
-        for (int depth = 0; depth < 24; depth++) {
-            final CappedConcurrentSet<Node> newNodes = new CappedConcurrentSet<>(BANDWITH, Node::getValue);
+        for (int depth = 0; depth < 60; depth++) {
+            final CappedConcurrentSet<Node> newNodes = new CappedConcurrentSet<>(BAND_WITH, Node::getValue);
 
             int chunkCount = Math.min(nodes.size(), 32);
             int chunkSize = nodes.size() / chunkCount;
@@ -151,6 +153,9 @@ public class AiPlayer extends Player {
 
                 Thread thread = new Thread(() -> {
                     for (Node node : chunk) {
+                        if (!hasAnyValidMove(node.board, node.color)){
+                            continue;
+                        }
                         count.incrementAndGet();
                         if (System.nanoTime() - startTime > maxTotalTime) return;
 
@@ -172,13 +177,18 @@ public class AiPlayer extends Player {
                 }
             }
             System.out.println("finished depth " + depth + " with " + count.get() + " nodes");
+            if(newNodes.getSize() == 0){
+                System.out.println("depth stopped, out of options");
+                break;
+            }
             nodes = newNodes.getWindow();
         }
 
+        int[] bestMove = {-1, -1};
         for (Node node : nodes) {
-            if (!isValidMove(board, node.x, node.y, node.color)){
-                continue;
-            }
+            //if (!isValidMove(board, node.x, node.y, node.color)){
+            //    continue;
+            //}
             int score = node.value;
 
 
@@ -236,7 +246,7 @@ public class AiPlayer extends Player {
         }
     }
 
-    private int checkBoardValue(int[][] board) {
+    private int checkBoardValue(int[][] board, int color) {
         Color boardWinner = null;
         if (isGameOver(board)) {
             boardWinner = CheckWinner.checkWinner(board);
@@ -262,10 +272,10 @@ public class AiPlayer extends Player {
 
         for (int row = 0; row < board.length; row++) {
             for (int column = 0; column < board[row].length; column++) {
-                if (board[row][column] == this.myColor()) {
+                if (board[row][column] == color) {
                     ownPieces++;
                     value += stabilityMatrix[row][column];
-                } else if (board[row][column] == this.opponentColor()) {
+                } else if (board[row][column] == -color) {
                     opponentPieces++;
                     value -= stabilityMatrix[row][column];
                 } else {
@@ -328,7 +338,9 @@ public class AiPlayer extends Player {
     }
 
     private boolean hasFlippable(int[][] board, final int x, final int y, final int myColor){
-        return !getFlippable(board, x, y, myColor).isEmpty();
+        boolean result =!getFlippable(board, x, y, myColor).isEmpty();
+
+        return result;
         //for (int directionX = -1; directionX <= 1; directionX++) {
         //    for (int directionY = -1; directionY <= 1; directionY++) {
         //        if (directionX == 0 && directionY == 0)
@@ -368,7 +380,7 @@ public class AiPlayer extends Player {
                 int neighbour = board[newX][newY];
                 if (neighbour == 0)
                     continue;
-                if (neighbour != opponentColor())
+                if (neighbour != -myColor)
                     continue;
 
                 candidates.add(new int[]{newX, newY});

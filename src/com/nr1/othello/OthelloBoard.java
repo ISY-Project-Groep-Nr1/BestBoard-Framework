@@ -220,14 +220,14 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
     public final boolean makeMove(final int x, final int y) {
         final OthelloCell cell = super.get(x, y);
         if (!cell.isEmpty()) {
-            return false;
+            throw new IllegalStateException("illegal move (" + x + ", " + y + ") for player " + currentPlayer.name);
         }
 
         final Color myColor = currentPlayer.getColor();
 
         final List<Point> toFlip = getFlippable(x, y, myColor);
         if (toFlip.isEmpty()) {
-            return false;
+            throw new IllegalStateException("illegal move (" + x + ", " + y + ") for player " + currentPlayer.name);
         }
 
         cell.setColor(myColor);
