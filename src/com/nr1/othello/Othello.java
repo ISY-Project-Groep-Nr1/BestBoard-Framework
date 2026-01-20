@@ -69,7 +69,7 @@ public final class Othello {
 
     static void showMainMenu() {
         MainMenuPanel menu = new MainMenuPanel(
-                BestWindow.get().getDefaultStyle(),
+                BestWindow.get().getStyle(),
                 () -> {
                     manager.deleteLayer("main_menu");
                     System.out.println("Main menu has been deleted");
