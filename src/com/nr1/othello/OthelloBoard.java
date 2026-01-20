@@ -235,12 +235,12 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
             OthelloCell c = super.get(p.x, p.y);
             if (c != null) {
                 c.setColor(myColor);
-                if (player1 instanceof ServerPlayer || player2 instanceof ServerPlayer) {
-                    add(x, y, new OthelloCell(x, y, cellSize, this, c.getColor()));
-                }
             }
         }
-
+        OthelloCell c = super.get(x, y);
+        if (player1 instanceof ServerPlayer || player2 instanceof ServerPlayer) {
+            add(x, y, new OthelloCell(x, y, cellSize, this, c.getColor()));
+        }
         switchPlayer();
         return true;
     }
