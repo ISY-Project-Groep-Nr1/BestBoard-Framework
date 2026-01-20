@@ -1,9 +1,6 @@
 package com.nr1.othello;
 
-import com.nr1.Layer;
-import com.nr1.LayerManager;
-import com.nr1.ListLayer;
-import com.nr1.MainLoop;
+import com.nr1.*;
 import com.nr1.gui.BestWindow;
 import com.nr1.gui.styles.FlatStyle;
 import com.nr1.gui.styles.MatrixStyle;
@@ -12,7 +9,9 @@ import com.nr1.servermanager.ServerManager;
 import com.nr1.othello.Othello;
 import com.nr1.othello.TurnLabel;
 import com.nr1.tictactoe.SettingsPanel;
+import com.nr1.tictactoe.State;
 import com.nr1.tictactoe.TicTacToe;
+import com.nr1.tictactoe.TicTacToeCell;
 
 import javax.swing.*;
 import java.awt.*;
@@ -28,12 +27,14 @@ public final class Othello {
     private static Player playerO;
     private static String player1Name = "Player 1";
     private static String player2Name = "Player 2";
-    private static OthelloBoard othelloBoard;
+    static OthelloBoard othelloBoard;
     static ServerManager serverManager;
+    private static SaveManager saveManager;
 
     public static void main(final String[] args) {
         manager = new LayerManager();
         serverManager = new ServerManager();
+        saveManager = new SaveManager("saveOthello.txt");
         window = BestWindow.create(manager, "Othello");
 
         SwingUtilities.invokeLater(() -> {
@@ -155,6 +156,7 @@ public final class Othello {
             // turnLabel.setText("Beurt: " +
             // ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());
         }
+        loadOthello(saveManager.loadSaveData());
     }
 
     static void destroyGame(LayerManager manager) {
@@ -259,5 +261,40 @@ public final class Othello {
 
     public static LayerManager getManager() {
         return manager;
+    }
+
+    public static void saveOthello(OthelloBoard board) {
+        char[] currentBoard = new char[64];
+        int i = 0;
+        for (OthelloCell cell : board.getLayer().getAll()) {
+            if (cell.getColor() == Color.GRAY) currentBoard[i] = 'E';
+            else if (cell.getColor() == Color.BLACK) currentBoard[i] = 'B';
+            else currentBoard[i] = 'W';
+            i++;
+        }
+        saveManager.save(currentBoard, board.getCurrentPlayer().getName(), 8);
+    }
+
+    public static void loadOthello(String saveData) {
+        String boardStr = saveData.substring(4,68);
+        char[] board = boardStr.toCharArray();
+        MatrixLayer<OthelloCell> layer = othelloBoard.getLayer();
+
+        String currentPlayerStr = saveData.substring(69);
+        Player currentPlayer;
+
+        //startNewGame();
+        for (int i = 0; i < board.length; i++) {
+            System.out.println("i: " + i);
+            int x = (i / 8);
+            System.out.println("x: "+x);
+            int y = i % 8;
+            System.out.println("y: "+y);
+            if(board[i] == 'B') layer.get(x, y).setColor(Color.BLACK);
+            else if(board[i] == 'W') layer.get(x, y).setColor(Color.WHITE);
+        }
+        if (getPlayer1Name().equals(currentPlayerStr)) currentPlayer = playerX;
+        else currentPlayer = playerO;
+
     }
 }

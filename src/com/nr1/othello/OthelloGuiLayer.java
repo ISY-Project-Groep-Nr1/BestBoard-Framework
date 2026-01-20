@@ -9,6 +9,7 @@ import com.nr1.interfaces.BestGuiElement;
 import com.nr1.interfaces.ComponentConfigurer;
 import com.nr1.interfaces.Style;
 import com.nr1.interfaces.Style.Size;
+import com.nr1.tictactoe.TicTacToe;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +23,11 @@ public final class OthelloGuiLayer extends ListLayer<JComponent> {
         super(true, "gui_panel");
         this.style = style;
         BestCanvas canvas = new BestCanvas(manager, style, 450, 450);
+        super.add(new BestButton("Exit", style, () -> {
+            Othello.saveOthello(Othello.othelloBoard);
+            Othello.destroyGame(Othello.getManager());
+            Othello.showMainMenu();
+        }));
         super.<Function<JComponent, JComponent>>addPersistent(FRAME_PREPARER_KEY, (component) -> {
             component.setLayout(new GridBagLayout());
             return component;
