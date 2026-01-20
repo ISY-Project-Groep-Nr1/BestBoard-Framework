@@ -85,10 +85,12 @@ public class AiPlayer extends Player {
 
         if (isMaximizing) {
             int currentAlpha = Integer.MIN_VALUE;
+            boolean hasMove = false;
 
             for (int row = 0; row < 8; row++) {
                 for (int column = 0; column < 8; column++) {
                     if (isValidMove(board, row, column, color)) {
+                        hasMove = true;
                         int[][] copiedBoard = copyBoard(board);
                         move(copiedBoard, row, column, color);
                         currentAlpha = miniMax(copiedBoard, false, -color, depth - 1, alpha, beta);
@@ -99,13 +101,18 @@ public class AiPlayer extends Player {
                     }
                 }
             }
+
+            if (!hasMove) return miniMax(board, true, -color, depth - 1, alpha, beta);
+
             return currentAlpha;
         } else {
             int currentBeta = Integer.MAX_VALUE;
+            boolean hasMove = false;
 
             for (int row = 0; row < 8; row++) {
                 for (int column = 0; column < 8; column++) {
                     if (isValidMove(board, row, column, color)) {
+                        hasMove = true;
                         int[][] copiedBoard = copyBoard(board);
                         move(copiedBoard, row, column, color);
                         currentBeta = miniMax(copiedBoard, true, -color, depth - 1, alpha, beta);
@@ -116,6 +123,9 @@ public class AiPlayer extends Player {
                     }
                 }
             }
+
+            if (!hasMove) return miniMax(board, true, -color, depth - 1, alpha, beta);
+
             return currentBeta;
         }
     }

@@ -34,6 +34,7 @@ public final class Othello {
                 player1Name = args[0];
             }
             serverManager = new ServerManager();
+            serverManager.login(player1Name);
             window = BestWindow.create(manager, "Othello");
 
             SwingUtilities.invokeLater(() -> {
@@ -72,51 +73,59 @@ public final class Othello {
                 () -> {
                     manager.deleteLayer("main_menu");
                     System.out.println("Main menu has been deleted");
-                    playerX = new UserPlayer(Othello.getPlayer1Name(), Color.BLACK);
-                    playerO = new UserPlayer(Othello.getPlayer2Name(), Color.WHITE);
-                    startNewGame();
+                    startNewGame(new UserPlayer(Othello.getPlayer1Name(), Color.BLACK), new UserPlayer(Othello.getPlayer2Name(), Color.WHITE));
+                },
+                () -> {
+                    manager.deleteLayer("main_menu");
+                    startNewGame(new UserPlayer(Othello.getPlayer1Name(), Color.BLACK), new AiPlayer("Computer", Color.WHITE));
+                },
+                () -> {
+                    manager.deleteLayer("main_menu");
+                    startNewGame(new AiPlayer("Computer", Color.BLACK), new UserPlayer(Othello.getPlayer1Name(), Color.WHITE));
+                },
+                () -> {
+                    manager.deleteLayer("main_menu");
+                    startNewGame(new AiPlayer("AI 1", Color.BLACK), new AiPlayer("AI 2", Color.WHITE));
                 },
                 () -> {
                     manager.deleteLayer("main_menu");
                     playerX = new UserPlayer(Othello.getPlayer1Name(), Color.BLACK);
-                    playerO = new AiPlayer("Computer", Color.WHITE);
-                    startNewGame();
+                    new ServerGameStarter(
+                            playerX,
+                            serverManager,
+                            manager,
+                            Othello::startNewGame
+                    );
                 },
                 () -> {
                     manager.deleteLayer("main_menu");
-                    playerX = new AiPlayer("Computer", Color.BLACK);
                     playerO = new UserPlayer(Othello.getPlayer1Name(), Color.WHITE);
-                    startNewGame();
+                    new ServerGameStarter(
+                            playerO,
+                            serverManager,
+                            manager,
+                            Othello::startNewGame
+                    );
                 },
                 () -> {
                     manager.deleteLayer("main_menu");
                     playerX = new AiPlayer("AI 1", Color.BLACK);
-                    playerO = new AiPlayer("AI 2", Color.WHITE);
-                    startNewGame();
+                    new ServerGameStarter(
+                            playerX,
+                            serverManager,
+                            manager,
+                            Othello::startNewGame
+                    );
                 },
                 () -> {
                     manager.deleteLayer("main_menu");
-                    playerX = new UserPlayer(Othello.getPlayer1Name(), Color.BLACK);
-                    playerO = new ServerPlayer("Server", Color.WHITE, serverManager);
-                    startNewGame();
-                },
-                () -> {
-                    manager.deleteLayer("main_menu");
-                    playerX = new ServerPlayer("Server", Color.BLACK, serverManager);
-                    playerO = new UserPlayer(Othello.getPlayer1Name(), Color.WHITE);
-                    startNewGame();
-                },
-                () -> {
-                    manager.deleteLayer("main_menu");
-                    playerX = new AiPlayer("AI 1", Color.BLACK);
-                    playerO = new ServerPlayer("Server", Color.WHITE, serverManager);
-                    startNewGame();
-                },
-                () -> {
-                    manager.deleteLayer("main_menu");
-                    playerX = new ServerPlayer("Server", Color.BLACK, serverManager);
                     playerO = new AiPlayer("AI 1", Color.WHITE);
-                    startNewGame();
+                    new ServerGameStarter(
+                            playerO,
+                            serverManager,
+                            manager,
+                            Othello::startNewGame
+                    );
                 },
                 Othello::openSettings
         );
@@ -125,7 +134,10 @@ public final class Othello {
 
     }
 
-    static void startNewGame() {
+    static void startNewGame(Player player1, Player player2) {
+        Othello.playerX = player1;
+        Othello.playerO = player2;
+
         guiLayer = new OthelloGuiLayer(manager, window.getDefaultStyle(), playerX, playerO);
         othelloBoard = new OthelloBoard(50, playerX, playerO, serverManager);
 
@@ -222,7 +234,7 @@ public final class Othello {
 
     static void restart() {
         destroyGame(manager);
-        startNewGame();
+        startNewGame(playerX, playerO);
     }
 
     static boolean hasPlayers() {
@@ -249,9 +261,6 @@ public final class Othello {
 
         if (current instanceof AiPlayer) {
             current.makeMove(manager.getLayer("board"));
-            // repaint();
-            // turnLabel.setText("Beurt: " +
-            // ticTacToeBoard.getCurrentPlayer().getComponentConfigurer());
         }
 
         Timer timer = new Timer(1, e -> runAiGameLoop(manager));
