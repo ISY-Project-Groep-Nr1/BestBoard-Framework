@@ -258,7 +258,10 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
             Othello.updateScoreLabel();
             updateAllowedMoves();
             if (!hasAllowedMoves()) {
-                Othello.checkWinner(Othello.getManager(), this);
+                // Defer win check to allow GUI to render first
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    Othello.checkWinner(Othello.getManager(), this);
+                });
                 return;
             }
         }
@@ -266,7 +269,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
         if (!(player1 instanceof ServerPlayer) && !(player2 instanceof ServerPlayer)) {
             if (currentPlayer instanceof AiPlayer && !isGameOver()) {
                 currentPlayer.makeMove(this);
-        }
+            }
         }
     }
 
@@ -312,6 +315,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
             ((TurnLabel) layer).getLabel().repaint();
         }
     }
+
     private final void setPlayer(Player player) {
         System.out.println(player.getColor());
         currentPlayer = player;
@@ -329,11 +333,11 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
                 return;
             }
             System.out.println();
-            serverManager.move((int)parameters[0] + (int) parameters[1] * 8);
+            serverManager.move((int) parameters[0] + (int) parameters[1] * 8);
         }
     }
 
-    private Player getSelf(){
+    private Player getSelf() {
         if (!(player2 instanceof ServerPlayer)) {
             return player2;
         } else if (!(player1 instanceof ServerPlayer)) {
@@ -343,7 +347,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
         }
     }
 
-    private Player getServerPlayer(){
+    private Player getServerPlayer() {
         if ((player2 instanceof ServerPlayer)) {
             return player2;
         } else if ((player1 instanceof ServerPlayer)) {
@@ -353,7 +357,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
         }
     }
 
-    private Player getPlayerForName(String playerName){
+    private Player getPlayerForName(String playerName) {
         if (getSelf().name.equals(playerName)) {
             return getSelf();
         } else {
@@ -363,8 +367,7 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
     }
 
     private static final Pattern PATTERN = Pattern.compile(
-            "\\{PLAYER: \"(.*?)\", MOVE: \"(.*?)\", DETAILS: \"(.*?)\"\\}"
-    );
+            "\\{PLAYER: \"(.*?)\", MOVE: \"(.*?)\", DETAILS: \"(.*?)\"\\}");
 
     @Override
     public boolean onEvent(String command) {
@@ -385,15 +388,15 @@ public final class OthelloBoard extends SyncedLayer<OthelloCell, MatrixLayer<Oth
                     return false;
                 }
 
-                //final OthelloCell cell = super.get(x, y);
+                // final OthelloCell cell = super.get(x, y);
                 System.out.println("[SVR] Opponent moved, cell: " + move + " color: " + player.getColor());
                 System.out.println("placed at: " + x + " " + y);
                 currentPlayer = player;
                 makeMove(x, y);
-                //if (cell.isEmpty()) {
-                //    wrapped.add(x, y, new OthelloCell(x, y, cellSize, this, player.getColor()));
-                //    Othello.checkWinner(Othello.getManager(), this);
-                //}
+                // if (cell.isEmpty()) {
+                // wrapped.add(x, y, new OthelloCell(x, y, cellSize, this, player.getColor()));
+                // Othello.checkWinner(Othello.getManager(), this);
+                // }
             }
         } else if (command.startsWith("SVR GAME YOURTURN")) {
             setPlayer(getSelf());
