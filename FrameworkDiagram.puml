@@ -1,0 +1,274 @@
+@startuml
+' Klassendiagram voor het BestBoard-Framework
+title BestBoard-Framework Kern Klassendiagram
+
+' Orthogonale routing: rechte hoeken in plaats van diagonalen
+skinparam linetype ortho
+
+' Definieer de kleuren voor duidelijkheid
+skinparam class {
+    BackgroundColor White
+    ArrowColor #2F6C64
+    BorderColor #2F6C64
+    FontColor Black
+}
+
+skinparam interface {
+    BackgroundColor #DAF7A6
+    ArrowColor #6C642F
+    BorderColor #6C642F
+    FontColor Black
+}
+
+skinparam enum {
+    BackgroundColor #D0E0EF
+    ArrowColor #2F6C64
+    BorderColor #2F6C64
+    FontColor Black
+}
+
+skinparam package {
+    BorderColor LightGrey
+    FontColor Grey
+}
+
+package "com.nr1.gui" {
+    class BestWindow <<Singleton>> {
+        -JFrame frame
+        -LayerManager layerManager
+        -Style style
+        -GuiPanel panel
+        __
+        +{static} BestWindow create(LayerManager manager, String title, Style style)
+        +{static} BestWindow get()
+        +void update()
+        +void setVisible()
+        __
+        **Note:** Er kan maar één BestWindow-instantie bestaan.
+    }
+
+    class GuiPanel extends JPanel {
+        -Style style
+        -boolean hasBackground
+        __
+        +GuiPanel(style: Style, hasBackground: boolean)
+        +paintComponent(g: Graphics)
+        __
+        Het paneel waarop alle GUI-elementen worden getekend.
+    }
+
+    interface Style <<Visual Theme>> {
+        +drawBestPanel(g: Graphics2D, bounds: Dimension)
+        +drawText(g: Graphics2D, bounds: Dimension, text: String, size: Size, type: int)
+        +getBackgroundColor(): Color
+        +getGridColor(): Color
+        +getFont(fontType: int, size: Size): Font
+        +getButtonRenderer(): StyledButtonRenderer
+        +getOutlineColor(): Color
+        +isTextAnimated(size: Size): boolean
+        +propagateRepaints(): boolean
+        __
+        Bepaalt het visuele uiterlijk van de applicatie.
+    }
+
+    interface StyledButtonRenderer {
+        +paint(g: Graphics2D)
+        +paintHighlighted(g: Graphics2D)
+        +paintClicked(g: Graphics2D)
+        __
+        Specifieke renderlogica voor knoppen.
+    }
+
+    enum Size {
+        SMALL
+        MEDIUM
+        LARGE
+        __
+        Voorgedefinieerde categorieën voor lettergroottes.
+    }
+}
+
+package "com.nr1.gui.styles" {
+    class MatrixStyle implements Style
+    class FlatStyle implements Style
+    class UnicornStyle implements Style
+
+    note right of MatrixStyle
+        Concrete implementaties van de Style-interface.
+        Elke implementatie heeft eigen rendering logica.
+    end note
+}
+
+package "com.nr1" {
+    class MainLoop <<Thread>> {
+        -int targetTps
+        -LayerManager layerManager
+        -ServerManager serverManager
+        __
+        +MainLoop(int targetTps, LayerManager manager, ServerManager server)
+        +void loop()
+        __
+        De hoofdloop die de applicatielogica periodiek uitvoert
+        en reageert op input.
+    }
+
+    class LayerManager <<Central Control Tower>> {
+        -Map<String, Layer<?>> layers
+        __
+        +LayerManager()
+        +void addListLayer(boolean active, String name)
+        +void addHashMapLayer(boolean active, String name)
+        +void addMatrixLayer(boolean active, String name, int rows, int cols)
+        +void enableLayer(String name)
+        +void disableLayer(String name)
+        +void toggleLayer(String name)
+        +List<Layer<?>> getSortedOn(String persistentName)
+        +List<Layer<?>> getAllActive()
+        __
+        Beheert alle Layer-objecten, hun activatie en renderprioriteit.
+    }
+
+    abstract class Layer<T> <<State Container>> {
+        #persistentVariables: HashMap<String, Object>
+        {static} ACTIVE_KEY: String
+        {static} NAME_KEY: String
+        {static} RENDER_PRIORITY_KEY: String
+        __
+        +boolean isActive()
+        +Object getPersistent(String key)
+        +List<Object> getOfType(Class type)
+        __
+        Generieke container voor applicatiestatus.
+        Subklassen: ListLayer, MatrixLayer, HashMapLayer
+    }
+
+    interface Tickable {
+        +void tick()
+        __
+        Voor objecten die periodiek updates of logica nodig hebben.
+    }
+
+    interface Clickable {
+        +void click()
+        __
+        Voor objecten die reageren op muiskliks.
+    }
+
+    interface ServerListener {
+        +void processServerMessage()
+        __
+        Voor objecten die reageren op serverberichten.
+    }
+}
+
+package "com.nr1.servermanager" {
+    class ServerManager {
+        __
+        Beheert de communicatie met externe servers.
+    }
+}
+
+package "com.nr1" {
+    class ListLayer<T> extends Layer<T> {
+        +ListLayer(active: boolean, name: String)
+        +add(element: T)
+        +remove(element: T)
+    }
+    
+    class MatrixLayer<T> extends Layer<T> {
+        +MatrixLayer(active, name, width, height)
+        +add(x: int, y: int, element: T)
+        +get(x: int, y: int): T
+    }
+    
+    class HashMapLayer<T> extends Layer<T> {
+        +HashMapLayer(active, name)
+    }
+    
+    class MouseManager {
+        {static} -events: ArrayList<MouseEvent>
+        {static} -mouseX: int
+        {static} -mouseY: int
+        __
+        {static} +getMouseListener(): MouseListener
+        {static} +getMouseEvents(): ArrayList<MouseEvent>
+        __
+        Statische klasse voor muisinput management.
+    }
+}
+
+' Externe Java Swing componenten en standaard hulpprogramma's
+package "java.awt" {
+    class Dimension
+    class Color
+    class Font
+    class Graphics2D
+}
+
+package "javax.swing" {
+    class JFrame
+    class SwingUtilities {
+        +{static} void invokeLater(Runnable doRun)
+    }
+}
+
+package "java.util" {
+    interface List
+    interface Map
+}
+
+' Relaties
+
+' BestWindow
+BestWindow "1" o-- "1" LayerManager : beheert inhoud
+BestWindow "1" o-- "1" Style : past thema toe
+BestWindow "1" *-- "1" GuiPanel : creëert en bevat
+BestWindow ..> JFrame : wrapt
+BestWindow ..> SwingUtilities : gebruikt
+
+' GuiPanel
+GuiPanel "1" o-- "1" Style : gebruikt voor tekenen
+GuiPanel ..|> JPanel
+GuiPanel "1" --> "0..*" Layer : tekent inhoud van
+
+' Layer Hiërarchie
+Layer "1" <|-- ListLayer : extends
+Layer "1" <|-- MatrixLayer : extends
+Layer "1" <|-- HashMapLayer : extends
+
+' Style en Implementaties
+Style "1" *-- "1" StyledButtonRenderer : levert
+Style "1" *-- "1" Size : defines enum
+Style <|.. MatrixStyle : implements
+Style <|.. FlatStyle : implements
+Style <|.. UnicornStyle : implements
+
+' MainLoop
+MainLoop "1" o-- "1" LayerManager : haalt taken op
+MainLoop "1" o-- "1" ServerManager : communiceert met
+MainLoop "1" --> "1" BestWindow : ververst display
+MainLoop "1" ..> MouseManager : haalt input op
+MainLoop ..> Tickable : voert tick() uit
+MainLoop ..> Clickable : voert click() uit
+MainLoop ..> ServerListener : voert processServerMessage() uit
+
+' LayerManager
+LayerManager "1" -- "0..*" Layer : beheert
+
+' Layer inhoud
+Layer "1" o-- "0..*" Tickable : bevat objecten die\nimplementeren
+Layer "1" o-- "0..*" Clickable : bevat objecten die\nimplementeren
+Layer "1" o-- "0..*" ServerListener : bevat objecten die\nimplementeren
+
+' Dependencies
+Style ..> Dimension
+Style ..> Color
+Style ..> Graphics2D
+StyledButtonRenderer ..> Graphics2D
+List <.. LayerManager
+Map <.. LayerManager
+List <.. Layer
+Map <.. Layer
+List <.. MouseManager
+
+@enduml

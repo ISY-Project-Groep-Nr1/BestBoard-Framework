@@ -1,0 +1,306 @@
+@startuml
+
+' Othello Klassendiagram - BestBoard Framework
+title Othello Klassendiagram
+
+' Orthogonale routing: rechte hoeken in plaats van diagonalen
+skinparam linetype ortho
+
+!define MAIN_COLOR #FF6B6B
+!define PLAYER_COLOR #4ECDC4
+!define BOARD_COLOR #95E1D3
+!define INTERFACE_COLOR #FFE66D
+!define GUI_COLOR #A8E6CF
+
+
+
+skinparam class {
+
+    BackgroundColor White
+    ArrowColor #333333
+    BorderColor #333333
+    FontColor Black
+    FontSize 10
+}
+
+skinparam interface {
+    BackgroundColor INTERFACE_COLOR
+    ArrowColor #333333
+    BorderColor #333333
+    FontColor Black
+}
+
+skinparam package {
+    BorderColor #333333
+    FontColor #333333
+    FontStyle bold
+}
+
+
+
+package "Othello Game Engine" {
+    class Othello << (F,MAIN_COLOR) Final >> {
+        {static} -guiLayer: OthelloGuiLayer
+        {static} -manager: LayerManager
+        {static} -window: BestWindow
+        {static} -playerX: Player
+        {static} -playerO: Player
+        {static} -othelloBoard: OthelloBoard
+        {static} -serverManager: ServerManager
+        __
+        {static} +main(args: String[])
+        {static} -showMainMenu()
+    }
+    
+    class OthelloBoard {
+        -board: MatrixLayer<OthelloCell>
+        -background: ListLayer<BackgroundGrid>
+        -player1: Player
+        -player2: Player
+        -currentPlayer: Player
+        -allowedMoves: MatrixLayer<AllowedMove>
+        -cellSize: int
+        {static} WIDTH: int = 8
+        {static} HEIGHT: int = 8
+        __
+        +OthelloBoard(cellSize, player1, player2)
+        +initializeStartingPosition()
+        +updateAllowedMoves()
+        +makeMove(x: int, y: int)
+        +getCurrentPlayer(): Player
+    }
+
+    abstract class Player << (P,PLAYER_COLOR) >> {
+        #name: String
+        #isActive: boolean
+        -color: Color
+        __
+        +{abstract} makeMove(manager: Layer)
+        +getName(): String
+        +isActive(): boolean
+        +setActive(active: boolean)
+        +getColor(): Color
+        +setColor(color: Color)
+    }
+
+    class UserPlayer << (U,PLAYER_COLOR) >> extends Player {
+        __
+        +UserPlayer(name, color)
+        +makeMove(manager: Layer)
+    }
+
+    class AiPlayer << (A,PLAYER_COLOR) >> extends Player {
+        -opponentColor: Color
+        __
+        +AiPlayer(name, color)
+        +makeMove(layer: Layer)
+    }
+
+    class ServerPlayer << (S,PLAYER_COLOR) >> extends Player {
+        __
+        +ServerPlayer(name, color)
+        +makeMove(manager: Layer)
+    }
+
+    class OthelloGuiLayer {
+        -style: Style
+        __
+        +OthelloGuiLayer(manager, style, playerX, playerO)
+    }
+
+    class OthelloCell << (C,BOARD_COLOR) >> implements Drawable, Clickable {
+        -hitbox: Rectangle
+        -color: Color
+        -board: OthelloBoard
+        -x: int
+        -y: int
+        -highlighted: boolean
+        {static} LABEL_OFFSET: int = 25
+        __
+        +OthelloCell(x, y, size, board)
+        +draw(g: Graphics)
+        +setHighlighted(highlighted: boolean)
+    }
+
+    class AllowedMove << (M,GUI_COLOR) >> implements Drawable {
+        -cellSize: int
+        -x: int
+        -y: int
+        {static} LABEL_OFFSET: int = 25
+        __
+        +AllowedMove(cellSize, x, y)
+        +draw(g: Graphics)
+    }
+
+    class BackgroundGrid << (B,GUI_COLOR) >> implements Drawable {
+        -cellSize: int
+        -width: int
+        __
+        +BackgroundGrid(cellSize, width)
+        +draw(g: Graphics)
+    }
+
+    class TurnLabel << (T,GUI_COLOR) >> implements Drawable {
+        __
+        +TurnLabel(player: Player)
+        +draw(g: Graphics)
+    }
+
+    class CheckWinner << (W,#FFB6C1) Final >> {
+        {static} -checkWinner()
+        __
+        {static} +checkWinner(board: MatrixLayer<OthelloCell>): Color
+        ---
+        Bepaalt de winnaar van het spel
+        door stukken te tellen op het bord
+    }
+
+    class OthelloBoardUpdater << (U,#E6B3FF) >> implements Tickable {
+        -board: OthelloBoard
+        __
+        +OthelloBoardUpdater(board: OthelloBoard)
+        +tick(): void
+        ---
+        Update de highlights van mogelijke zetten
+        wordt regelmatig opgeroepen door MainLoop
+    }
+
+    interface Drawable {
+        +draw(g: Graphics)
+    }
+
+    interface Clickable {
+        +onClick(point: Point)
+    }
+
+    interface Tickable {
+        +tick(): void
+    }
+}
+
+package "Framework Integration" {
+    class LayerManager {
+        +addLayer(layer: Layer)
+        +removeLayer(layer: Layer)
+        +update()
+    }
+
+    interface Layer {
+        +update()
+        +render(g: Graphics)
+    }
+
+    class MatrixLayer<T> implements Layer {
+        +add(x: int, y: int, element: T)
+        +get(x: int, y: int): T
+    }
+
+    class ListLayer<T> implements Layer {
+        +add(element: T)
+        +remove(element: T)
+    }
+
+    class BestWindow {
+        {static} +create(manager, title): BestWindow
+        +update()
+        +setVisible()
+    }
+
+    class MainLoop {
+        __
+        +MainLoop(fps, manager, serverManager)
+        +loop()
+    }
+
+    class ServerManager {
+        __
+        +ServerManager()
+    }
+}
+
+' Relaties
+Othello "1" --> "1" OthelloBoard : contains
+Othello "1" --> "2" Player : has players (playerX, playerO)
+Othello "1" --> "1" OthelloGuiLayer : displays
+Othello "1" --> "1" LayerManager : uses
+Othello "1" --> "1" BestWindow : manages
+Othello "1" --> "1" MainLoop : runs
+
+' Layer Management
+LayerManager "1" --> "*" Layer : manages
+OthelloGuiLayer ..|> ListLayer : extends
+OthelloBoard ..|> MatrixLayer : uses internally
+
+' Game Board Relations
+OthelloBoard "1" --> "*" OthelloCell : contains cells
+OthelloBoard "1" --> "2" Player : references
+OthelloBoard "1" --> "*" AllowedMove : shows
+OthelloBoard "1" --> "1" BackgroundGrid : has background
+
+' GUI Layer Relations  
+OthelloGuiLayer "1" --> "2" Player : displays
+OthelloGuiLayer "1" --> "1" TurnLabel : shows turn
+
+' Updater and Winner Logic
+OthelloBoard "1" --> "1" CheckWinner : uses to determine winner
+OthelloBoard "1" --> "1" OthelloBoardUpdater : uses to update highlights
+
+OthelloBoardUpdater "1" --> "1" OthelloBoard : updates
+CheckWinner "1" --> "*" OthelloCell : analyzes pieces in
+
+' Inheritance Relations
+Player <|-- UserPlayer : extends
+Player <|-- AiPlayer : extends
+Player <|-- ServerPlayer : extends
+
+' Interface Implementations
+OthelloCell ..|> Drawable
+OthelloCell ..|> Clickable
+AllowedMove ..|> Drawable
+BackgroundGrid ..|> Drawable
+TurnLabel ..|> Drawable
+OthelloBoardUpdater ..|> Tickable
+
+note right of Othello
+  Centrale klasse van het Othello spel
+  Beheert de initialisatie en game loop
+  Verbindt alle onderdelen samen
+  Registreert layers bij LayerManager
+end note
+
+note right of OthelloBoard
+  Kernlogica van het spel
+  Beheert het 8x8 bord
+  Valideert zetten
+  Communiceert met CheckWinner en Updater
+end note
+
+note right of OthelloGuiLayer
+  Extends ListLayer uit het framework
+  Beheert alle UI-componenten
+  Wordt door LayerManager gemanaged
+  Renders Player info en TurnLabel
+end note
+
+note right of LayerManager
+  Centraal beheer van alle layers
+  OthelloGuiLayer is een registered layer
+  Roept update() aan op alle layers
+  Orchestreert game loop
+end note
+
+note right of OthelloBoardUpdater
+  Implementeert Tickable interface
+  Periodiek opgeroepen door MainLoop
+  Update de highlights van geldige zetten
+  Koppelt game logic aan rendering
+end note
+
+note bottom of OthelloCell
+  Representeert één veld op het bord
+  Implementeert Clickable voor user input
+  Bijhoudend kleur en highlight state
+  Communicatie met OthelloBoard
+end note
+
+@enduml
