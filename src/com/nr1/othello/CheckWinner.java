@@ -6,29 +6,21 @@ import java.awt.*;
 
 public final class CheckWinner {
 
-    private CheckWinner() {
-
-    }
-
-    public static Color checkWinner(final MatrixLayer<OthelloCell> board) {
+    public static Color checkWinner(final int[][] board) {
         int blackCount = 0;
         int whiteCount = 0;
 
-        for (int i = 0; i <board.getRowCount(); i++) {
-            for (int j = 0; j <board.getColumnCount(); j++) {
-            OthelloCell cell = board.get(i, j);
-            if (!cell.isEmpty()) {
-                if (cell.getColor() == Color.BLACK) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+            if (board[i][j] != 0) {
+                if (board[i][j] == 1) {
                     blackCount++;
-                } else if (cell.getColor() == Color.WHITE) {
+                } else if (board[i][j] == -1) {
                     whiteCount++;
                 }
             }
             }
         }
-
-        System.out.println("black count: " + blackCount);
-        System.out.println("white count: " + whiteCount);
 
         if (blackCount > whiteCount) {
             return Color.BLACK;
@@ -40,13 +32,5 @@ public final class CheckWinner {
             return Color.GRAY;
         }
         return null;
-        }
-
-
-//    public static boolean checkDraw(final  MatrixLayer<OthelloCell> board) {
-//        if (checkWinner(board) == Color.GRAY) {
-//            return true;
-//        }
-//        return false;
-//    }
+    }
 }
