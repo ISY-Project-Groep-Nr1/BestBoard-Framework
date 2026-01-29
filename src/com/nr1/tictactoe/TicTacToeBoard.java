@@ -11,9 +11,7 @@ import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer<TicTacToeCell>> {
-    private final Color gridColor;
-    private final ListLayer<BackgroundGrid> background;
+    public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer<TicTacToeCell>> implements Drawable {
     private final Player playerX;
     private final Player playerO;
     private Player currentPlayer;
@@ -32,6 +30,14 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
         this.renderer = renderer;
     }
 
+    private static void populateGrid(Layer<TicTacToeCell> layer, int size, TicTacToeBoard board) {
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                layer.add(x, y, new TicTacToeCell(x, y, size, board));
+            }
+        }
+    }
+
     public final void makeMove(Player player, final int x, final int y) {
         final TicTacToeCell cell = super.get(x, y);
         if (player != currentPlayer) {
@@ -46,6 +52,16 @@ public final class TicTacToeBoard extends SyncedLayer<TicTacToeCell, MatrixLayer
             });
         } else {
             throw new IllegalArgumentException("cell is not empty: " + x + " " + y);
+        }
+    }
+
+    public void draw(Graphics g) {
+        renderer.drawBackgroundGrid((Graphics2D) g, cellSize, 3);
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                TicTacToeCell cell = get(x, y);
+                cell.draw(g);
+            }
         }
     }
 
